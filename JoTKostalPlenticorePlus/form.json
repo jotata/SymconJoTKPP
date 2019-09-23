@@ -1,0 +1,59 @@
+{
+    "status": [],
+    "elements":[
+        {
+            "name": "PollTime",
+            "type": "NumberSpinner",
+            "caption": "PollTime",
+            "suffix": "Seconds"
+        },{
+            "type": "List",
+            "name": "ModuleVariables",
+            "caption": "Device Parameters",
+            "add": false,
+            "delete": false,
+            "sort": {
+                "column": "Group",
+                "direction": "ascending"
+            },
+            "columns": [
+                {
+                    "caption": "Group",
+                    "name": "Group",
+                    "width": "150px"
+                },{
+                    "caption": "Ident",
+                    "name": "Ident",
+                    "width": "200px",
+                    "save": true
+                },{
+                    "caption": "Name",
+                    "name": "Name",
+                    "width": "300px"
+                },{
+                    "caption": "Custom Name",
+                    "name": "cName",
+                    "width": "auto"
+                },{
+                    "caption": "Profile",
+                    "name": "Profile",
+                    "width": "200px"
+                },{
+                    "caption": "Custom Profile",
+                    "name": "cProfile",
+                    "width": "200px"
+                },{
+                    "caption": "Poll",
+                    "name": "Poll",
+                    "width": "35px",
+                    "save": true,
+                    "edit": {
+                        "type": "CheckBox"
+                    }
+                }
+            ],
+            "values": $ModuleVariablesValues$
+        }
+    ],
+    "actions":[]
+}

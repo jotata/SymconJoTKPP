@@ -1,0 +1,14 @@
+/*
+ * @Package:		 JoT.KPP
+ * @File:			 TODOs.txt
+ * @Create Date:	 30.05.2019 09:59:20
+ * @Author:			 Jonathan Tanner - admin@tanner-info.ch
+ * @Last Modified:	 18.09.2019 17:16:29
+ * @Modified By:	 Jonathan Tanner
+ * @Copyright:		 Copyright(c) 2019 by JoT Tanner
+ * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
+ * 					 (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
+ */
+
+
+- JoT_ModBus Library erstellen

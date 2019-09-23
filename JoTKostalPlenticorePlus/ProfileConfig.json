@@ -1,0 +1,233 @@
+[
+    {
+        "ProfileName": "Status.KostalWR",
+        "ProfileType": $VT_Integer$,
+        "Icon": "Graph",
+        "Prefix": "",
+        "Suffix": "",
+        "MinValue": 0,
+        "MaxValue": 0,
+        "StepSize": 0,
+        "Digits": 0,
+        "Associations": [
+            {
+                "Value": 0,
+                "Name": "Off",
+                "Icon": "",
+                "Color": -1
+            },{
+                "Value": 1,
+                "Name": "Initialization",
+                "Icon": "",
+                "Color": "0x0000ff"
+            },{
+                "Value": 2,
+                "Name": "ISO Meassuring",
+                "Icon": "",
+                "Color": "0x0000ff"
+            },{
+                "Value": 3,
+                "Name": "Grid Check",
+                "Icon": "",
+                "Color": "0x0000ff"
+            },{
+                "Value": 4,
+                "Name": "StartUp",
+                "Icon": "",
+                "Color": "0x0000ff"
+            },{
+                "Value": 6,
+                "Name": "Feed In",
+                "Icon": "",
+                "Color": "0x00ff00"
+            },{
+                "Value": 7,
+                "Name": "Throttled",
+                "Icon": "",
+                "Color": "0x00ff00"
+            },{
+                "Value": 8,
+                "Name": "External Switch Off",
+                "Icon": "",
+                "Color": -1
+            },{
+                "Value": 9,
+                "Name": "Update",
+                "Icon": "",
+                "Color": -1
+            },{
+                "Value": 10,
+                "Name": "Standby",
+                "Icon": "",
+                "Color": -1
+            },{
+                "Value": 11,
+                "Name": "Grid Synchronisation",
+                "Icon": "",
+                "Color": "0x0000ff"
+            },{
+                "Value": 12,
+                "Name": "Grid PreCheck",
+                "Icon": "",
+                "Color": "0x0000ff"
+            },{
+                "Value": 13,
+                "Name": "Grid Switch Off",
+                "Icon": "",
+                "Color": -1
+            },{
+                "Value": 14,
+                "Name": "Overheating",
+                "Icon": "Error",
+                "Color": "0xff0000"
+            },{
+                "Value": 15,
+                "Name": "Shutdown",
+                "Icon": "",
+                "Color": -1
+            },{
+                "Value": 16,
+                "Name": "Improper DC Voltage",
+                "Icon": "Warning",
+                "Color": "0xff9800"
+            },{
+                "Value": 17,
+                "Name": "ESB",
+                "Icon": "",
+                "Color": -1
+            },{
+                "Value": 18,
+                "Name": "Unknown",
+                "Icon": "Warning",
+                "Color": "0xff9800"
+            }
+        ]
+    },{
+        "ProfileName": "Status.KostalEM",
+        "ProfileType": $VT_Float$,
+        "Icon": "Graph",
+        "Prefix": "",
+        "Suffix": "",
+        "MinValue": 0,
+        "MaxValue": 0,
+        "StepSize": 0,
+        "Digits": 0,
+        "Associations": [
+            {
+                "Value": 0,
+                "Name": "Idle",
+                "Icon": "Ok",
+                "Color": -1
+            },{
+                "Value": 2,
+                "Name": "Emergency Battery Charge",
+                "Icon": "EnergyProduction",
+                "Color": -1
+            },{
+                "Value": 8,
+                "Name": "Winter Mode Step 1",
+                "Icon": "Sleep",
+                "Color": -1
+            },{
+                "Value": 10,
+                "Name": "Winter Mode Step 2",
+                "Icon": "Sleep",
+                "Color": -1
+            }
+        ]
+    },{
+        "ProfileName": "Status.KostalFuse",
+        "ProfileType": $VT_Float$,
+        "Icon": "Distance",
+        "Prefix": "",
+        "Suffix": "",
+        "MinValue": 0,
+        "MaxValue": 0,
+        "StepSize": 0,
+        "Digits": 0,
+        "Associations": [
+            {
+                "Value": 0,
+                "Name": "Fuse Fail",
+                "Icon": "Warning",
+                "Color": "0xff9800"
+            },{
+                "Value": 1,
+                "Name": "Fuse Ok",
+                "Icon": "Ok",
+                "Color": -1
+            },{
+                "Value": 255,
+                "Name": "Unknown",
+                "Icon": "Warning",
+                "Color": "0xff9800"
+            }
+        ]
+    },{
+        "ProfileName": "Power.VA",
+        "ProfileType": $VT_Float$,
+        "Icon": "Electricity",
+        "Prefix": "",
+        "Suffix": " VA",
+        "MinValue": 0,
+        "MaxValue": 0,
+        "StepSize": 0,
+        "Digits": 0,
+        "Associations": []
+    },{
+        "ProfileName": "Power.VaR",
+        "ProfileType": $VT_Float$,
+        "Icon": "Electricity",
+        "Prefix": "",
+        "Suffix": " VaR",
+        "MinValue": 0,
+        "MaxValue": 0,
+        "StepSize": 0,
+        "Digits": 0,
+        "Associations": []
+    },{
+        "ProfileName": "Percent",
+        "ProfileType": $VT_Float$,
+        "Icon": "",
+        "Prefix": "",
+        "Suffix": " %",
+        "MinValue": 0,
+        "MaxValue": 100,
+        "StepSize": 0,
+        "Digits": 1,
+        "Associations": []
+    },{
+        "ProfileName": "Battery.Charge",
+        "ProfileType": $VT_Float$,
+        "Icon": "Battery",
+        "Prefix": "",
+        "Suffix": "",
+        "MinValue": 0,
+        "MaxValue": 100,
+        "StepSize": 0,
+        "Digits": 1,
+        "Associations": [
+            {
+                "Value": 5,
+                "Name": "Empty (%s%%)",
+                "Icon": "Battery",
+                    "Color": "0xff0000"
+            },{
+                "Value": 9,
+                "Name": "Low (%s%%)",
+                "Icon": "Battery",
+                "Color": "0xff9800"
+            },{
+                "Value": 10,
+                "Name": "%s%%",
+                "Icon": "Battery",
+                "Color": "0x00ff00"
+            },{
+                "Value": 99,
+                "Name": "Full (%s%%)",
+                "Icon": "Battery",
+                "Color": "0x00ff00"
+            }
+        ]
+    }
+]

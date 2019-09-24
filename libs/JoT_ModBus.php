@@ -4,7 +4,7 @@
  * @File:			 JoT_ModBus.php                                                                    *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 24.09.2019 19:48:00                                                           *
+ * @Last Modified:	 24.09.2019 20:09:59                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -131,7 +131,6 @@ class JoTModBus extends IPSModule {
      */
     public function ModBusErrorHandler(int $ErrLevel, string $ErrMsg){
         $action = "";
-        $ident = "?";
         if (is_array($this->CurrentAction)){
             $action = $this->CurrentAction['Action']." ";
             $error = utf8_decode($ErrMsg);
@@ -141,7 +140,7 @@ class JoTModBus extends IPSModule {
             $data = $this->CurrentAction['Data']['Data'];
             $ErrMsg = "ModBus-Message: $error (Function: $function, Address: $address, Quantity: $quantity, Data: $data)";
         } 
-        $this->SendDebug($action."Ident: $ident ERROR", $ErrMsg, 0);
+        $this->SendDebug("$action ERROR", $ErrMsg, 0);
     }
 
     /**
@@ -226,35 +225,9 @@ class JoTModBus extends IPSModule {
                 $Value = ord($Value) == 0x01;
                 break;
             case self::VT_SignedInteger:
-                /*switch ($quantity) {
-                    case 1://16 Bit
-                        $Value = unpack("n", $Value)[1];//vorzeichenloser Short-Typ (immer 16 Bit, Byte-Folge Big Endian)
-                        break;
-                    case 2://32 Bit
-                        $Value = unpack("N", $Value)[1];//vorzeichenloser Long-Typ (immer 32 Bit, Byte-Folge Big Endian)
-                        break;
-                    case 4://64 Bit
-                        $Value = unpack("J", $Value)[1];//vorzeichenloser Long-Long-Typ (immer 64 bit, Byte-Folge Big Endian)
-                        break;
-                    default:
-                        return null;
-                }*/
                 $Value = intval(bin2hex($Value), 16);
                 break;
             case self::VT_UnsignedInteger:
-                /*switch ($quantity) {
-                    case 1://16 Bit
-                        $Value = unpack("s", $Value)[1];//vorzeichenbehafteter Short-Typ (immer 16 Bit, Byte-Folge maschinenabhängig)
-                        break;
-                    case 2://32 Bit
-                        $Value = unpack("l", $Value)[1];//vorzeichenbehafteter Long-Typ (immer 32 Bit, Byte-Folge maschinenabhängig)
-                        break;
-                    case 4://64 Bit
-                        $Value = unpack("q", $Value)[1];//vorzeichenbehafteter Long-Long-Typ (immer 64 bit, maschinenabhängig)
-                        break;
-                    default:
-                        return null;
-                }*/
                 $Value = hexdec(bin2hex($Value));
                 break;
             case self::VT_Float:
@@ -305,186 +278,4 @@ class JoTModBus extends IPSModule {
         }
         return $VarType;
     }
-
-
-//********************************************************************************************************************************** */
-    /**
-     * IPS-Instanz Funktion PREFIX_RequestRead.
-     * Ließt alle Werte aus dem Gerät.
-     * @param optional $force True, wenn auch nicht gepollte Values gelesen werden sollen.
-     * @access public
-     * @return bool True wenn Befehl erfolgreich ausgeführt wurde, sonst false.
-     */
-    public function _RequestRead(){
-        $force = false;//$force = true wird über die Funktion RequestReadAll aktiviert oder String mit Ident über die Funktion RequestReadIdent
-        if (func_num_args() == 1){ $force = func_get_arg(0); };//Intergation auf diese Art, da sonst in __generated.inc.php ein falscher Eintrag mit der PREFIX_Funktion erstellt wird
-        
-        $Gateway = IPS_GetInstance($this->InstanceID)['ConnectionID'];
-        if ($Gateway == 0) {//kein Gateway gesetzt
-            return false;
-        }
-        $IO = IPS_GetInstance($Gateway)['ConnectionID'];
-        if ($IO == 0) {//kein I/O für Gateway gesetzt
-            return false;
-        }
-        /* Wird Lock (für ModBus RTU) nicht direkt von Splitter übernommen?
-        *  Ist Lock allenfalls bei vielen Values nötig, wenn die AbfrageZeit deutlich länger als der kleinste PollTimer ist?
-        if (!$this->lock("ModBus.$IO")) {
-            return false;
-        }*/
-        $Result = $this->ReadData($force);
-        //IPS_Sleep(333);
-        //$this->unlock("ModBus.$IO");
-        return $Result;
-    }
-
-    /**
-     * PHP Error-Handler - wird aufgerufen wenn ModBus einen Fehler zurück gibt
-     * @param int $errNr PHP-ErrorNummer
-     * @param string $errMsg PHP-Fehlermeldung
-     * @access protected
-     */
-    protected function _ModuleErrorHandler(int $ErrLevel, string $ErrMsg){
-        $action = "";
-        $ident = "?";
-        if (is_array($this->CurrentAction)){
-            $action = $this->CurrentAction['Action']." ";
-            $error = utf8_decode($ErrMsg);
-            $ident = $this->CurrentAction['Ident'];
-            $function = $this->CurrentAction['Data']['Function'];
-            $address = $this->CurrentAction['Data']['Address'];
-            $quantity = $this->CurrentAction['Data']['Quantity'];
-            $data = $this->CurrentAction['Data']['Data'];
-            $ErrMsg = "ModBus-Message: $error (Function: $function, Address: $address, Quantity: $quantity, Data: $data)";
-        } 
-        $this->SendDebug($action."Ident: $ident ERROR", $ErrMsg, 0);
-    }
-
-    /**
-     * List die Statusvaiabeln via ModBus-Gateway ein
-     * @param  bool|array $force wenn True, werden alle Statusvariabeln gelesen, wenn False, nur die mit aktivem Poll, wenn Array nur die mit übereinstimmendem Ident
-     * @return bool gibt True bei Erfolg, False bei einem Fehler zurück
-     * @access private
-     */
-    private function _ReadData($force){
-        $Variables = json_decode($this->ReadPropertyString('ModuleVariables'), true);
-        foreach ($Variables as $Variable) {
-            if (@IPS_GetObjectIDByIdent($Variable['Ident'], $this->InstanceID) === false) {//Variable von User gelöscht oder durch ApplyChanges noch nicht angelegt
-                continue;
-            }
-            if (is_bool($force) && !$force && !$Variable['Poll']) {//deaktivierte Variabeln überspringen (ausser bei $force = true)
-                continue;
-            }
-            if (is_string($force)) {
-                if (stripos("$force ", $Variable['Ident']." ") === false) {//Ident dieser Variable ist in $force nicht vorhanden
-                    continue;
-                }
-                $force = str_ireplace($Variable['Ident']." ", "", "$force ");
-            }
-            //Daten für ModBus-Gateway vorbereiten
-            $SendData['DataID'] = '{E310B701-4AE7-458E-B618-EC13A1A6F6A8}';
-            $SendData['Function'] = $Variable['RFunction'];
-            $SendData['Address'] = $Variable['RAddress'];
-            $SendData['Quantity'] = $Variable['Quantity'];
-            $SendData['Data'] = '';
-            //Error-Handler setzen und Daten lesen
-            set_error_handler([$this, 'ModuleErrorHandler']);
-            $this->CurrentAction = ['Action' => "ReadData", 'Ident' => $Variable['Ident'], 'Data' => $SendData];
-            $ReadData = $this->SendDataToParent(json_encode($SendData));
-            restore_error_handler();
-            $this->CurrentAction = false;
-            if ($ReadData === false) {//Fehler beim Lesen des aktuellen Wertes - nächsten Wert versuchen
-                continue;
-            }
-            //empfangene Daten verarbeiten
-            $ReadValue = substr($ReadData, 2);
-            $this->SendDebug("ReadData Ident: ".$Variable['Ident']." RAW", $ReadValue, 1);
-            $Value = $this->ConvertValue($Variable, $ReadValue);
-            if ($Value === null) {
-                $logMsg = sprintf($this->Translate('Combination of DataType (%1$s) and Quantity (%2$s) not supportet. Please check settings for Ident \'%3$s\'.'), $Variable['VarType'], $Variable['Quantity'], $Variable['Ident']);
-                $this->SendDebug("ReadData Ident: ".$Variable['Ident']." ERROR", $logMsg, 0);
-                $this->LogMessage($logMsg, KL_ERROR);
-                continue;
-            }
-            $this->SendDebug("ReadData Ident: ".$Variable['Ident']." FINAL", $Value, 0);
-            $this->SetValue($Variable['Ident'], $Value);
-        }
-        if (is_string($force) && strlen(trim($force)) > 0) {//ungültiger Ident in $force
-            echo $this->Translate("Unknown Ident(s)").":\r\n".str_replace(" ", "\r\n", $force);
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Konvertiert die ModBus-Daten in die entsprechenden PHP-DatenTypen
-     * @param array $Variable die Definition der Statusvariable
-     * @param string $Value die ModBus-Daten
-     * @return mixed Konvertierte Daten oder null, wenn Konvertierung nicht möglich ist
-     * @access private
-     */
-    private function _ConvertValue(array $Variable, string $Value){
-        //LittleEndian & WordSwap verarbeiten
-        switch ($Variable['MBType']) {
-            case self::MB_BigEndian://ABCD => ABCD
-                break;
-            case self::MB_BigEndian_WordSwap://ABCD => CDAB  
-                $Value = $this->WordSwap($Value);
-                break;
-            case self::MB_LittleEndian://ABCD => BADC
-                $Value = $this->LittleEndian($Value);
-                break;
-            case self::MB_LittleEndian_WordSwap://ABCD => DCBA
-                $Value = $this->LittleEndian($Value);
-                $Value = $this->WordSwap($Value);
-                break;
-        }
-        $this->SendDebug("ConvertValue Ident: ".$Variable['Ident']." MBType: ".$Variable['MBType'], $Value, 1);
-
-        //DatenTypen umwandeln
-        switch ($Variable['VarType']) {
-            case self::VT_Boolean:
-                return ord($Value) == 0x01;
-            case self::VT_SignedInteger:
-                switch ($Variable['Quantity']) {
-                    case 1://16 Bit
-                        $result = unpack("n", $Value)[1];//vorzeichenloser Short-Typ (immer 16 Bit, Byte-Folge Big Endian)
-                        break;
-                    case 2://32 Bit
-                        $result = unpack("N", $Value)[1];//vorzeichenloser Long-Typ (immer 32 Bit, Byte-Folge Big Endian)
-                        break;
-                    case 4://64 Bit
-                        $result = unpack("J", $Value)[1];//vorzeichenloser Long-Long-Typ (immer 64 bit, Byte-Folge Big Endian)
-                        break;
-                    default:
-                        return null;
-                }
-                return $this->CalcFactor($result, $Variable['Factor']);
-            case self::VT_UnsignedInteger:
-                switch ($Variable['Quantity']) {
-                    case 1://16 Bit
-                        $result = unpack("s", $Value)[1];//vorzeichenbehafteter Short-Typ (immer 16 Bit, Byte-Folge maschinenabhängig)
-                        break;
-                    case 2://32 Bit
-                        $result = unpack("l", $Value)[1];//vorzeichenbehafteter Long-Typ (immer 32 Bit, Byte-Folge maschinenabhängig)
-                        break;
-                    case 4://64 Bit
-                        $result = unpack("q", $Value)[1];//vorzeichenbehafteter Long-Long-Typ (immer 64 bit, maschinenabhängig)
-                        break;
-                    default:
-                        return null;
-                }
-                return $this->CalcFactor($result, $Variable['Factor']);
-            case self::VT_Float:
-                if ($Variable['Quantity'] < 2){//Quantity ist zu klein für Float - dat kann nicht sein ;-)
-                    return null;
-                }
-                $result = unpack("G", $Value)[1]; //Gleitkommazahl (maschinenabhängige Größe, Byte-Folge Big Endian)
-                return $this->CalcFactor($result, $Variable['Factor']);
-            case self::VT_String:
-                return trim($Value);
-        }
-        return null;
-    }
-    
 }

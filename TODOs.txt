@@ -3,14 +3,12 @@
  * @File:			 TODOs.txt
  * @Create Date:	 30.05.2019 09:59:20
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 23.09.2019 18:52:55
+ * @Last Modified:	 24.09.2019 20:02:33
  * @Modified By:	 Jonathan Tanner
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
  * 					 (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
  */
 
-
-- Fehleranalyse Unsigne2 32-Bit Werte
 - Erstellen Dokumentation
 - Erstellen Übersetzungen

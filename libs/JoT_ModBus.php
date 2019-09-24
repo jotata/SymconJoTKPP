@@ -4,7 +4,7 @@
  * @File:			 JoT_ModBus.php                                                                    *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 23.09.2019 18:50:24                                                           *
+ * @Last Modified:	 24.09.2019 19:48:00                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -135,7 +135,6 @@ class JoTModBus extends IPSModule {
         if (is_array($this->CurrentAction)){
             $action = $this->CurrentAction['Action']." ";
             $error = utf8_decode($ErrMsg);
-            $ident = $this->CurrentAction['Ident'];
             $function = $this->CurrentAction['Data']['Function'];
             $address = $this->CurrentAction['Data']['Address'];
             $quantity = $this->CurrentAction['Data']['Quantity'];
@@ -227,7 +226,7 @@ class JoTModBus extends IPSModule {
                 $Value = ord($Value) == 0x01;
                 break;
             case self::VT_SignedInteger:
-                switch ($quantity) {
+                /*switch ($quantity) {
                     case 1://16 Bit
                         $Value = unpack("n", $Value)[1];//vorzeichenloser Short-Typ (immer 16 Bit, Byte-Folge Big Endian)
                         break;
@@ -239,10 +238,11 @@ class JoTModBus extends IPSModule {
                         break;
                     default:
                         return null;
-                }
+                }*/
+                $Value = intval(bin2hex($Value), 16);
                 break;
             case self::VT_UnsignedInteger:
-                switch ($quantity) {
+                /*switch ($quantity) {
                     case 1://16 Bit
                         $Value = unpack("s", $Value)[1];//vorzeichenbehafteter Short-Typ (immer 16 Bit, Byte-Folge maschinenabhängig)
                         break;
@@ -254,7 +254,8 @@ class JoTModBus extends IPSModule {
                         break;
                     default:
                         return null;
-                }
+                }*/
+                $Value = hexdec(bin2hex($Value));
                 break;
             case self::VT_Float:
                 if ($quantity < 2){//String ist zu kurz für Float

@@ -4,7 +4,7 @@
  * @File:			 module.php                                                                    *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 23.09.2019 18:39:59                                                           *
+ * @Last Modified:	 24.09.2019 19:40:48                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -120,7 +120,6 @@ class JoTKostalPlenticorePlus extends JoTModBus {
             $config = str_replace('$VT_SignedInteger$', self::VT_SignedInteger, $config);
             $config = str_replace('$MB_BigEndian_WordSwap$', self::MB_BigEndian_WordSwap, $config);
             $config = str_replace('$MB_BigEndian$', self::MB_BigEndian, $config);
-            $config = str_replace('$MB_LittleEndian$', self::MB_LittleEndian, $config);
             $this->SetBuffer("ModBusConfig", $config);
         } 
         //JSON in Array umwandeln

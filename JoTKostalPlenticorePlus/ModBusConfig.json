@@ -41,7 +41,7 @@
         "Quantity": 1,
         "Factor": 1,
         "VarType": $VT_UnsignedInteger$,
-        "MBType": $MB_LittleEndian$
+        "MBType": $MB_BigEndian$
     },
     "NumberPVStrings": {
         "Name": "Number of PV strings",
@@ -52,7 +52,7 @@
         "Quantity": 1,
         "Factor": 1,
         "VarType": $VT_UnsignedInteger$,
-        "MBType": $MB_LittleEndian$
+        "MBType": $MB_BigEndian$
     },
     "HardwareVersion": {
         "Name": "Hardware-Version",
@@ -63,7 +63,7 @@
         "Quantity": 1,
         "Factor": 1,
         "VarType": $VT_UnsignedInteger$,
-        "MBType": $MB_LittleEndian$
+        "MBType": $MB_BigEndian$
     },
     "SoftwareVersionMC": {
         "Name": "Software-Version MC",
@@ -87,7 +87,7 @@
         "VarType": $VT_String$,
         "MBType": $MB_BigEndian$
     },
-    "InvertorState": {
+    "InverterState": {
         "Name": "Inverter state",
         "Group": "SystemState",
         "Profile": "Status.KostalWR",
@@ -96,7 +96,7 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_UnsignedInteger$,
-        "MBType": $MB_LittleEndian$
+        "MBType": $MB_BigEndian_WordSwap$
     },
     "EnergyManagerState": {
         "Name": "Energy Manager state",

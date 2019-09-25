@@ -4,7 +4,7 @@
  * @File:			 module.php                                                                    *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 25.09.2019 14:49:30                                                           *
+ * @Last Modified:	 25.09.2019 17:00:43                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -67,6 +67,21 @@ class JoTKostalPlenticorePlus extends JoTModBus {
         } else {
             $this->SetTimerInterval('UpdateTimer', 0);
         }
+
+        //Event für CheckFirmwareUpdate erstellen
+        $ident = "CheckFirmwareUpdate";
+        if (@IPS_GetObjectIDByIdent($ident , $this->InstanceID) == false){//Event für Firmware-Check einrichten
+            $eID = IPS_CreateEvent(EVENTTYPE_CYCLIC);
+            IPS_SetParent($eID, $this->InstanceID);
+            IPS_SetIdent($eID, $ident);
+            IPS_SetName($eID, $this->Translate("Check for Firmware Update"));
+            IPS_SetPosition($eID, 999);
+            IPS_SetEventCyclic($eID, EVENTCYCLICDATETYPE_DAY, 1, 0, 0, 0, 0);//täglich
+            IPS_SetEventCyclicTimeFrom($eID, 17, 0, 0);//um 17:00
+            IPS_SetEventCyclicDateFrom($eID, intval(date("d")), intval(date("m")), intval(date("Y")));//ab Heute
+            IPS_SetEventScript($eID, static::PREFIX . '_CheckFirmwareUpdate($_IPS["TARGET"]);');
+            IPS_SetEventActive ($eID, true);
+        };
     }
 
     /**
@@ -228,5 +243,45 @@ class JoTKostalPlenticorePlus extends JoTModBus {
             return null;
         }
         return $this->RequestRead($idents);
+    }
+
+    /**
+     * IPS-Instanz Funktion PREFIX_CheckFirmwareUpdate.
+     * Kontrolliert die aktuelle Firmware-Version online.
+     * @access public
+     * @return string mit aktuellstem FW-File oder LEER bei Fehler
+     */
+    public function CheckFirmwareUpdate(){
+        /**
+         * Aktuell wird die aktuellste FW-Datei von Kostal über $fwUpdateURL zur Verfügung gestellt.
+         * Es gibt (noch?) keine API um diese irgendwie abzufragen (auch der WR kann dies nicht automatisch).
+         * Daher prüfen wir aktuell einfach auf den Dateinamen der FW-Datei. Wenn sich dieser ändert, ist eine neue FW vorhanden.
+         * Die aktuellste Datei wird in einer Variable zwischengespeichert. Der User kann diese auf Änderung überwachen und das Ereignis weiterverarbeiten.
+         */
+        $fwUpdateURL = "https://www.kostal-solar-electric.com/software-update-hybrid";
+        
+        //Header von Download-Url lesen
+        $curl = curl_init($fwUpdateURL);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HEADER, true);
+        curl_setopt($curl, CURLOPT_NOBODY, true);
+        $headers = curl_exec($curl);
+        curl_close($curl);
+        
+        //Aktuelle FW-Datei von Location aus Header herauslesen und in Instanz-Variable schreiben
+        $ident = "CurrentFWOnline";
+        $this->MaintainVariable($ident, $this->Translate("Current FW-Version online"), VARIABLETYPE_STRING, "", 999, true);
+        if (preg_match('/^Location: (.+)$/im', $headers, $matches)){
+            $fwFile = basename(trim($matches[1]));
+            if ($this->GetValue($ident) !== $fwFile){
+                $this->SetValue($ident, $fwFile);
+                $this->LogMessage(sprintf($this->Translate("New FW-Version available online (%s)"), $fwFile), KL_NOTIFY);
+            }
+            return $fwFile;
+        } else {
+            $error = sprintf($this->Translate("Error reading FW-Version from '%s'!"), $fwUpdateURL);
+            $this->LogMessage($error, KL_WARNING);
+            return "";
+        }
     }
 }

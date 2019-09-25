@@ -5,7 +5,7 @@ Erweiterung zur Abfrage der Werte eines Kostal Wechselrichters via ModBus in IP-
 **Inhaltsverzeichnis**
 1. [Funktionsumfang](#1-funktionsumfang)  
 2. [Voraussetzungen](#2-voraussetzungen)  
-3. [Unterstützte Geräte](#3-unterstuetzte-geraete)
+3. [Unterstützte Geräte](#3-unterstützte-geräte)
 4. [Modul-Installation](#4-modul-installation) 
 5. [Einrichten der Instanz in IP-Symcon](#5-einrichten-der-instanz-in-ip-symcon)
     1. [Erstellen einer neuen Instanz](#1-erstellen-einer-neuen-instanz)
@@ -14,7 +14,7 @@ Erweiterung zur Abfrage der Werte eines Kostal Wechselrichters via ModBus in IP-
     4. [Fehlersuche](#4-fehlersuche)
 6. [Anhang](#6-anhang)  
     1. [Modul-Informationen](#1-modul-informationen)
-    2. [Changlog](#2-changlog)
+    2. [Changelog](#2-changelog)
     3. [Spenden](#3-spenden)
 7. [Lizenz](#7-lizenz)
 
@@ -92,15 +92,17 @@ Die Installation erfolgt über den IPS Module-Store. In der Suche einfach "JoT K
 ###  1. Modul-Informationen
 | Modul                      | Typ    | Hersteller | Gerät           | Prefix | GUID                                   |
 | :------------------------- | :----- | :--------- | :---------------| :----- | :------------------------------------- |
-| JoT Kostal Plenticore Plus | Device | Kostal     | Plenticore Plus | JoTKPP | {E64278F5-1942-5343-E226-8673886E2D05} |
+| JoT Kostal PLENTICORE plus | Device | Kostal     | PLENTICORE plus | JoTKPP | {E64278F5-1942-5343-E226-8673886E2D05} |
+|                            | Device | Kostal     | PIKO IQ         |        |                                        |
 
 ### 2. Changelog
 Version 0.8:  
-- Erste öffentliche Beta-Version - Feedbacks zu Fehlern aber auch funktionierende Geräte & Konfigurationen sind willkommen.
+- Erste öffentliche Beta-Version
+- Feedbacks zu Fehlern aber auch funktionierende Geräte & Konfigurationen sind willkommen.
 
 ### 3. Spenden    
 Das Modul ist für die nicht kommzerielle Nutzung kostenlos. Spenden als Unterstützung für den Autor sind aber willkommen:  
 <p align="center"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9M6W4KM34HWMA&source=url" target="_blank"><img src="https://www.paypalobjects.com/de_DE/CH/i/btn/btn_donateCC_LG.gif" border="0" /></a></p>
 
-## 6. Lizenz
+## 7. Lizenz
 IPS-Modul: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a>

@@ -1,0 +1,25 @@
+{
+    "translations": {
+        "de": {
+            "Error - Request Timeout!": "Fehler - Zeitüberschreitung bei der Geräte-Abfrage!",
+            "Error - Precondition Required!": "Fehler - Voraussetzungen nicht erfüllt!",
+            "Seconds": "Sekunden",
+            "PollTime": "Abfrage-Intervall",
+            "Device Parameters": "Geräte-Eigenschaften",
+            "Group": "Gruppe",
+            "Ident": "Ident",
+            "Name": "Name",
+            "Custom Name": "Eigener Name",
+            "Profile": "Profil",
+            "Custom Profile": "Eigenes Profil",
+            "Active": "Aktiv",
+            "Ident(s) can not be empty!": "Ident(s) darf nicht leer sein!",
+            "Group(s) can not be empty!": "Gruppe(n) darf nicht leer sein!",
+            "No idents found for group(s) '%s'!": "Keine Idents gefunden für Gruppe(n) '%s'!",
+            "Check for FW-update": "Suche nach FW-Update",
+            "Current FW-Version online": "Aktuelle FW-Version online",
+            "New FW-Version available online (%s)": "Neue FW-Version verfügbar (%s)",
+            "Error reading FW-Version from '%s'!": "Fehler beim lesen der FW-Version von '%s'!"
+        }
+    }
+}

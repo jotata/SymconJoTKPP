@@ -4,7 +4,7 @@
  * @File:			 module.php                                                                    *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 25.09.2019 17:00:43                                                           *
+ * @Last Modified:	 25.09.2019 18:09:21                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -74,8 +74,8 @@ class JoTKostalPlenticorePlus extends JoTModBus {
             $eID = IPS_CreateEvent(EVENTTYPE_CYCLIC);
             IPS_SetParent($eID, $this->InstanceID);
             IPS_SetIdent($eID, $ident);
-            IPS_SetName($eID, $this->Translate("Check for Firmware Update"));
-            IPS_SetPosition($eID, 999);
+            IPS_SetName($eID, $this->Translate("Check for FW-update"));
+            IPS_SetPosition($eID, 998);
             IPS_SetEventCyclic($eID, EVENTCYCLICDATETYPE_DAY, 1, 0, 0, 0, 0);//täglich
             IPS_SetEventCyclicTimeFrom($eID, 17, 0, 0);//um 17:00
             IPS_SetEventCyclicDateFrom($eID, intval(date("d")), intval(date("m")), intval(date("Y")));//ab Heute

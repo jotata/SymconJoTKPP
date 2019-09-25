@@ -57,9 +57,10 @@
                     "name": "cProfile",
                     "width": "200px"
                 },{
-                    "caption": "Poll",
+                    "caption": "Active",
                     "name": "Poll",
-                    "width": "35px",
+                    "width": "50px",
+                    "align": "center",
                     "save": true,
                     "edit": {
                         "type": "CheckBox"

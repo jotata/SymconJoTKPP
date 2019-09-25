@@ -1,10 +1,10 @@
 <?php
 /***************************************************************************************************
- * @Package:		 libs                                                                     *
- * @File:			 JoT_ModBus.php                                                                    *
+ * @Package:		 libs                                                                          *
+ * @File:			 JoT_ModBus.php                                                                *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 25.09.2019 15:15:43                                                           *
+ * @Last Modified:	 25.09.2019 18:05:21                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *

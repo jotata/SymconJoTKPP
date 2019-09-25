@@ -4,7 +4,7 @@
  * @File:			 module.php                                                                    *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 25.09.2019 18:09:21                                                           *
+ * @Last Modified:	 25.09.2019 20:09:19                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -128,7 +128,7 @@ class JoTKostalPlenticorePlus extends JoTModBus {
         //Formular vorbereiten
         $form = file_get_contents(__DIR__ . "/form.json");
         $form = str_replace('$Device$', $device, $form);//Wert für 'Device' setzen
-        $form = str_replace('$ModuleVariablesValues$', json_encode($values), $form);//Values für 'ModuleVariables' setzen
+        $form = str_replace('"$ModuleVariablesValues$"', json_encode($values), $form);//Values für 'ModuleVariables' setzen
         //$form = str_replace('$PREFIX$', static::PREFIX, $form);//Prefix für Funktionen ersetzen
         //echo "Form: $form";
         return $form;

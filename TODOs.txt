@@ -3,11 +3,11 @@
  * @File:			 TODOs.txt
  * @Create Date:	 30.05.2019 09:59:20
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 25.09.2019 18:11:35
+ * @Last Modified:	 25.09.2019 19:12:18
  * @Modified By:	 Jonathan Tanner
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
  * 					 (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
  */
 
-- Erstellen Dokumentation
+- Aktuell nichts - warte auf Feedbacks der Community :-)

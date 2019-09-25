@@ -1,44 +1,55 @@
-# SymconJoTModBus
-ModBus-Erweiterung für IP-Symcon
+# SymconJoTKPP
+Erweiterung zur Abfrage der Werte eines Kostal Wechselrichters via ModBus in IP-Symcon.
 
 ## Dokumentation
 **Inhaltsverzeichnis**
 1. [Funktionsumfang](#1-funktionsumfang)  
 2. [Voraussetzungen](#2-voraussetzungen)  
-3. [Modul-Installation](#3-modul-installation) 
-4. [Einrichten der Instanz in IP-Symcon](#4-einrichten-der-instanz-in-ip-symcon)
+3. [Unterstützte Geräte](#3-unterstuetzte-geraete)
+4. [Modul-Installation](#4-modul-installation) 
+5. [Einrichten der Instanz in IP-Symcon](#5-einrichten-der-instanz-in-ip-symcon)
     1. [Erstellen einer neuen Instanz](#1-erstellen-einer-neuen-instanz)
     2. [Konfiguration der Instanz](#2-konfiguration-der-instanz)
     3. [Modul-Funktionen](#3-modul-funktionen)
     4. [Fehlersuche](#4-fehlersuche)
-5. [Anhang](#5-anhang)  
+6. [Anhang](#6-anhang)  
     1. [Modul-Informationen](#1-modul-informationen)
     2. [Changlog](#2-changlog)
     3. [Spenden](#3-spenden)
-6. [Lizenz](#6-lizenz)
+7. [Lizenz](#7-lizenz)
 
 ## 1. Funktionsumfang
-Das Modul "JoT ModBus" ist eine erweiterte Variante der ursprünglichen ModBus-Device Instanz in IP-Symcon mit folgendem Funktionsumfang:
-- Mehrere ModBus-Variabeln vom selben Gateway in einer einzelnen Instanz möglich.
-- Nebst Zahlen & boolschen Werten können auch Strings ausgelesen werden.
-- Es lassen sich folgende Übertragungsarten je Variable separat einstellen:
-  - BigEndian
-  - BigEndian WordSwap
-  - LittleEndian
-  - LittleEndian WordSwap
-- Das Polling einzelner Variabeln kann individuell (de)aktiviert werden.
-- Über IPS Ereignisse können individuelle Abfrage-Muster realisiert werden (nur bei Bedarf, einmal am Tag, alle x Sekunden, usw.).
-- Konfigurationen können Ex-/Importiert werden (ToDo).
-- Werte können auf ModBus zurück geschrieben werden (ToDo).
+Das Modul "JoT Kostal PLENTICORE plus" stellt eine Instanz zur Abfrage der Werte von Kostal-Wechselrichtern für IP-Symcon zur Verfügung.
+Die Daten werden mittels ModBus abgefragt. Der Benutzer kann frei entscheiden, welche Werte abgefragt werden und ob dafür eine Instanz-Variable angelegt werden soll.
+Über IPS Ereignisse oder einen Aufruf der verschiedenen [RequestRead-Funktionen](#3-modul-funktionen) können individuelle Abfrage-Muster realisiert werden (nur bei Bedarf, einmal am Tag, alle x Sekunden, usw.).
+Das Modul prüft zudem, ob online eine neue FW-Version für den Wechselrichter verfügbar ist.
 
 ## 2. Voraussetzungen
  - IPS 5.2 oder höher  
- - Gerät mit ModBus-TCP/IP-Unterstützung oder
- - ModBus-TCP/IP zu RS485 Gateway oder
- - physikalisches RS485 Interface  
+ - Kostal Wechselrichter mit aktivierter ModBus-Schnittstelle
 
-## 3. Modul-Installation
-Die Installation erfolgt über den IPS Module-Store. In der Suche einfach "JoT ModBus" eingeben und die Installation starten.
+## 3. Unterstütze Geräte
+Das Modul wird grundsätzlich für einen Kostal PLENTICORE Plus 7.0 programmiert / getestet.
+Da Kostal aber für alle Geräte der Serien ["PLENTICORE plus"](https://www.kostal-solar-electric.com/de-de/products/hybrid-inverters/plenticore-plus) & ["PIKO IQ"](https://www.kostal-solar-electric.com/de-de/products/string-inverter/piko-iq) dieselben ModBus-Spezifikationen herausgibt, sollten auch andere Geräte dieser Serien funktionieren.
+
+Hersteller: KOSTAL
+Modelle:
+- PLENTICORE plus 4.2
+- PLENTICORE plus 5.5
+- PLENTICORE plus 7.0 (getestet)
+- PLENTICORE plus 8.5
+- PLENTICORE plus 10 
+- PIKO IQ 4.2
+- PIKO IQ 5.5
+- PIKO IQ 7.0
+- PIKO IQ 8.5
+- PIKO IQ 10
+
+Da Kostal auch die SunSpec-Definitionen für ModBus implementiert, könnte das Modul ev. sogar mit Wechselrichtern von anderen Herstellern funktionieren.
+Leider kann ich das nicht testen, da ich kein solches Gerät verfügbar habe. Für ein Feedback zur Funktion mit anderen Modellen / Herstellern bin ich euch daher sehr dankbar.
+
+## 4. Modul-Installation
+Die Installation erfolgt über den IPS Module-Store. In der Suche einfach "JoT Kostal PLENTICORE plus" eingeben und die Installation starten.
 
 **Das Modul wird für den privaten Gebrauch kostenlos zur Verfügung gestellt.**
 
@@ -48,49 +59,43 @@ Die Installation erfolgt über den IPS Module-Store. In der Suche einfach "JoT M
   
   **Der Autor übernimmt keine Haftung für irgendwelche Folgen welche durch die Nutzung dieses Modules entstehen!**
 
-## 4. Einrichten der Instanz in IP-Symcon
+## 5. Einrichten der Instanz in IP-Symcon
   ### 1. Erstellen einer neuen Instanz
    1. Neue Instanz hinzufügen
-   2. im Schnellfilter "ModBus" eingeben
-   3. Das Gerät "ModBus Device Advanced" auswählen
+   2. Im Schnellfilter "Kostal" eingeben
+   3. Das Gerät "JoT Kostal PLENTICORE plus" auswählen
    4. Name & Ort anpassen (optional)
    5. Falls noch keine ModBus Gateway Instanz vorhanden ist, wid eine solche erstellt. Diese entsprechend konfigurieren.
  
   ### 2. Konfiguration der Instanz
-   - Abfrage-Intervall: Definiert die Zeit, in welcher die Werte via ModBus angefragt werden sollen. Es werden nur die Werte abgefragt, bei welchen "Poll" aktiviert ist.
-   - ModBus Variablen: Hier werden alle Eigenschaften einer ModBus-Variable aufgelistet. Mit dem Zahnrad kann die jeweilige Konfiguration angepasst werden.
-     - Ident: Wird vom Modul vergeben und kann nicht geändert werden.
-     - Name: Ist der Name der Variable im Objektbaum und kann auch dort geändert werden.
-     - DatenTyp: Entspricht dem DatenTyp der ModBus-Variable. Der Typ der Variable in IPS wird daraus abgeleitet.
-     - Profil: Das Variablen-Profil kann über die Eigenschaften der Variable im Objektbaum geändert werden.
-     - Faktor: Der Wert vom ModBus-Gerät wird mit diesem Faktor multipliziert (bei 0, 1 oder einem String wird nichts multipliziert).
-     - Lese Funktion: Definiert die ModBus Read Function.
-     - Lese Adresse: Definiert die ModBus-Adresse von welcher gelesen werden soll.
-     - Anzahl: Definiert wie viele Register ausgehend ab der Lese Adresse zu diesem Wert gehören.
-     - ModBus Typ: Definiert wie die Daten vom ModBus-Gerät übertragen werden.
-     - Poll: Nur Werte mit aktivem Poll werden zyklisch abgefragt. Es ist allerdings auch möglich die Werte mit Funktionen auszulesen (siehe [Modul-Funktionen](#3-modul-funktionen)).
-   - Weitere Variablen können im Actions-Bereich hinzugefügt werden. Neue Variabeln werden grün markiert und mindestens eine muss angepasst werden, damit die Änderungen übernommen werden können.
+   - Abfrage-Intervall: Definiert die Zeit, in welcher die Werte via ModBus angefragt werden sollen. Es werden nur die Werte abgefragt, bei welchen "Aktiv" aktiviert ist.
+   - Gruppe / Ident: Diese Bezeichnung kann zur Abfrage einer Gruppe von Werten oder einzelner Werte mit der entsprechenden [RequestRead-Methode](#3-modul-funktionen) verwendet werden.
+   - Name: Die Bezeichnung der Instanz-Variable gemäss Kostal Spezifikation.
+   - Eigener Name: Wenn euch die Bezeichnung der Instanz-Variabeln nicht gefällt, könnt ihr den Namen direkt in der Variable anpassen. Der neue Name wird dan in dieser Spalte angezeigt.
+   - Profil: Standard-Profil des Modules.
+   - Eigenes Profil: Ihr könnt der Instanz-Variable ein eigenes Profil zuweisen (z.B. für Batterie-Ladezustand). Dieses wird dann hier angezeigt.
+   - Aktiv: Wenn der Haken gesetzt ist, wird einen entsprechende Instanz-Variable erstellt. VORSICHT: Wird der Haken entfernt und die Konfiguration gespeichert, so wird die entsprechende Instanz-Variable gelöscht.
 
   ### 3. Modul-Funktionen
-  Die folgenden Funktionen stehen in IPS-Scripts zur Verfügung:
-  - RequestRead(int $InstanceID): Liest alle Werte, bei welchen Poll aktiviert ist.
-  - RequestReadAll(int $InstanceID): Liest alle Werte (auch wenn Poll nicht aktiviert ist).
-  - RequestReadIdent(int $InstanceID, string $Ident): Liest alle Werte, deren Ident angegeben wird (mehrere Idents werden durch ein Leerzeichen getrennt).
+  Die folgenden Funktionen stehen in IPS-Ereignissen/-Scripts zur Verfügung:
+  - PREFIX_RequestRead(): Liest alle Werte, bei welchen der Haken "Aktiv" gesetzt ist. Aktualisiert die entsprechenden Instanz-Variablen und gibt die Werte als Array zurück.
+  - PREFIX_RequestReadIdent(string $Ident): Liest alle Werte, deren Ident angegeben wird (mehrere Idents werden durch ein Leerzeichen getrennt).*
+  - PREFIX_RequestReadGroup(string $Gruppe): Liest alle Werte, deren Gruppe angegeben wird (mehrere Gruppen werden durch ein Leerzeichen getrennt).*
+  - PREFIX_CheckFirmwareUpdate(): Holt den Namen der aktuellsten FW-Datei bei Kostal, speichert diese in einer Instanz-Variable und gibt sie als String zurück.
+
+  *) Die Werte werden auch gelesen, wenn der Haken "Aktiv" nicht gesetzt ist. Sie werden dann jedoch nur als Array zurückgegeben und nicht in eine Instanz-Variable geschrieben.
   
   ### 4. Fehlersuche
-  Die Debug-Funktion der Instanz liefert recht detaillierte Informationen über die Konvertierung der Werte und vom ModBus-Gerät zurückgegebenen Fehler. Oft ist es einfach eine falsche Addresse oder Function welche in der Konfiguration angegeben wird.
+  Die Debug-Funktion der Instanz liefert recht detaillierte Informationen über die Konvertierung der Werte und vom ModBus-Gerät zurückgegebenen Fehler.
 
-## 5. Anhang
+## 6. Anhang
 ###  1. Modul-Informationen
 | Modul                      | Typ    | Hersteller | Gerät           | Prefix | GUID                                   |
 | :------------------------- | :----- | :--------- | :---------------| :----- | :------------------------------------- |
 | JoT Kostal Plenticore Plus | Device | Kostal     | Plenticore Plus | JoTKPP | {E64278F5-1942-5343-E226-8673886E2D05} |
 
 ### 2. Changelog
-Version 0.4:
-- Dynamische Formulare ab IPS 5.2 -> Verbesserter Dialog zum Hinzufügen neuer Variablen
-- Diverse Code-Optimierungen
-Version 0.3:  
+Version 0.8:  
 - Erste öffentliche Beta-Version - Feedbacks zu Fehlern aber auch funktionierende Geräte & Konfigurationen sind willkommen.
 
 ### 3. Spenden    

@@ -1,7 +1,10 @@
 {
     "id": "{E64278F5-1942-5343-E226-8673886E2D05}",
-    "name": "JoT Kostal Plenticore Plus",
-    "aliases": ["Kostal Plenticore Plus"],
+    "name": "JoT Kostal PLENTICORE plus",
+    "aliases": [
+        "Kostal PLENTICORE plus",
+        "Kostal PIKO IQ"
+    ],
     "type": 3,
     "vendor": "Kostal",
     "parentRequirements": ["{E310B701-4AE7-458E-B618-EC13A1A6F6A8}"],

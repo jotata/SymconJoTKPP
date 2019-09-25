@@ -4,7 +4,7 @@
  * @File:			 module.php                                                                    *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 25.09.2019 20:09:19                                                           *
+ * @Last Modified:	 25.09.2019 22:43:47                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -70,7 +70,7 @@ class JoTKostalPlenticorePlus extends JoTModBus {
 
         //Event für CheckFirmwareUpdate erstellen
         $ident = "CheckFirmwareUpdate";
-        if (@IPS_GetObjectIDByIdent($ident , $this->InstanceID) == false){//Event für Firmware-Check einrichten
+        if (@IPS_GetObjectIDByIdent($ident , $this->InstanceID) == false){//Event für Firmware-Check einmalig einrichten - es steht dem User danach frei, diesen beliebig anzupassen oder zu deaktivieren
             $eID = IPS_CreateEvent(EVENTTYPE_CYCLIC);
             IPS_SetParent($eID, $this->InstanceID);
             IPS_SetIdent($eID, $ident);
@@ -102,7 +102,6 @@ class JoTKostalPlenticorePlus extends JoTModBus {
             $variable['cName'] = "";
             $variable['Profile'] = $config['Profile'];
             $variable['cProfile'] = "";
-            $variable['Pos'] = count($values) + 1;
             $variable['Poll'] = false;
             if (key_exists("Poll", $config)){
                 //Übernimmt Poll nur initial bei Erstellung der Instanz (als Vorschlag), danach wird Poll von ModuleVariables überschrieben
@@ -154,7 +153,7 @@ class JoTKostalPlenticorePlus extends JoTModBus {
         } 
         //JSON in Array umwandeln
         $aConfig = json_decode($config, true, 4);
-        if (json_last_error() !== JSON_ERROR_NONE){
+        if (json_last_error() !== JSON_ERROR_NONE){//Fehler darf nur beim Entwicler auftreten (nach Anoassung der JSON-Daten). Wird daher direkt als echo ohne Übersetzung ausgegeben.
             echo("GetModBusConfig - Error in JSON (".json_last_error_msg()."). Please check Replacements and File-Content of ".__DIR__."/ModBusConfig.json");
             echo($config);
             exit;
@@ -167,19 +166,19 @@ class JoTKostalPlenticorePlus extends JoTModBus {
      * Ließt alle/gewünschte Werte aus dem Gerät.
      * @param bool|string optional $force wenn auch nicht gepollte Values gelesen werden sollen.
      * @access public
-     * @return array mit den angeforderten Werten
+     * @return array mit den angeforderten Werten.
      */
     public function RequestRead(){
-        $force = false;//$force = true wird über die Funktion RequestReadAll aktiviert oder String mit Ident über die Funktion RequestReadIdent
+        $force = false;//$force = true wird über die Funktion RequestReadAll aktiviert oder String mit Ident über die Funktion RequestReadIdent/Group
         if (func_num_args() == 1){//Intergation auf diese Art, da sonst in __generated.inc.php ein falscher Eintrag mit der PREFIX_Funktion erstellt wird
             $force = func_get_arg(0);
         };
 
         $mbConfig = $this->GetModBusConfig();
-        $moduleVariables = json_decode($this->ReadPropertyString('ModuleVariables'), 1);
+        $moduleVariables = json_decode($this->ReadPropertyString("ModuleVariables"), 1);
         $values = [];
         $mvKeys = array_flip(array_column($moduleVariables, "Ident"));
-        foreach ($mbConfig as $ident => $config){//Loop durch $mbConfig, damit Werte auch ausgelesen werden können, wenn Instanz nicht gespeichert ist.
+        foreach ($mbConfig as $ident => $config){//Loop durch $mbConfig, damit Werte auch ausgelesen werden können, wenn Instanz noch nicht gespeichert ist.
             //Wenn ENTWEDER entsprechende Variable auf Poll ODER $force true ODER aktuelle Variable in Liste der angeforderten Idents
             if ((key_exists($ident, $mvKeys) && $moduleVariables[$mvKeys[$ident]]['Poll'] == true && $force === false) || $force === true || (is_string($force) && strpos($force, $ident) !== false)){
                 $value = $this->ReadModBus($config['Function'], $config['Address'], $config['Quantity'], $config['Factor'], $config['MBType'], $config['VarType']);
@@ -197,7 +196,7 @@ class JoTKostalPlenticorePlus extends JoTModBus {
      * Ruft PREFIX_RequestRead($force = true) auf und liest somit alle Werte, egal ob Polling aktiv oder nicht.
      * Dadurch lassen sich Daten abfragen ohne diese in einer Instanz-Variable abzulegen.
      * @access public
-     * @return array mit allen Werten
+     * @return array mit allen Werten.
      */
     public function RequestReadAll(){
         return $this->RequestRead(true);
@@ -206,9 +205,9 @@ class JoTKostalPlenticorePlus extends JoTModBus {
     /**
      * IPS-Instanz Funktion PREFIX_RequestReadIdent.
      * Ruft PREFIX_RequestRead($Ident) auf
-     * @param string $Ident - eine mit Leezeichen getrennte Liste aller zu lesenden Idents
+     * @param string $Ident - eine mit Leerzeichen getrennte Liste aller zu lesenden Idents.
      * @access public
-     * @return array mit den angeforderten Werten
+     * @return array mit den angeforderten Werten.
      */
     public function RequestReadIdent(string $Ident){
         if ($Ident == ""){
@@ -221,9 +220,9 @@ class JoTKostalPlenticorePlus extends JoTModBus {
     /**
      * IPS-Instanz Funktion PREFIX_RequestReadGroup.
      * Ruft PREFIX_RequestRead($Ident) mit allen Idents von $Group auf
-     * @param string $Group - eine mit Leezeichen getrennte Liste aller zu lesenden Gruppen
+     * @param string $Group - eine mit Leerzeichen getrennte Liste aller zu lesenden Gruppen.
      * @access public
-     * @return array mit den angeforderten Werten
+     * @return array mit den angeforderten Werten.
      */
     public function RequestReadGroup(string $Group){
         if ($Group == ""){
@@ -249,14 +248,14 @@ class JoTKostalPlenticorePlus extends JoTModBus {
      * IPS-Instanz Funktion PREFIX_CheckFirmwareUpdate.
      * Kontrolliert die aktuelle Firmware-Version online.
      * @access public
-     * @return string mit aktuellstem FW-File oder LEER bei Fehler
+     * @return string mit aktuellstem FW-File oder LEER bei Fehler.
      */
     public function CheckFirmwareUpdate(){
         /**
          * Aktuell wird die aktuellste FW-Datei von Kostal über $fwUpdateURL zur Verfügung gestellt.
          * Es gibt (noch?) keine API um diese irgendwie abzufragen (auch der WR kann dies nicht automatisch).
          * Daher prüfen wir aktuell einfach auf den Dateinamen der FW-Datei. Wenn sich dieser ändert, ist eine neue FW vorhanden.
-         * Die aktuellste Datei wird in einer Variable zwischengespeichert. Der User kann diese auf Änderung überwachen und das Ereignis weiterverarbeiten.
+         * Die aktuellste Datei wird in einer Variable zwischengespeichert. Der User kann diese auf Änderung überwachen und als Ereignis weiterverarbeiten.
          */
         $fwUpdateURL = "https://www.kostal-solar-electric.com/software-update-hybrid";
         

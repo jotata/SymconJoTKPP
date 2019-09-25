@@ -1,4 +1,37 @@
 {
+    "Manufacturer": {
+        "Name": "Inverter Manufacturer",
+        "Group": "DeviceInfo",
+        "Profile": "",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 535,
+        "Quantity": 16,
+        "Factor": 0,
+        "VarType": $VT_String$,
+        "MBType": $MB_BigEndian$
+    },
+    "ProductName": {
+        "Name": "Inverter Product Name",
+        "Group": "DeviceInfo",
+        "Profile": "",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 768,
+        "Quantity": 32,
+        "Factor": 0,
+        "VarType": $VT_String$,
+        "MBType": $MB_BigEndian$
+    },
+    "PowerClass": {
+        "Name": "Inverter Power Class",
+        "Group": "DeviceInfo",
+        "Profile": "",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 800,
+        "Quantity": 32,
+        "Factor": 0,
+        "VarType": $VT_String$,
+        "MBType": $MB_BigEndian$
+    },
     "ArticleNumber": {
         "Name": "Inverter article number",
         "Group": "DeviceInfo",
@@ -10,7 +43,7 @@
         "VarType": $VT_String$,
         "MBType": $MB_BigEndian$
     },
-    "SerialNumber": {
+    "SerialNr": {
         "Name": "Inverter serial number",
         "Group": "DeviceInfo",
         "Profile": "",
@@ -96,7 +129,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_UnsignedInteger$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "Poll": true
     },
     "EnergyManagerState": {
         "Name": "Energy Manager state",
@@ -107,7 +141,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "Poll": true
     },
     "FuseState": {
         "Name": "PSSB fuse state",
@@ -118,7 +153,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "Poll": true
     },
     "ConsFromAC": {
         "Name": "Home own consumtion from grid",
@@ -217,7 +253,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "Poll": true
     },
     "ACFrequency": {
         "Name": "Grid Frequency",
@@ -250,7 +287,8 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "Poll": true
     },
     "ACVoltageP1": {
         "Name": "Voltage phase 1",
@@ -283,7 +321,8 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "Poll": true
     },
     "ACVoltageP2": {
         "Name": "Voltage phase 2",
@@ -316,7 +355,8 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "Poll": true
     },
     "ACVoltageP3": {
         "Name": "Voltage phase 3",
@@ -338,7 +378,8 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "Poll": true
     },
     "ACReactivePowerTot": {
         "Name": "Total AC reactive power",
@@ -428,6 +469,17 @@
         "VarType": $VT_Float$,
         "MBType": $MB_BigEndian_WordSwap$
     },
+    "BTManufacturer": {
+        "Name": "Battery Manufacturer",
+        "Group": "DeviceInfo",
+        "Profile": "",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 517,
+        "Quantity": 8,
+        "Factor": 0,
+        "VarType": $VT_String$,
+        "MBType": $MB_BigEndian$
+    },
     "PVCurrentDC1": {
         "Name": "Current DC1",
         "Group": "PV",
@@ -448,7 +500,8 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "Poll": true
     },
     "PVVoltageDC1": {
         "Name": "Voltage DC1",
@@ -481,7 +534,8 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "Poll": true
     },
     "PVVoltageDC2": {
         "Name": "Voltage DC2",
@@ -514,7 +568,8 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "Poll": true
     },
     "PVVoltageDC3": {
         "Name": "Voltage DC3",
@@ -536,7 +591,8 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "Poll": true
     },
     "YieldDaily": {
         "Name": "Daily yield",

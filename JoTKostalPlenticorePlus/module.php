@@ -4,7 +4,7 @@
  * @File:			 module.php                                                                    *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 24.09.2019 19:40:48                                                           *
+ * @Last Modified:	 25.09.2019 10:23:13                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -46,15 +46,18 @@ class JoTKostalPlenticorePlus extends JoTModBus {
         parent::ApplyChanges();
         $moduleVariables = json_decode($this->ReadPropertyString('ModuleVariables'), 1);
         $mbConfig = $this->GetModBusConfig();
+        $groups = array_values(array_unique(array_column($mbConfig, "Group")));
 
         //Bestehende Instanz-Variablen pflegen...
         foreach ($moduleVariables as $var){
-            if ($var['Poll'] == false || !key_exists($var['Ident'], $mbConfig)){//wenn nicht gepollt oder in ModBusConfig nicht mehr vorhanden
-                $this->UnregisterVariable($var['Ident']);
-            } else if (@IPS_GetObjectIDByIdent($var['Ident'], $this->InstanceID) === false){//wenn Instanz-Variable nicht vorhanden
-                $varType = $this->GetIPSVarType($mbConfig[$var['Ident']]['VarType'], $mbConfig[$var['Ident']]['Factor']);
-                $profile = $this->CheckProfileName($mbConfig[$var['Ident']]['Profile']);
-                $this->MaintainVariable($var['Ident'], $mbConfig[$var['Ident']]['Name'], $varType, $profile, 0, true);
+            $ident = $var['Ident'];
+            if ($var['Poll'] == false || !key_exists($ident, $mbConfig)){//wenn nicht gepollt oder in ModBusConfig nicht mehr vorhanden
+                $this->UnregisterVariable($ident);
+            } else if (@IPS_GetObjectIDByIdent($ident, $this->InstanceID) === false){//wenn Instanz-Variable nicht vorhanden
+                $varType = $this->GetIPSVarType($mbConfig[$ident]['VarType'], $mbConfig[$ident]['Factor']);
+                $profile = $this->CheckProfileName($mbConfig[$ident]['Profile']);
+                $pos = array_search($mbConfig[$ident]['Group'], $groups);
+                $this->MaintainVariable($ident, $mbConfig[$ident]['Name'], $varType, $profile, $pos, true);
             }
         }
         
@@ -85,6 +88,11 @@ class JoTKostalPlenticorePlus extends JoTModBus {
             $variable['Profile'] = $config['Profile'];
             $variable['cProfile'] = "";
             $variable['Pos'] = count($values) + 1;
+            $variable['Poll'] = false;
+            if (key_exists("Poll", $config)){
+                //Übernimmt Poll nur initial bei erstellung der Instanz (als Vorschlag), danach wird Poll von ModuleVariables überschrieben
+                $variable['Poll'] = $config['Poll'];
+            }
             if(($id = @IPS_GetObjectIDByIdent($ident, $this->InstanceID)) !== false){//Falls Variable bereits existiert, deren Werte übernehmen
                 $obj = IPS_GetObject($id);
                 $var = IPS_GetVariable($id);

@@ -33,6 +33,7 @@ Das Modul wird grundsätzlich für einen Kostal PLENTICORE Plus 7.0 programmiert
 Da Kostal aber für alle Geräte der Serien ["PLENTICORE plus"](https://www.kostal-solar-electric.com/de-de/products/hybrid-inverters/plenticore-plus) & ["PIKO IQ"](https://www.kostal-solar-electric.com/de-de/products/string-inverter/piko-iq) dieselben ModBus-Spezifikationen herausgibt, sollten auch andere Geräte dieser Serien funktionieren.
 
 Hersteller: KOSTAL
+
 Modelle:
 - PLENTICORE plus 4.2
 - PLENTICORE plus 5.5
@@ -63,7 +64,7 @@ Die Installation erfolgt über den IPS Module-Store. In der Suche einfach "JoT K
   ### 1. Erstellen einer neuen Instanz
    1. Neue Instanz hinzufügen
    2. Im Schnellfilter "Kostal" eingeben
-   3. Das Gerät "JoT Kostal PLENTICORE plus" auswählen
+   3. Das Gerät "Kostal PLENTICORE plus" auswählen
    4. Name & Ort anpassen (optional)
    5. Falls noch keine ModBus Gateway Instanz vorhanden ist, wid eine solche erstellt. Diese entsprechend konfigurieren.
  

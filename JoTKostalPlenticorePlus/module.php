@@ -4,7 +4,7 @@
  * @File:			 module.php                                                                    *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 25.09.2019 14:38:37                                                           *
+ * @Last Modified:	 25.09.2019 14:49:30                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -90,7 +90,7 @@ class JoTKostalPlenticorePlus extends JoTModBus {
             $variable['Pos'] = count($values) + 1;
             $variable['Poll'] = false;
             if (key_exists("Poll", $config)){
-                //Übernimmt Poll nur initial bei erstellung der Instanz (als Vorschlag), danach wird Poll von ModuleVariables überschrieben
+                //Übernimmt Poll nur initial bei Erstellung der Instanz (als Vorschlag), danach wird Poll von ModuleVariables überschrieben
                 $variable['Poll'] = $config['Poll'];
             }
             if(($id = @IPS_GetObjectIDByIdent($ident, $this->InstanceID)) !== false){//Falls Variable bereits existiert, deren Werte übernehmen
@@ -104,7 +104,7 @@ class JoTKostalPlenticorePlus extends JoTModBus {
             }
             $values[] = $variable;
         }
-        //Verbindung prüfen und Status / Device-Info anpassen
+        //Device-Info auslesen & anpassen
         $device = $this->RequestReadIdent("Manufacturer ProductName PowerClass SerialNr NetworkName");
         $device = $device['Manufacturer']." ".$device['ProductName']." ".$device['PowerClass']." (".$device['SerialNr'].") - ".$device['NetworkName'];
         if ($device == "   () - "){

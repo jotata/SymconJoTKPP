@@ -4,7 +4,7 @@
  * @File:			 JoT_ModBus.php                                                                    *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 25.09.2019 14:34:18                                                           *
+ * @Last Modified:	 25.09.2019 15:15:43                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -100,9 +100,12 @@ class JoTModBus extends IPSModule {
             if ($readData !== false) {//kein Fehler - empfangene Daten verarbeiten
                 $readValue = substr($readData, 2);//Geräte-Adresse & Funktion aus der Antwort entfernen
                 $this->SendDebug("ReadModBus FC $Function Addr $Address x $Quantity RAW", $readValue, 1);
-                $value = $this->SwapValue($MBType, $readValue);
-                $value = $this->ConvertMBtoPHP($VarType, $value);
+                $value = $this->SwapValue($readValue, $MBType);
+                $this->SendDebug("SwapValue Addr $Address MBType $MBType", $value, 1);
+                $value = $this->ConvertMBtoPHP($value, $VarType,);
+                $this->SendDebug("ConvertMBtoPHP Addr $Address VarType $VarType", $value, 0);
                 $value = $this->CalcFactor($value, $Factor);
+                $this->SendDebug("CalcFactor Addr $Address Factor $Factor", $value, 0);
                 if($this->GetStatus() !== self::STATUS_Instance_Active){
                     $this->SetStatus(self::STATUS_Instance_Active);
                 }
@@ -151,38 +154,33 @@ class JoTModBus extends IPSModule {
         } 
         $this->SendDebug("$action ERROR ($ErrLevel)", $ErrMsg, 0);
         if ($ErrLevel == 2){//Zeitüberschreitung
-            $this->LogMessage("INSTANCE: ".$this->InstanceID." ACTION: $action ERROR ($ErrLevel): Request Timeout", KL_ERROR);
+            $this->LogMessage("INSTANCE: $this->InstanceID ACTION: $action ERROR ($ErrLevel): Request Timeout", KL_ERROR);
             $this->SetStatus(self::STATUS_Error_RequestTimeout);
         }
     }
 
     /**
      * Führt einen Swap gemäss $MBType für $Value durch
-     * @param string $MBType ModBus Datenübertragungs-Typ
      * @param string $Value Wert für Swap
+     * @param string $MBType ModBus Datenübertragungs-Typ
      * @return string umgekehrte Zeichenfolge von $value
      * @access protected
      */
-    protected function SwapValue(int $MBType, string $Value){
+    protected function SwapValue(string $Value, int $MBType){
         switch ($MBType) {
             case self::MB_BigEndian://ABCD => ABCD
-                $swap = "ABCD => ABCD";
                 break;
             case self::MB_BigEndian_WordSwap://ABCD => CDAB  
                 $Value = $this->WordSwap($Value);
-                $swap = "ABCD => CDAB";
                 break;
             case self::MB_LittleEndian://ABCD => BADC
                 $Value = $this->LittleEndian($Value);
-                $swap = "ABCD => BADC";
                 break;
             case self::MB_LittleEndian_WordSwap://ABCD => DCBA
                 $Value = $this->LittleEndian($Value);
                 $Value = $this->WordSwap($Value);
-                $swap = "ABCD => DCBA";
                 break;
         }
-        $this->SendDebug("SwapValue MBType $MBType $swap", $Value, 1);
         return $Value;
     }
 
@@ -226,12 +224,12 @@ class JoTModBus extends IPSModule {
 
     /**
      * Konvertiert $Value in den entsprechenden PHP-DatenTyp
-     * @param int $VarType der ModBus-Datentyp
      * @param string $Value die ModBus-Daten
+     * @param int $VarType der ModBus-Datentyp
      * @return mixed Konvertierte Daten oder null, wenn Konvertierung nicht möglich ist
      * @access private
      */
-    private function ConvertMBtoPHP(int $VarType, string $Value){
+    private function ConvertMBtoPHP(string $Value, int $VarType){
         $quantity = strlen($Value);
         switch ($VarType) {
             case self::VT_Boolean:
@@ -255,7 +253,6 @@ class JoTModBus extends IPSModule {
             default:
                 return null;
         }
-        $this->SendDebug("ConvertMBtoPHP VarType $VarType", $Value, 0);
         return $Value;
     }
 
@@ -271,7 +268,6 @@ class JoTModBus extends IPSModule {
             return $Value;
         }
         $nValue =  $Value * $Factor;
-        $this->SendDebug("CalcFactor Factor $Factor", strval($nValue), 0);
         return $nValue;
     }
 

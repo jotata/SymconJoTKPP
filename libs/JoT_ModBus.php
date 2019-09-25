@@ -4,7 +4,7 @@
  * @File:			 JoT_ModBus.php                                                                    *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 24.09.2019 20:09:59                                                           *
+ * @Last Modified:	 25.09.2019 14:34:18                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -37,11 +37,13 @@ class JoTModBus extends IPSModule {
     protected const FC_Write_SingleHoldingRegister = 6;
     protected const FC_Write_MultipleCoils = 15;
     protected const FC_Write_MultipleHoldingRegisters = 16;
+    protected const STATUS_Instance_Active = 102;
+    protected const STATUS_Error_RequestTimeout = 408;
+    protected const STATUS_Error_PreconditionRequired = 428;
     private const PREFIX = "JoTMB";
     private $CurrentAction = false;//Für Error-Handling bei Lese-/Schreibaktionen
     
     use VariableProfile;
-    //use Semaphore;
 
     /**
      * Interne Funktion des SDK.
@@ -101,6 +103,9 @@ class JoTModBus extends IPSModule {
                 $value = $this->SwapValue($MBType, $readValue);
                 $value = $this->ConvertMBtoPHP($VarType, $value);
                 $value = $this->CalcFactor($value, $Factor);
+                if($this->GetStatus() !== self::STATUS_Instance_Active){
+                    $this->SetStatus(self::STATUS_Instance_Active);
+                }
                 return $value;
             }
         }
@@ -113,14 +118,18 @@ class JoTModBus extends IPSModule {
      */
     private function CheckConnection(){
         $gateway = IPS_GetInstance($this->InstanceID)['ConnectionID'];
+        $status = true;
         if ($gateway == 0) {//kein Gateway gesetzt
-            return false;
+            $status = false;
         }
         $io = IPS_GetInstance($gateway)['ConnectionID'];
         if ($io == 0) {//kein I/O für Gateway gesetzt
-            return false;
+            $status = false;
         }
-        return true;
+        if ($status === false){
+            $this->SetStatus(self::STATUS_Error_PreconditionRequired);
+        }
+        return $status;
     }
 
     /**
@@ -140,7 +149,11 @@ class JoTModBus extends IPSModule {
             $data = $this->CurrentAction['Data']['Data'];
             $ErrMsg = "ModBus-Message: $error (Function: $function, Address: $address, Quantity: $quantity, Data: $data)";
         } 
-        $this->SendDebug("$action ERROR", $ErrMsg, 0);
+        $this->SendDebug("$action ERROR ($ErrLevel)", $ErrMsg, 0);
+        if ($ErrLevel == 2){//Zeitüberschreitung
+            $this->LogMessage("INSTANCE: ".$this->InstanceID." ACTION: $action ERROR ($ErrLevel): Request Timeout", KL_ERROR);
+            $this->SetStatus(self::STATUS_Error_RequestTimeout);
+        }
     }
 
     /**

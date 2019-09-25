@@ -1,7 +1,21 @@
 {
-    "status": [],
+    "status": [
+        {
+            "code": 408, 
+            "icon": "error", 
+            "caption": "Error - Request Timeout!"
+        },{
+            "code": 428, 
+            "icon": "error", 
+            "caption": "Error - Precondition Required!"
+        }
+    ],
     "elements":[
         {
+            "name": "Device",
+            "type": "Label",
+            "caption": "$Device$"
+        },{
             "name": "PollTime",
             "type": "NumberSpinner",
             "caption": "PollTime",

@@ -4,7 +4,7 @@
  * @File:			 module.php                                                                    *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 25.09.2019 10:23:13                                                           *
+ * @Last Modified:	 25.09.2019 14:38:37                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -32,9 +32,9 @@ class JoTKostalPlenticorePlus extends JoTModBus {
     public function Create(){
         parent::Create();
         $this->ConfigProfiles(__DIR__."/ProfileConfig.json", ['$VT_Float$' => self::VT_Float, '$VT_Integer$' => self::VT_Integer]);
-        $this->RegisterPropertyString('ModuleVariables', json_encode([]));
-        $this->RegisterPropertyInteger('PollTime', 0);
-        $this->RegisterTimer('UpdateTimer', 0, static::PREFIX . '_RequestRead($_IPS["TARGET"]);');
+        $this->RegisterPropertyString("ModuleVariables", json_encode([]));
+        $this->RegisterPropertyInteger("PollTime", 0);
+        $this->RegisterTimer("UpdateTimer", 0, static::PREFIX . '_RequestRead($_IPS["TARGET"]);');
     }
 
     /**
@@ -44,7 +44,7 @@ class JoTKostalPlenticorePlus extends JoTModBus {
      */
     public function ApplyChanges(){
         parent::ApplyChanges();
-        $moduleVariables = json_decode($this->ReadPropertyString('ModuleVariables'), 1);
+        $moduleVariables = json_decode($this->ReadPropertyString("ModuleVariables"), 1);
         $mbConfig = $this->GetModBusConfig();
         $groups = array_values(array_unique(array_column($mbConfig, "Group")));
 
@@ -104,8 +104,15 @@ class JoTKostalPlenticorePlus extends JoTModBus {
             }
             $values[] = $variable;
         }
+        //Verbindung prüfen und Status / Device-Info anpassen
+        $device = $this->RequestReadIdent("Manufacturer ProductName PowerClass SerialNr NetworkName");
+        $device = $device['Manufacturer']." ".$device['ProductName']." ".$device['PowerClass']." (".$device['SerialNr'].") - ".$device['NetworkName'];
+        if ($device == "   () - "){
+            $device = $this->Translate("Device information could not be read. Gateway settings correct?");
+        }
         //Formular vorbereiten
         $form = file_get_contents(__DIR__ . "/form.json");
+        $form = str_replace('$Device$', $device, $form);//Wert für 'Device' setzen
         $form = str_replace('$ModuleVariablesValues$', json_encode($values), $form);//Values für 'ModuleVariables' setzen
         //$form = str_replace('$PREFIX$', static::PREFIX, $form);//Prefix für Funktionen ersetzen
         //echo "Form: $form";
@@ -156,13 +163,12 @@ class JoTKostalPlenticorePlus extends JoTModBus {
         $mbConfig = $this->GetModBusConfig();
         $moduleVariables = json_decode($this->ReadPropertyString('ModuleVariables'), 1);
         $values = [];
-        foreach ($moduleVariables as $var){
-            $ident = $var['Ident'];
-            //Wenn ModBus-Konfiguration exisitert UND ENTWEDER entsprechende Variable auf Poll ODER $force true ODER aktuelle Variable in Liste der angeforderten Idents
-            if (key_exists($ident, $mbConfig) && (($var['Poll'] == true && $force === false) || $force === true || (is_string($force) && strpos($force, $ident) !== false))){
-                $config = $mbConfig[$ident];
+        $mvKeys = array_flip(array_column($moduleVariables, "Ident"));
+        foreach ($mbConfig as $ident => $config){//Loop durch $mbConfig, damit Werte auch ausgelesen werden können, wenn Instanz nicht gespeichert ist.
+            //Wenn ENTWEDER entsprechende Variable auf Poll ODER $force true ODER aktuelle Variable in Liste der angeforderten Idents
+            if ((key_exists($ident, $mvKeys) && $moduleVariables[$mvKeys[$ident]]['Poll'] == true && $force === false) || $force === true || (is_string($force) && strpos($force, $ident) !== false)){
                 $value = $this->ReadModBus($config['Function'], $config['Address'], $config['Quantity'], $config['Factor'], $config['MBType'], $config['VarType']);
-                if (($id = @IPS_GetObjectIDByIdent($ident, $this->InstanceID)) !== false){//Instanz-Variablen sind nur für Werte mit aktivem Polling vorhanden
+                if (@IPS_GetObjectIDByIdent($ident, $this->InstanceID) !== false){//Instanz-Variablen sind nur für Werte mit aktivem Polling vorhanden
                     $this->SetValue($ident, $value);
                 }
                 $values[$ident] = $value;

@@ -80,11 +80,11 @@ Die Installation erfolgt über den IPS Module-Store. In der Suche einfach "JoTKP
 
   ### 3. Modul-Funktionen
   Die folgenden Funktionen stehen in IPS-Ereignissen/-Scripts zur Verfügung:
-  - PREFIX_RequestRead(): Liest alle Werte, bei welchen der Haken "Aktiv" gesetzt ist. Aktualisiert die entsprechenden Instanz-Variablen und gibt die Werte als Array zurück.
-  - PREFIX_RequestReadAll(): Liest alle Werte.*
-  - PREFIX_RequestReadIdent(string $Ident): Liest alle Werte, deren Ident angegeben wird (mehrere Idents werden durch ein Leerzeichen getrennt).*
-  - PREFIX_RequestReadGroup(string $Gruppe): Liest alle Werte, deren Gruppe angegeben wird (mehrere Gruppen werden durch ein Leerzeichen getrennt).*
-  - PREFIX_CheckFirmwareUpdate(): Holt den Namen der aktuellsten FW-Datei bei Kostal, speichert diese in einer Instanz-Variable und gibt sie als String zurück.
+  - JoTKPP_RequestRead(): Liest alle Werte, bei welchen der Haken "Aktiv" gesetzt ist. Aktualisiert die entsprechenden Instanz-Variablen und gibt die Werte als Array zurück.
+  - JoTKPP_RequestReadAll(): Liest alle Werte.*
+  - JoTKPP_RequestReadIdent(string $Ident): Liest alle Werte, deren Ident angegeben wird (mehrere Idents werden durch ein Leerzeichen getrennt).*
+  - JoTKPP_RequestReadGroup(string $Gruppe): Liest alle Werte, deren Gruppe angegeben wird (mehrere Gruppen werden durch ein Leerzeichen getrennt).*
+  - JoTKPP_CheckFirmwareUpdate(): Holt den Namen der aktuellsten FW-Datei bei Kostal, speichert diese in einer Instanz-Variable und gibt sie als String zurück.
 
   *) Die Werte werden auch gelesen, wenn der Haken "Aktiv" nicht gesetzt ist. Sie werden dann jedoch nur als Array zurückgegeben und nicht in eine Instanz-Variable geschrieben.
   

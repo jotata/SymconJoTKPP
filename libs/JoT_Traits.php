@@ -4,7 +4,7 @@
  * @File:			 JoT_Traits.php                                                             *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 23.09.2019 16:28:40                                                           *
+ * @Last Modified:	 26.09.2019 10:32:03                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -17,9 +17,9 @@
  */
 trait VariableProfile {
     /**
-    * Liest die JSON-Profil-Definition aus $JsonFile (UTF-8) und erstellt/aktualisiert die entsprechenden Profile
-    * @param string $JsonFile mit Profil-Definitionen gemäss Rückgabewert von IPS_GetVariableProfile
-    * @param array $ReplaceMap mit Key -> Values welche in JSON ersetzt werden sollen
+    * Liest die JSON-Profil-Definition aus $JsonFile (UTF-8) und erstellt/aktualisiert die entsprechenden Profile.
+    * @param string $JsonFile mit Profil-Definitionen gemäss Rückgabewert von IPS_GetVariableProfile.
+    * @param array $ReplaceMap mit Key -> Values welche in JSON ersetzt werden sollen.
     * @access protected
     */
     protected function ConfigProfiles(string $JsonFile, $ReplaceMap = []){
@@ -42,7 +42,7 @@ trait VariableProfile {
     * Erstellt/Aktualisiert ein Variablen-Profil.
     * Erstellt den Profil-Namen immer mit Modul-Prefix.
     * Kann einfach zum Klonen eines vorhandenen Variablen-Profils verwendet werden.
-    * @param mixed $Profile Array gemäss Rückgabewert von IPS_GetVariableProfile
+    * @param mixed $Profile Array gemäss Rückgabewert von IPS_GetVariableProfile.
     * @access protected
     */
     protected function MaintainProfile(array $Profile){
@@ -80,8 +80,8 @@ trait VariableProfile {
      * Ist das Profil bereits vorhanden, wird der Name nicht verändert.
      * Dies erlaubt es, im Modul die Profile ohne Prefix anzugeben und trotzdem bei neuen Profilen den Prefix voranzustellen.
      * Damit wird sichergestellt, dass die Best Practice für Module eingehalten wird (https://gist.github.com/paresy/236bfbfcb26e6936eaae919b3cfdfc4f).
-     * @param string $Name der zu prüfende Profil-Name
-     * @return string den Profil-Namen mit Modul-Prefix (falls nötig)
+     * @param string $Name der zu prüfende Profil-Name.
+     * @return string den Profil-Namen mit Modul-Prefix (falls nötig).
      * @access protected
      */
     protected function CheckProfileName(string $Name){
@@ -100,9 +100,9 @@ trait VariableProfile {
 
     /**
      * Überprüft ob der Profil-Name für den entsprechenden DatenTyp (falls angegeben) existiert.
-     * @param string $Name der zu prüfende Profil-Name
-     * @param int optional $DataType des Profils
-     * @return bool true wenn vorhanden, sonst false
+     * @param string $Name der zu prüfende Profil-Name.
+     * @param int optional $DataType des Profils.
+     * @return bool true wenn vorhanden, sonst false.
      * @access protected
      */
     protected function VariableProfileExists(string $Name, int $DataType = -1){
@@ -125,8 +125,8 @@ trait VariableProfile {
      * Lädt alle Profile vom Typ $DataType und aktualisiert im Konfigurations-Formular das Select $SelectName
      * mit den entsprechenden Optionen für diese Profile.
      * Dies erlaubt ein dynamisches Select-Profile Feld in einem Konfigurations-Formular.
-     * @param string $DataType der anzuzeigenden Profile
-     * @param string $SelectName ist der NAme des Select-Elementes im Konfigurations-Formular
+     * @param string $DataType der anzuzeigenden Profile.
+     * @param string $SelectName ist der NAme des Select-Elementes im Konfigurations-Formular.
      * @access public
      */
     public function UpdateSelectProfile(int $DataType, string $SelectName){

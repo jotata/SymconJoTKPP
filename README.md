@@ -19,7 +19,7 @@ Erweiterung zur Abfrage der Werte eines Kostal Wechselrichters via ModBus in IP-
 7. [Lizenz](#7-lizenz)
 
 ## 1. Funktionsumfang
-Das Modul "JoT Kostal PLENTICORE plus" stellt eine Instanz zur Abfrage der Werte von Kostal-Wechselrichtern für IP-Symcon zur Verfügung.
+Das Modul "JoTKPP" stellt eine Instanz zur Abfrage der Werte von Kostal-Wechselrichtern für IP-Symcon zur Verfügung.
 Die Daten werden mittels ModBus abgefragt. Der Benutzer kann frei entscheiden, welche Werte abgefragt werden und ob dafür eine Instanz-Variable angelegt werden soll.
 Über IPS Ereignisse oder einen Aufruf der verschiedenen [RequestRead-Funktionen](#3-modul-funktionen) können individuelle Abfrage-Muster realisiert werden (nur bei Bedarf, einmal am Tag, alle x Sekunden, usw.).
 Das Modul prüft zudem, ob online eine neue FW-Version für den Wechselrichter verfügbar ist.
@@ -50,7 +50,7 @@ Da Kostal auch die SunSpec-Definitionen für ModBus implementiert, könnte das M
 Leider kann ich das nicht testen, da ich kein solches Gerät verfügbar habe. Für ein Feedback zur Funktion mit anderen Modellen / Herstellern bin ich euch daher sehr dankbar.
 
 ## 4. Modul-Installation
-Die Installation erfolgt über den IPS Module-Store. In der Suche einfach "JoT Kostal PLENTICORE plus" eingeben und die Installation starten.
+Die Installation erfolgt über den IPS Module-Store. In der Suche einfach "JoTKPP" eingeben und die Installation starten.
 
 **Das Modul wird für den privaten Gebrauch kostenlos zur Verfügung gestellt.**
 
@@ -92,10 +92,10 @@ Die Installation erfolgt über den IPS Module-Store. In der Suche einfach "JoT K
 
 ## 6. Anhang
 ###  1. Modul-Informationen
-| Modul                      | Typ    | Hersteller | Gerät           | Prefix | GUID                                   |
-| :------------------------- | :----- | :--------- | :---------------| :----- | :------------------------------------- |
-| JoT Kostal PLENTICORE plus | Device | Kostal     | PLENTICORE plus | JoTKPP | {E64278F5-1942-5343-E226-8673886E2D05} |
-|                            | Device | Kostal     | PIKO IQ         |        |                                        |
+| Modul  | Typ    | Hersteller | Gerät           | Prefix | GUID                                   |
+| :----- | :----- | :--------- | :---------------| :----- | :------------------------------------- |
+| JoTKPP | Device | Kostal     | PLENTICORE plus | JoTKPP | {E64278F5-1942-5343-E226-8673886E2D05} |
+| JoTKPP | Device | Kostal     | PIKO IQ         | JoTKPP | {E64278F5-1942-5343-E226-8673886E2D05} |
 
 ### 2. Changelog
 Version 0.8:  

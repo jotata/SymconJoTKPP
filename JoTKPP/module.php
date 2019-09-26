@@ -1,10 +1,10 @@
 <?php
 /***************************************************************************************************
- * @Package:		 KostalPlenticorePlus                                                          *
+ * @Package:		 JoTKPP                                                          *
  * @File:			 module.php                                                                    *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 25.09.2019 22:43:47                                                           *
+ * @Last Modified:	 26.09.2019 11:09:06                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -16,10 +16,10 @@ require_once(__DIR__ . "/../libs/JoT_Traits.php");  //Bibliothek mit allgemeinen
 require_once(__DIR__ . "/../libs/JoT_ModBus.php");  //Bibliothek für ModBus-Intgration
 
 /**
- * JoTKostalPlenticorePlus ist die Unterklasse für die Integration eines Kostal Wechselrichters Plenticore Plus.
+ * JoTKPP ist die Unterklasse für die Integration eines Kostal Wechselrichters PLENTICORE plus.
  * Erweitert die Klasse JoTModBus, welche die ModBus- sowie die Modul-Funktionen zur Verfügung stellt.
  */
-class JoTKostalPlenticorePlus extends JoTModBus {
+class JoTKPP extends JoTModBus {
     protected const PREFIX = "JoTKPP";
     
     use VariableProfile;

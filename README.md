@@ -67,6 +67,7 @@ Die Installation erfolgt über den IPS Module-Store. In der Suche einfach "JoTKP
    3. Das Gerät "Kostal PLENTICORE plus" auswählen
    4. Name & Ort anpassen (optional)
    5. Falls noch keine ModBus Gateway Instanz vorhanden ist, wid eine solche erstellt. Diese entsprechend konfigurieren.
+   6. Wenn das Laden der Instanz-Konfiguration lange dauert, ist vermutlich eine falsche Gateway-Konfiguration vorhanden. Bitte Gateway prüfen.
  
   ### 2. Konfiguration der Instanz
    - Abfrage-Intervall: Definiert die Zeit, in welcher die Werte via ModBus abgefragt werden sollen. Es werden nur die Werte abgefragt, bei welchen "Aktiv" angehakt ist.

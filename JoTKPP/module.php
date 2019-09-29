@@ -4,7 +4,7 @@
  * @File:			 module.php                                                                    *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 26.09.2019 11:09:06                                                           *
+ * @Last Modified:	 29.09.2019 19:42:30                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -92,10 +92,10 @@ class JoTKPP extends JoTModBus {
      */
     public function GetConfigurationForm(){
         //Values für Liste vorbereiten (vorhandene Variabeln)
-        $modBusConfig = $this->GetModBusConfig();
+        $mbConfig = $this->GetModBusConfig();
         $values = [];
         $variable = [];
-        foreach ($modBusConfig as $ident => $config){
+        foreach ($mbConfig as $ident => $config){
             $variable['Ident'] = $ident;
             $variable['Group'] = $config['Group'];
             $variable['Name'] = $config['Name'];
@@ -116,8 +116,22 @@ class JoTKPP extends JoTModBus {
                 $variable['Pos'] = $obj['ObjectPosition'];
                 $variable['cProfile'] = $var['VariableCustomProfile'];
             }
-            $values[] = $variable;
+            $values[$ident] = $variable;
         }
+
+        //Sortieren der Einträge - muss analog ModuleVariables sein (sonst entsteht bei neuen / geänderten Definitionen ein Durcheinander)
+        $mvKeys = array_column(json_decode($this->ReadPropertyString("ModuleVariables"), 1), "Ident");
+        $sValues = [];
+        foreach ($mvKeys as $ident){
+            if (key_exists($ident, $mbConfig) === false){//Definition wurde aus ModBusConfig.json entfernt/umbenannt - Sollte, falls einmal nötig, in eimem Update-Prozess aus ModuleVariables entfernt werden.
+                $values[$ident]['Name'] = $this->Translate("ModBus-Definition for this entry does not exist anymore.");
+                $values[$ident]['rowColor'] = "#FFC0C0";
+            }
+            $sValues[] = $values[$ident];
+            unset($values[$ident]);
+        }
+        $values = array_merge($sValues, array_values($values));//neue Definitionen am Ende einfügen
+
         //Device-Info auslesen & anpassen
         $device = $this->RequestReadIdent("Manufacturer ProductName PowerClass SerialNr NetworkName");
         $device = $device['Manufacturer']." ".$device['ProductName']." ".$device['PowerClass']." (".$device['SerialNr'].") - ".$device['NetworkName'];
@@ -127,7 +141,7 @@ class JoTKPP extends JoTModBus {
         //Formular vorbereiten
         $form = file_get_contents(__DIR__ . "/form.json");
         $form = str_replace('$Device$', $device, $form);//Wert für 'Device' setzen
-        $form = str_replace('"$ModuleVariablesValues$"', json_encode($values), $form);//Values für 'ModuleVariables' setzen
+        $form = str_replace('"$ModuleVariablesValues$"', json_encode($values), $form);//Values für 'ModuleVariables' neuindexiert setzen, damit neue Definitionen korrekt am Ende hinzugefügt werden
         //$form = str_replace('$PREFIX$', static::PREFIX, $form);//Prefix für Funktionen ersetzen
         //echo "Form: $form";
         return $form;

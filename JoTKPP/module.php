@@ -4,7 +4,7 @@
  * @File:			 module.php                                                                    *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 29.09.2019 19:42:30                                                           *
+ * @Last Modified:	 30.09.2019 22:00:57                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -23,6 +23,7 @@ class JoTKPP extends JoTModBus {
     protected const PREFIX = "JoTKPP";
     
     use VariableProfile;
+    use RequestAction;
 
     /**
      * Interne Funktion des SDK.
@@ -35,6 +36,8 @@ class JoTKPP extends JoTModBus {
         $this->RegisterPropertyString("ModuleVariables", json_encode([]));
         $this->RegisterPropertyInteger("PollTime", 0);
         $this->RegisterTimer("UpdateTimer", 0, static::PREFIX . '_RequestRead($_IPS["TARGET"]);');
+        $this->RegisterTimer("DeviceDiscovery", 0, 'IPS_RequestAction($_IPS["TARGET"], "DeviceDiscovery", "");');
+        $this->RegisterMessage($this->InstanceID, FM_CONNECT);
     }
 
     /**
@@ -132,17 +135,12 @@ class JoTKPP extends JoTModBus {
         }
         $values = array_merge($sValues, array_values($values));//neue Definitionen am Ende einfügen
 
-        //Device-Info auslesen & anpassen
-        $device = $this->RequestReadIdent("Manufacturer ProductName PowerClass SerialNr NetworkName");
-        $device = $device['Manufacturer']." ".$device['ProductName']." ".$device['PowerClass']." (".$device['SerialNr'].") - ".$device['NetworkName'];
-        if ($device == "   () - "){
-            $device = $this->Translate("Device information could not be read. Gateway settings correct?");
-        }
+        //DeviceDiscovery starten
+        $this->SetTimerInterval("DeviceDiscovery", 2000);
+        
         //Formular vorbereiten
         $form = file_get_contents(__DIR__ . "/form.json");
-        $form = str_replace('$Device$', $device, $form);//Wert für 'Device' setzen
-        $form = str_replace('"$ModuleVariablesValues$"', json_encode($values), $form);//Values für 'ModuleVariables' neuindexiert setzen, damit neue Definitionen korrekt am Ende hinzugefügt werden
-        //$form = str_replace('$PREFIX$', static::PREFIX, $form);//Prefix für Funktionen ersetzen
+        $form = str_replace('"$ModuleVariablesValues$"', json_encode($values), $form);//Values für 'ModuleVariables' setzen
         //echo "Form: $form";
         return $form;
     }
@@ -176,11 +174,63 @@ class JoTKPP extends JoTModBus {
     }
 
     /**
+     * Interne Funktion des SDK.
+     * Wird ausgeführt wenn eine registrierte Nachricht verfügbar ist.
+     * @access public
+     */
+    public function MessageSink($TimeStamp, $SenderID, $MessageID, $Data) {
+        if ($MessageID == FM_CONNECT){
+            $this->LogMessage("Gateway has changed: " . print_r($Data, true), KL_MESSAGE);
+            $this->SetTimerInterval("DeviceDiscovery", 2000);
+            $this->UpdateFormField("Device", "caption", $this->Translate("Reading device information..."));
+        }
+    }
+
+    /**
+    * Liest Informationen zur Geräte-Erkennung vom Gerät aus und aktualisiert diese im Formular
+    * @return mixed String mit Geräte-Kennung oder NULL bei Fehler
+    * @access private
+    */
+    private function DeviceDiscovery(){
+        $serialNr = $this->RequestReadIdent("SerialNr");
+        if (is_null($serialNr)){
+            $device['Retry'] = 4;
+        } else {
+            $device = json_decode($this->GetBuffer("DeviceInfo"), 1);
+            if (is_null($device) || $serialNr !== $device['SerialNr']){//Werte erstmalig oder bei neuer SN auslesen...
+                $device = $this->RequestReadIdent("Manufacturer ProductName PowerClass");
+                $device['SerialNr'] = $serialNr;
+                $device['Retry'] = 0;
+            }
+            $networkName = $this->RequestReadIdent("NetworkName");//könnte ändern, daher immer auslesen
+            //Erfahrungsgemäss hat der WR manchmal ein Problem bei der Rückgabe dieser Werte. Daher...
+            if (!is_null($device['Manufacturer']) && !is_null($device['ProductName']) && !is_null($device['PowerClass']) && !is_null($networkName)){
+                //Wenn alle Werte vorhanden Formular aktualisieren & DeviceDiscovery-Timer stoppen
+                $dev = $device['Manufacturer']." ".$device['ProductName']." ".$device['PowerClass']." (".$device['SerialNr'].") - ".$networkName;
+                $this->SetTimerInterval("DeviceDiscovery", 0);
+                $device['Retry'] = 0;
+            }
+        }
+        if ($device['Retry'] > 3){//sonst, nach 4 Versuchen abbrechen
+            $dev = $this->Translate("Device information could not be read. Gateway settings correct?");
+            $this->SetTimerInterval("DeviceDiscovery", 0);
+            $device['Retry'] = 0;
+        }
+        $device['Retry'] = $device['Retry'] + 1;
+        if (is_null($dev)){
+            $dev = $this->Translate("Reading device information...") . " (" . $device['Retry'] . ")";  
+        }
+        $this->UpdateFormField("Device", "caption", $dev);
+        $this->SetBuffer("DeviceInfo", json_encode($device));
+        return $dev;
+    }
+
+    /**
      * IPS-Instanz Funktion PREFIX_RequestRead.
      * Ließt alle/gewünschte Werte aus dem Gerät.
      * @param bool|string optional $force wenn auch nicht gepollte Values gelesen werden sollen.
      * @access public
-     * @return array mit den angeforderten Werten.
+     * @return array mit den angeforderten Werten, NULL bei Fehler oder Wert wenn nur ein Wert.
      */
     public function RequestRead(){
         $force = false;//$force = true wird über die Funktion RequestReadAll aktiviert oder String mit Ident über die Funktion RequestReadIdent/Group
@@ -202,7 +252,14 @@ class JoTKPP extends JoTModBus {
                 $values[$ident] = $value;
             }
         }
-        return $values;
+        switch (count($values)){
+            case 0:
+                return null;
+            case 1:
+                return array_pop($values);
+            default:
+                return $values;
+        }
     }
 
     /**

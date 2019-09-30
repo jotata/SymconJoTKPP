@@ -14,7 +14,7 @@
         {
             "name": "Device",
             "type": "Label",
-            "caption": "$Device$"
+            "caption": "Reading device information..."
         },{
             "name": "PollTime",
             "type": "NumberSpinner",

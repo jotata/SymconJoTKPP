@@ -4,7 +4,7 @@
  * @File:			 JoT_Traits.php                                                             *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 26.09.2019 10:32:03                                                           *
+ * @Last Modified:	 30.09.2019 21:38:05                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -145,6 +145,25 @@ trait VariableProfile {
         } else {
             $this->UpdateFormField($SelectName, "enabled", false);
         }
+    }
+}
+
+/**
+ * Funktion zum Vertecken von public functions
+ */
+trait RequestAction {
+    /**
+     * IPS-Funktion IPS_RequestAction.
+     * Wird verwendet um aus dem WebFront Variablen zu "schalten" (offiziell) oder public functions zu verstecken (inoffiziell)
+     * @param string $Ident - Function oder Variable zum aktualisieren / ausführen.
+     * @param string $Value - Wert für die Variable oder Parameter für den Befehl
+     * @access public
+     */
+    public function RequestAction($Ident, $Value){
+        if (method_exists($this, $Ident)){
+            return $this->$Ident($Value);//versteckte public function aufrufen
+        }
+        parent::RequestAction($Ident, $Value);//offizielle Verwendung
     }
 }
 

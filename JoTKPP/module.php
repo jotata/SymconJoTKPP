@@ -4,7 +4,7 @@
  * @File:			 module.php                                                                    *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 30.09.2019 22:37:23                                                           *
+ * @Last Modified:	 30.09.2019 23:09:42                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -198,7 +198,7 @@ class JoTKPP extends JoTModBus {
             $device['Retry'] = 4;
         } else {
             $device = json_decode($this->GetBuffer("DeviceInfo"), 1);
-            if (is_null($device) || $serialNr !== $device['SerialNr']){//Werte erstmalig oder bei neuer SN auslesen...
+            if (is_null($device) || (is_array($device) && key_exists("SerialNr", $device) && $serialNr !== $device['SerialNr'])){//Werte erstmalig oder bei neuer SN auslesen...
                 $device = $this->RequestReadIdent("Manufacturer ProductName PowerClass");
                 $device['SerialNr'] = $serialNr;
                 $device['Retry'] = 0;

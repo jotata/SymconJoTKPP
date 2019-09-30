@@ -4,7 +4,7 @@
  * @File:			 module.php                                                                    *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 30.09.2019 22:00:57                                                           *
+ * @Last Modified:	 30.09.2019 22:37:23                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -192,6 +192,7 @@ class JoTKPP extends JoTModBus {
     * @access private
     */
     private function DeviceDiscovery(){
+        $dev = null;
         $serialNr = $this->RequestReadIdent("SerialNr");
         if (is_null($serialNr)){
             $device['Retry'] = 4;

@@ -67,7 +67,6 @@ Die Installation erfolgt über den IPS Module-Store. In der Suche einfach "JoTKP
    3. Das Gerät "Kostal PLENTICORE plus" auswählen
    4. Name & Ort anpassen (optional)
    5. Falls noch keine ModBus Gateway Instanz vorhanden ist, wid eine solche erstellt. Diese entsprechend konfigurieren.
-   6. Wenn das Laden der Instanz-Konfiguration lange dauert, ist vermutlich eine falsche Gateway-Konfiguration vorhanden. Bitte Gateway prüfen.
  
   ### 2. Konfiguration der Instanz
    - Abfrage-Intervall: Definiert die Zeit, in welcher die Werte via ModBus abgefragt werden sollen. Es werden nur die Werte abgefragt, bei welchen "Aktiv" angehakt ist.
@@ -89,7 +88,7 @@ Die Installation erfolgt über den IPS Module-Store. In der Suche einfach "JoTKP
   *) Die Werte werden auch gelesen, wenn der Haken "Aktiv" nicht gesetzt ist. Sie werden dann jedoch nur als Array zurückgegeben und nicht in eine Instanz-Variable geschrieben.
   
   ### 4. Fehlersuche
-  Die Debug-Funktion der Instanz liefert recht detaillierte Informationen über die Konvertierung der Werte und vom ModBus-Gerät zurückgegebenen Fehler.
+  Die Debug-Funktion der Instanz liefert recht detaillierte Informationen über die Konvertierung der Werte und vom ModBus zurückgegebenen Fehler.
 
 ## 6. Anhang
 ###  1. Modul-Informationen
@@ -99,6 +98,11 @@ Die Installation erfolgt über den IPS Module-Store. In der Suche einfach "JoTKP
 | JoTKPP | Device | Kostal     | PIKO IQ         | JoTKPP | {E64278F5-1942-5343-E226-8673886E2D05} |
 
 ### 2. Changelog
+Version 0.9:  
+- Messwerte für Powermeter hinzugefügt
+- Verbesserungen beim DeviceDiscovery
+- Änderung des Gateways wird nun erkannt und verarbeitet
+
 Version 0.8:  
 - Erste öffentliche Beta-Version
 - Feedbacks zu Fehlern aber auch funktionierende Geräte & Konfigurationen sind willkommen.

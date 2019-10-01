@@ -4,7 +4,7 @@
  * @File:			 JoT_Traits.php                                                             *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 30.09.2019 21:38:05                                                           *
+ * @Last Modified:	 01.10.2019 23:28:45                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -122,14 +122,13 @@ trait VariableProfile {
     }
 
     /**
-     * Lädt alle Profile vom Typ $DataType und aktualisiert im Konfigurations-Formular das Select $SelectName
+     * Lädt alle Profile vom Typ $DataType und aktualisiert im Konfigurations-Formular das Element mit Name "SelectProfile"
      * mit den entsprechenden Optionen für diese Profile.
-     * Dies erlaubt ein dynamisches Select-Profile Feld in einem Konfigurations-Formular.
-     * @param string $DataType der anzuzeigenden Profile.
-     * @param string $SelectName ist der NAme des Select-Elementes im Konfigurations-Formular.
-     * @access public
+     * Dies erlaubt ein dynamisches Select-Profile Feld in einem Konfigurations-Formular (Aufruf mittels IPS_RequestAction).
+     * @param int $DataType - DatenTyp der anzuzeigenden Profile.
+     * @access protected
      */
-    public function UpdateSelectProfile(int $DataType, string $SelectName){
+    protected function UpdateSelectProfile(int $DataType){
         if ($DataType >= 0){
             if ($DataType >= 10){//Selbstdefinierte Datentypen sollten immer das 10-fache der System-VariablenTypen sein.
                 $DataType = intval($DataType / 10);
@@ -139,11 +138,11 @@ trait VariableProfile {
             foreach ($profiles as $profile) {
                 $options[] = ['caption' => $profile, 'value' => $profile];
             }
-            $this->UpdateFormField($SelectName, "options", json_encode($options));
-            $this->UpdateFormField($SelectName, "value", "");
-            $this->UpdateFormField($SelectName, "enabled", true);
+            $this->UpdateFormField("SelectProfile", "options", json_encode($options));
+            $this->UpdateFormField("SelectProfile", "value", "");
+            $this->UpdateFormField("SelectProfile", "enabled", true);
         } else {
-            $this->UpdateFormField($SelectName, "enabled", false);
+            $this->UpdateFormField("SelectProfile", "enabled", false);
         }
     }
 }
@@ -155,6 +154,7 @@ trait RequestAction {
     /**
      * IPS-Funktion IPS_RequestAction.
      * Wird verwendet um aus dem WebFront Variablen zu "schalten" (offiziell) oder public functions zu verstecken (inoffiziell)
+     * Benötigt die versteckte Function mehrere Parameter, müssen diese als Array in $Value übergeben werden.
      * @param string $Ident - Function oder Variable zum aktualisieren / ausführen.
      * @param string $Value - Wert für die Variable oder Parameter für den Befehl
      * @access public

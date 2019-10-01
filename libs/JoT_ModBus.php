@@ -4,7 +4,7 @@
  * @File:			 JoT_ModBus.php                                                                *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 25.09.2019 18:05:21                                                           *
+ * @Last Modified:	 01.10.2019 22:27:08                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -150,11 +150,11 @@ class JoTModBus extends IPSModule {
             $address = $this->CurrentAction['Data']['Address'];
             $quantity = $this->CurrentAction['Data']['Quantity'];
             $data = $this->CurrentAction['Data']['Data'];
-            $ErrMsg = "ModBus-Message: $error (Function: $function, Address: $address, Quantity: $quantity, Data: $data)";
+            $ErrMsg = "MODBUS-MESSAGE: $error (Function: $function, Address: $address, Quantity: $quantity, Data: $data)";
         } 
-        $this->SendDebug("$action ERROR ($ErrLevel)", $ErrMsg, 0);
+        $this->SendDebug("$action ERROR $ErrLevel", $ErrMsg, 0);
         if ($ErrLevel == 2){//Zeitüberschreitung
-            $this->LogMessage("INSTANCE: $this->InstanceID ACTION: $action ERROR ($ErrLevel): Request Timeout", KL_ERROR);
+            $this->LogMessage("INSTANCE: $this->InstanceID ACTION: $action ERROR $ErrLevel $ErrMsg", KL_ERROR);
             $this->SetStatus(self::STATUS_Error_RequestTimeout);
         }
     }

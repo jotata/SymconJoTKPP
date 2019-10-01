@@ -4,7 +4,7 @@
  * @File:			 module.php                                                                    *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 30.09.2019 23:09:42                                                           *
+ * @Last Modified:	 01.10.2019 23:04:12                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -188,42 +188,47 @@ class JoTKPP extends JoTModBus {
 
     /**
     * Liest Informationen zur Geräte-Erkennung vom Gerät aus und aktualisiert diese im Formular
-    * @return mixed String mit Geräte-Kennung oder NULL bei Fehler
     * @access private
     */
     private function DeviceDiscovery(){
-        $dev = null;
+        $device = json_decode($this->GetBuffer("DeviceInfo"), 1);//Aktuell bekannte Geräte-Parameter aus Cache holen
+        if (is_null($device)){//initiale Werte wenn Buffer leer
+            $device = ['Retry' => 0, 'SerialNr' => null];
+        }
+        $dev = $this->Translate("Reading device information...") . " (" . ($device['Retry'] + 1). ")";
         $serialNr = $this->RequestReadIdent("SerialNr");
-        if (is_null($serialNr)){
-            $device['Retry'] = 4;
-        } else {
-            $device = json_decode($this->GetBuffer("DeviceInfo"), 1);
-            if (is_null($device) || (is_array($device) && key_exists("SerialNr", $device) && $serialNr !== $device['SerialNr'])){//Werte erstmalig oder bei neuer SN auslesen...
-                $device = $this->RequestReadIdent("Manufacturer ProductName PowerClass");
-                $device['SerialNr'] = $serialNr;
-                $device['Retry'] = 0;
+        if (is_string($serialNr)){//Wenn SerienNr lesbar ist auch weitere Parameter auslesen
+            if ($serialNr !== $device['SerialNr']){//Werte bei anderer SN zurücksetzen
+                $device = ['Retry' => 0, 'SerialNr' => $serialNr];
             }
-            $networkName = $this->RequestReadIdent("NetworkName");//könnte ändern, daher immer auslesen
+            //unbekannte Werte vom Gerät auslesen
+            $idents = ["Manufacturer", "ProductName", "PowerClass"];
+            foreach ($idents as $ident){
+                if (!key_exists($ident, $device) || is_null($device[$ident])){
+                    $device[$ident] = $this->RequestReadIdent($ident);
+                    if ((!is_null($device[$ident]) && !is_string($device[$ident])) || (is_string($device[$ident]) && strlen($device[$ident]) < 2)){//falsches ModBus-Gerät
+                        $device[$ident] = null;
+                        $device['Retry'] = 99;
+                        break;
+                    }
+                }
+            }
+            $device['NetworkName'] = $this->RequestReadIdent("NetworkName");//könnte ändern, daher immer auslesen
             //Erfahrungsgemäss hat der WR manchmal ein Problem bei der Rückgabe dieser Werte. Daher...
-            if (!is_null($device['Manufacturer']) && !is_null($device['ProductName']) && !is_null($device['PowerClass']) && !is_null($networkName)){
-                //Wenn alle Werte vorhanden Formular aktualisieren & DeviceDiscovery-Timer stoppen
-                $dev = $device['Manufacturer']." ".$device['ProductName']." ".$device['PowerClass']." (".$device['SerialNr'].") - ".$networkName;
+            if (array_search(null, $device, true) === false){//nur wenn alle Werte bekannt sind...
+                $dev = $device['Manufacturer']." ".$device['ProductName']." ".$device['PowerClass']." ($serialNr) - ".$device['NetworkName'];
                 $this->SetTimerInterval("DeviceDiscovery", 0);
                 $device['Retry'] = 0;
             }
         }
-        if ($device['Retry'] > 3){//sonst, nach 4 Versuchen abbrechen
+        if ($device['Retry'] >= 2){//sonst, nach 2 Versuchen abbrechen
             $dev = $this->Translate("Device information could not be read. Gateway settings correct?");
             $this->SetTimerInterval("DeviceDiscovery", 0);
-            $device['Retry'] = 0;
+            $device['Retry'] = -1;
         }
         $device['Retry'] = $device['Retry'] + 1;
-        if (is_null($dev)){
-            $dev = $this->Translate("Reading device information...") . " (" . $device['Retry'] . ")";  
-        }
+        $this->SetBuffer("DeviceInfo", json_encode($device));//Aktuell bekannte Geräte-Parameter im Cache zwischenspeichern
         $this->UpdateFormField("Device", "caption", $dev);
-        $this->SetBuffer("DeviceInfo", json_encode($device));
-        return $dev;
     }
 
     /**

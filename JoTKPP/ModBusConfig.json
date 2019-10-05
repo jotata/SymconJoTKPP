@@ -404,7 +404,7 @@
         "MBType": $MB_BigEndian_WordSwap$
     },
     "PMCosPhi": {
-        "Name": "Cos φ",
+        "Name": "Cos φ (powermeter)",
         "Group": "Powermeter",
         "Profile": "",
         "Function": $FC_Read_HoldingRegisters$,
@@ -415,7 +415,7 @@
         "MBType": $MB_BigEndian_WordSwap$
     },
     "PMFrequency": {
-        "Name": "Grid Frequency",
+        "Name": "Grid Frequency (powermeter)",
         "Group": "Powermeter",
         "Profile": "~Hertz",
         "Function": $FC_Read_HoldingRegisters$,
@@ -426,7 +426,7 @@
         "MBType": $MB_BigEndian_WordSwap$
     },
     "PMCurrentP1": {
-        "Name": "Current phase 1",
+        "Name": "Current phase 1 (powermeter)",
         "Group": "Powermeter",
         "Profile": "~Ampere",
         "Function": $FC_Read_HoldingRegisters$,
@@ -437,7 +437,7 @@
         "MBType": $MB_BigEndian_WordSwap$
     },
     "PMActivePowerP1": {
-        "Name": "Active power phase 1",
+        "Name": "Active power phase 1 (powermeter)",
         "Group": "Powermeter",
         "Profile": "~Power",
         "Function": $FC_Read_HoldingRegisters$,
@@ -448,7 +448,7 @@
         "MBType": $MB_BigEndian_WordSwap$
     },
     "PMVoltageP1": {
-        "Name": "Voltage phase 1",
+        "Name": "Voltage phase 1 (powermeter)",
         "Group": "Powermeter",
         "Profile": "~Volt",
         "Function": $FC_Read_HoldingRegisters$,
@@ -459,7 +459,7 @@
         "MBType": $MB_BigEndian_WordSwap$
     },
     "PMCurrentP2": {
-        "Name": "Current phase 2",
+        "Name": "Current phase 2 (powermeter)",
         "Group": "Powermeter",
         "Profile": "~Ampere",
         "Function": $FC_Read_HoldingRegisters$,
@@ -470,7 +470,7 @@
         "MBType": $MB_BigEndian_WordSwap$
     },
     "PMActivePowerP2": {
-        "Name": "Active power phase 2",
+        "Name": "Active power phase 2 (powermeter)",
         "Group": "Powermeter",
         "Profile": "~Power",
         "Function": $FC_Read_HoldingRegisters$,
@@ -481,7 +481,7 @@
         "MBType": $MB_BigEndian_WordSwap$
     },
     "PMVoltageP2": {
-        "Name": "Voltage phase 2",
+        "Name": "Voltage phase 2 (powermeter)",
         "Group": "Powermeter",
         "Profile": "~Volt",
         "Function": $FC_Read_HoldingRegisters$,
@@ -492,7 +492,7 @@
         "MBType": $MB_BigEndian_WordSwap$
     },
     "PMCurrentP3": {
-        "Name": "Current phase 3",
+        "Name": "Current phase 3 (powermeter)",
         "Group": "Powermeter",
         "Profile": "~Ampere",
         "Function": $FC_Read_HoldingRegisters$,
@@ -503,7 +503,7 @@
         "MBType": $MB_BigEndian_WordSwap$
     },
     "PMActivePowerP3": {
-        "Name": "Active power phase 3",
+        "Name": "Active power phase 3 (powermeter)",
         "Group": "Powermeter",
         "Profile": "~Power",
         "Function": $FC_Read_HoldingRegisters$,
@@ -514,7 +514,7 @@
         "MBType": $MB_BigEndian_WordSwap$
     },
     "PMVoltageP3": {
-        "Name": "Voltage phase 3",
+        "Name": "Voltage phase 3 (powermeter)",
         "Group": "Powermeter",
         "Profile": "~Volt",
         "Function": $FC_Read_HoldingRegisters$,
@@ -525,7 +525,7 @@
         "MBType": $MB_BigEndian_WordSwap$
     },
     "PMActivePowerTot": {
-        "Name": "Total AC active power",
+        "Name": "Total AC active power (powermeter)",
         "Group": "Powermeter",
         "Profile": "~Power",
         "Function": $FC_Read_HoldingRegisters$,
@@ -537,7 +537,7 @@
         "Poll": true
     },
     "PMReactivePowerTot": {
-        "Name": "Total AC reactive power",
+        "Name": "Total AC reactive power (powermeter)",
         "Group": "Powermeter",
         "Profile": "Power.VA",
         "Function": $FC_Read_HoldingRegisters$,
@@ -548,7 +548,7 @@
         "MBType": $MB_BigEndian_WordSwap$
     },
     "PMApparentPowerTot": {
-        "Name": "Total AC apparent power",
+        "Name": "Total AC apparent power (powermeter)",
         "Group": "Powermeter",
         "Profile": "Power.VaR",
         "Function": $FC_Read_HoldingRegisters$,

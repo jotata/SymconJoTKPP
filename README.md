@@ -98,6 +98,10 @@ Die Installation erfolgt über den IPS Module-Store. In der Suche einfach "JoTKP
 | JoTKPP | Device | Kostal     | PIKO IQ         | JoTKPP | {E64278F5-1942-5343-E226-8673886E2D05} |
 
 ### 2. Changelog
+Version 1.0 (RC1)
+- Bezeichnungen für Powermeter-Werte angepasst
+- Verbesserte Fehlerausgabe ModBus
+
 Version 0.9:  
 - Messwerte für Powermeter hinzugefügt
 - Verbesserungen beim DeviceDiscovery

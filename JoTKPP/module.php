@@ -4,7 +4,7 @@
  * @File:			 module.php                                                                    *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 01.10.2019 23:04:12                                                           *
+ * @Last Modified:	 14.10.2019 20:09:21                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -59,7 +59,7 @@ class JoTKPP extends JoTModBus {
             } else if (@IPS_GetObjectIDByIdent($ident, $this->InstanceID) === false){//wenn Instanz-Variable nicht vorhanden
                 $varType = $this->GetIPSVarType($mbConfig[$ident]['VarType'], $mbConfig[$ident]['Factor']);
                 $profile = $this->CheckProfileName($mbConfig[$ident]['Profile']);
-                $pos = array_search($mbConfig[$ident]['Group'], $groups);
+                $pos = array_search($mbConfig[$ident]['Group'], $groups)*20;//20er Schritte, damit User innerhalb der Gruppen-Position auch sortieren kann
                 $this->MaintainVariable($ident, $mbConfig[$ident]['Name'], $varType, $profile, $pos, true);
             }
         }

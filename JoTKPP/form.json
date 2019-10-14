@@ -16,10 +16,23 @@
             "type": "Label",
             "caption": "Reading device information..."
         },{
-            "name": "PollTime",
-            "type": "NumberSpinner",
-            "caption": "PollTime",
-            "suffix": "Seconds"
+            "type": "RowLayout",
+            "items": [
+                {
+                    "name": "PollTime",
+                    "type": "NumberSpinner",
+                    "caption": "PollTime",
+                    "suffix": "Seconds"
+                },{
+                    "type": "Label",
+                    "caption": "          "  
+                },{
+                    "name": "CheckFWTime",
+                    "type": "NumberSpinner",
+                    "caption": "Check for FW-Updates",
+                    "suffix": "Hours"
+                }
+            ]
         },{
             "type": "List",
             "name": "ModuleVariables",

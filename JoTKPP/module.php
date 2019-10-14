@@ -4,7 +4,7 @@
  * @File:			 module.php                                                                    *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 14.10.2019 20:09:21                                                           *
+ * @Last Modified:	 14.10.2019 20:24:35                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -35,7 +35,9 @@ class JoTKPP extends JoTModBus {
         $this->ConfigProfiles(__DIR__."/ProfileConfig.json", ['$VT_Float$' => self::VT_Float, '$VT_Integer$' => self::VT_Integer]);
         $this->RegisterPropertyString("ModuleVariables", json_encode([]));
         $this->RegisterPropertyInteger("PollTime", 0);
-        $this->RegisterTimer("UpdateTimer", 0, static::PREFIX . '_RequestRead($_IPS["TARGET"]);');
+        $this->RegisterPropertyInteger("CheckFWTime", 0);
+        $this->RegisterTimer("RequestRead", 0, static::PREFIX . '_RequestRead($_IPS["TARGET"]);');
+        $this->RegisterTimer("CheckFW", 0, static::PREFIX . '_CheckFirmwareUpdate($_IPS["TARGET"]);');
         $this->RegisterTimer("DeviceDiscovery", 0, 'IPS_RequestAction($_IPS["TARGET"], "DeviceDiscovery", "");');
         $this->RegisterMessage($this->InstanceID, FM_CONNECT);
     }
@@ -66,25 +68,17 @@ class JoTKPP extends JoTModBus {
         
         //Timer für Polling (de)aktivieren
         if ($this->ReadPropertyInteger('PollTime') > 0) {
-            $this->SetTimerInterval('UpdateTimer', $this->ReadPropertyInteger('PollTime')*1000);
+            $this->SetTimerInterval('RequestRead', $this->ReadPropertyInteger('PollTime')*1000);
         } else {
-            $this->SetTimerInterval('UpdateTimer', 0);
+            $this->SetTimerInterval('RequestRead', 0);
         }
 
-        //Event für CheckFirmwareUpdate erstellen
-        $ident = "CheckFirmwareUpdate";
-        if (@IPS_GetObjectIDByIdent($ident , $this->InstanceID) == false){//Event für Firmware-Check einmalig einrichten - es steht dem User danach frei, diesen beliebig anzupassen oder zu deaktivieren
-            $eID = IPS_CreateEvent(EVENTTYPE_CYCLIC);
-            IPS_SetParent($eID, $this->InstanceID);
-            IPS_SetIdent($eID, $ident);
-            IPS_SetName($eID, $this->Translate("Check for FW-update"));
-            IPS_SetPosition($eID, 998);
-            IPS_SetEventCyclic($eID, EVENTCYCLICDATETYPE_DAY, 1, 0, 0, 0, 0);//täglich
-            IPS_SetEventCyclicTimeFrom($eID, 17, 0, 0);//um 17:00
-            IPS_SetEventCyclicDateFrom($eID, intval(date("d")), intval(date("m")), intval(date("Y")));//ab Heute
-            IPS_SetEventScript($eID, static::PREFIX . '_CheckFirmwareUpdate($_IPS["TARGET"]);');
-            IPS_SetEventActive ($eID, true);
-        };
+         //Timer für FW-Updates (de)aktivieren
+         if ($this->ReadPropertyInteger('CheckFWTime') > 0) {
+            $this->SetTimerInterval('CheckFW', $this->ReadPropertyInteger('CheckFWTime')*60*60*1000);
+        } else {
+            $this->SetTimerInterval('CheckFW', 0);
+        }
     }
 
     /**

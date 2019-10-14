@@ -5,6 +5,8 @@
             "Error - Precondition Required!": "Fehler - Voraussetzungen nicht erfüllt!",
             "Seconds": "Sekunden",
             "PollTime": "Abfrage-Intervall",
+            "Hours": "Stunden",
+            "Check for FW-Updates": "Nach FW-Updates suchen",
             "Device Parameters": "Geräte-Eigenschaften",
             "Group": "Gruppe",
             "Ident": "Ident",

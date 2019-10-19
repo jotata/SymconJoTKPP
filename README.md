@@ -6,7 +6,7 @@ Erweiterung zur Abfrage der Werte eines Kostal Wechselrichters via ModBus in IP-
 1. [Funktionsumfang](#1-funktionsumfang)  
 2. [Voraussetzungen](#2-voraussetzungen)  
 3. [Unterstützte Geräte](#3-unterst%C3%BCtze-ger%C3%A4te)
-4. [Modul-Installation](#4-modul-installation) 
+4. [Modul-Installation / Update](#4-modul-installation) 
 5. [Einrichten der Instanz in IP-Symcon](#5-einrichten-der-instanz-in-ip-symcon)
     1. [Erstellen einer neuen Instanz](#1-erstellen-einer-neuen-instanz)
     2. [Konfiguration der Instanz](#2-konfiguration-der-instanz)
@@ -16,7 +16,8 @@ Erweiterung zur Abfrage der Werte eines Kostal Wechselrichters via ModBus in IP-
     1. [Modul-Informationen](#1-modul-informationen)
     2. [Changelog](#2-changelog)
     3. [Spenden](#3-spenden)
-7. [Lizenz](#7-lizenz)
+7. [Support](#7-support)
+8. [Lizenz](#8-lizenz)
 
 ## 1. Funktionsumfang
 Das Modul "JoTKPP" stellt eine Instanz zur Abfrage der Werte von Kostal-Wechselrichtern für IP-Symcon zur Verfügung.
@@ -49,8 +50,14 @@ Modelle:
 Da Kostal auch die SunSpec-Definitionen für ModBus implementiert, könnte das Modul ev. sogar mit Wechselrichtern von anderen Herstellern funktionieren.
 Leider kann ich das nicht testen, da ich kein solches Gerät verfügbar habe. Für ein Feedback zur Funktion mit anderen Modellen / Herstellern bin ich euch daher sehr dankbar.
 
-## 4. Modul-Installation
+## 4. Modul-Installation / Update
 Die Installation erfolgt über den IPS Module-Store. In der Suche einfach "JoTKPP" eingeben und die Installation starten.
+Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modul auf "Aktualisieren" klicken.
+
+**WICHTIG:** Aktuell gibt es beim Update ein Problem, dass der Prozess "JoTKPP_RequestRead" hängen bleibt, wenn das Update bei aktivem Prozess gestartet wird.
+Ursache dafür ist vermutlich ein Bug in IPS [Details](https://www.symcon.de/forum/threads/41792-Prozess-PREFIX_RequestRead-bleibt-bei-Modul-Update-h%C3%A4ngen).
+Der Prozess wird nach ca. 20 Minuten durch IPS abgeschossen und danach funktioniert das Modul wieder normal.
+Um diesen Hänger zu vermeiden, kann man vor dem Update den "Aktualisierungs-Intervall" auf "0" stellen und nach dem Update wieder aktivieren.
 
 **Das Modul wird für den privaten Gebrauch kostenlos zur Verfügung gestellt.**
 
@@ -115,5 +122,9 @@ Version 0.8:
 Das Modul ist für die nicht kommzerielle Nutzung kostenlos. Spenden als Unterstützung für den Autor sind aber willkommen:  
 <p align="center"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9M6W4KM34HWMA&source=url" target="_blank"><img src="https://www.paypalobjects.com/de_DE/CH/i/btn/btn_donateCC_LG.gif" border="0" /></a></p>
 
-## 7. Lizenz
+## 7. Support
+Fragen, Anregungen, Kritik und Fehler zu diesem Modul können im entsprechenden [Thread des IPS-Forums](https://www.symcon.de/forum/threads/41720-Modul-JoTKPP-Solar-Wechselrichter-Kostal-PLENTICORE-plus-PIKO-IQ) deponiert werden.
+Da das Modul in der Freizeit entwickelt wird, kann es jedoch eine Weile dauern, bis eine Antwort im Forum verfügbar oder ein entsprechendes Update vorhanden ist. Besten Dank für euer Verständnis :-)
+
+## 8. Lizenz
 IPS-Modul: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a>

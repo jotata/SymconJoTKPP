@@ -4,7 +4,7 @@
  * @File:			 module.php                                                                    *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 14.10.2019 20:24:35                                                           *
+ * @Last Modified:	 14.10.2019 20:59:43                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -159,7 +159,7 @@ class JoTKPP extends JoTModBus {
         } 
         //JSON in Array umwandeln
         $aConfig = json_decode($config, true, 4);
-        if (json_last_error() !== JSON_ERROR_NONE){//Fehler darf nur beim Entwicler auftreten (nach Anoassung der JSON-Daten). Wird daher direkt als echo ohne Übersetzung ausgegeben.
+        if (json_last_error() !== JSON_ERROR_NONE){//Fehler darf nur beim Entwickler auftreten (nach Anpassung der JSON-Daten). Wird daher direkt als echo ohne Übersetzung ausgegeben.
             echo("GetModBusConfig - Error in JSON (".json_last_error_msg()."). Please check Replacements and File-Content of ".__DIR__."/ModBusConfig.json");
             echo($config);
             exit;
@@ -245,6 +245,7 @@ class JoTKPP extends JoTModBus {
         foreach ($mbConfig as $ident => $config){//Loop durch $mbConfig, damit Werte auch ausgelesen werden können, wenn Instanz noch nicht gespeichert ist.
             //Wenn ENTWEDER entsprechende Variable auf Poll ODER $force true ODER aktuelle Variable in Liste der angeforderten Idents
             if ((key_exists($ident, $mvKeys) && $moduleVariables[$mvKeys[$ident]]['Poll'] == true && $force === false) || $force === true || (is_string($force) && strpos($force, $ident) !== false)){
+                $this->SendDebug("RequestRead", "Ident: $ident on Address: ".$config['Address'], 0);
                 $value = $this->ReadModBus($config['Function'], $config['Address'], $config['Quantity'], $config['Factor'], $config['MBType'], $config['VarType']);
                 if (@IPS_GetObjectIDByIdent($ident, $this->InstanceID) !== false){//Instanz-Variablen sind nur für Werte mit aktivem Polling vorhanden
                     $this->SetValue($ident, $value);

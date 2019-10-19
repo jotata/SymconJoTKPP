@@ -4,7 +4,7 @@
  * @File:			 JoT_ModBus.php                                                                *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 01.10.2019 22:27:08                                                           *
+ * @Last Modified:	 16.10.2019 18:10:50                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -83,7 +83,7 @@ class JoTModBus extends IPSModule {
         if ($this->CheckConnection() === true){
             //Daten für ModBus-Gateway vorbereiten
             $sendData = [];
-            $sendData['DataID'] = "{E310B701-4AE7-458E-B618-EC13A1A6F6A8}";
+            $sendData['DataID'] = "{E310B701-4AE7-458E-B618-EC13A1A6F6A8}";//ModBus Gateway RX
             $sendData['Function'] = $Function;
             $sendData['Address'] = $Address;
             $sendData['Quantity'] = $Quantity;

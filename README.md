@@ -6,7 +6,7 @@ Erweiterung zur Abfrage der Werte eines Kostal Wechselrichters via ModBus in IP-
 1. [Funktionsumfang](#1-funktionsumfang)  
 2. [Voraussetzungen](#2-voraussetzungen)  
 3. [Unterstützte Geräte](#3-unterst%C3%BCtze-ger%C3%A4te)
-4. [Modul-Installation / Update](#4-modul-installation) 
+4. [Modul-Installation / Update](#4-modul-installation--update) 
 5. [Einrichten der Instanz in IP-Symcon](#5-einrichten-der-instanz-in-ip-symcon)
     1. [Erstellen einer neuen Instanz](#1-erstellen-einer-neuen-instanz)
     2. [Konfiguration der Instanz](#2-konfiguration-der-instanz)

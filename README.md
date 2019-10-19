@@ -55,7 +55,7 @@ Die Installation erfolgt über den IPS Module-Store. In der Suche einfach "JoTKP
 Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modul auf "Aktualisieren" klicken.
 
 **WICHTIG:** Aktuell gibt es beim Update ein Problem, dass der Prozess "JoTKPP_RequestRead" hängen bleibt, wenn das Update bei aktivem Prozess gestartet wird.
-Ursache dafür ist vermutlich ein Bug in IPS [Details](https://www.symcon.de/forum/threads/41792-Prozess-PREFIX_RequestRead-bleibt-bei-Modul-Update-h%C3%A4ngen).
+Ursache dafür ist vermutlich ein Bug in IPS ([Details](https://www.symcon.de/forum/threads/41792-Prozess-PREFIX_RequestRead-bleibt-bei-Modul-Update-h%C3%A4ngen)).
 Der Prozess wird nach ca. 20 Minuten durch IPS abgeschossen und danach funktioniert das Modul wieder normal.
 Um diesen Hänger zu vermeiden, kann man vor dem Update den "Aktualisierungs-Intervall" auf "0" stellen und nach dem Update wieder aktivieren.
 

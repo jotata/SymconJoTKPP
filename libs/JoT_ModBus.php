@@ -4,7 +4,7 @@
  * @File:			 JoT_ModBus.php                                                                *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 16.10.2019 18:10:50                                                           *
+ * @Last Modified:	 23.10.2019 18:50:23                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -120,15 +120,7 @@ class JoTModBus extends IPSModule {
      * @return boolen true, wenn alles i.O.
      */
     private function CheckConnection(){
-        $gateway = IPS_GetInstance($this->InstanceID)['ConnectionID'];
-        $status = true;
-        if ($gateway == 0) {//kein Gateway gesetzt
-            $status = false;
-        }
-        $io = IPS_GetInstance($gateway)['ConnectionID'];
-        if ($io == 0) {//kein I/O für Gateway gesetzt
-            $status = false;
-        }
+        $status = $this->HasActiveParent();
         if ($status === false){
             $this->SetStatus(self::STATUS_Error_PreconditionRequired);
         }

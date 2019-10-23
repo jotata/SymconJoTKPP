@@ -103,6 +103,9 @@ Um diesen Hänger zu vermeiden, kann man vor dem Update den "Aktualisierungs-Int
 | JoTKPP | Device | Kostal     | PIKO IQ         | JoTKPP | {E64278F5-1942-5343-E226-8673886E2D05} |
 
 ### 2. Changelog
+Version 1.2
+- Überprüfung der übergeordneten Instanzen optimiert
+
 Version 1.1
 - Timer für FW-Update-Check in Konfigurationsformular integriert
 - Default-Positionen auf 10er-Zahlen angepasst, damit Sortierung auch innerhalb einer Gruppe möglich ist

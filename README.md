@@ -106,6 +106,7 @@ Um diesen Hänger zu vermeiden, kann man vor dem Update den "Aktualisierungs-Int
 Version 1.2
 - Überprüfung der übergeordneten Instanzen optimiert
 - Fehler bei Umrechnung von SInt-Werten (z.B. Actual Battery Power) behoben, wenn diese einen negativen Wert haben
+- Zusätzlicher Wert "Actual Inverter Generation power" hinzugefügt
 
 Version 1.1
 - Timer für FW-Update-Check in Konfigurationsformular integriert

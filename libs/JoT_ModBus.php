@@ -4,7 +4,7 @@
  * @File:			 JoT_ModBus.php                                                                *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 23.10.2019 18:50:23                                                           *
+ * @Last Modified:	 27.10.2019 18:40:12                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -76,7 +76,7 @@ class JoTModBus extends IPSModule {
      */
     protected function ReadModBus(int $Function, int $Address, int $Quantity, $Factor, int $MBType, int $VarType){
         if ($Function > self::FC_Read_InputRegisters){
-            echo "Wrong Function ($Function) for Read. Please use WriteModBus.";
+            echo "Wrong Function ($Function) for Read. Please use WriteModBus.";//Wird nur für Programmierer auftauchen, daher so
             return null;
         }
 
@@ -102,7 +102,7 @@ class JoTModBus extends IPSModule {
                 $this->SendDebug("ReadModBus FC $Function Addr $Address x $Quantity RAW", $readValue, 1);
                 $value = $this->SwapValue($readValue, $MBType);
                 $this->SendDebug("SwapValue Addr $Address MBType $MBType", $value, 1);
-                $value = $this->ConvertMBtoPHP($value, $VarType,);
+                $value = $this->ConvertMBtoPHP($value, $VarType);
                 $this->SendDebug("ConvertMBtoPHP Addr $Address VarType $VarType", $value, 0);
                 $value = $this->CalcFactor($value, $Factor);
                 $this->SendDebug("CalcFactor Addr $Address Factor $Factor", $value, 0);
@@ -222,30 +222,56 @@ class JoTModBus extends IPSModule {
      * @access private
      */
     private function ConvertMBtoPHP(string $Value, int $VarType){
-        $quantity = strlen($Value);
         switch ($VarType) {
             case self::VT_Boolean:
-                $Value = ord($Value) == 0x01;
-                break;
-            case self::VT_SignedInteger:
-                $Value = intval(bin2hex($Value), 16);
-                break;
-            case self::VT_UnsignedInteger:
-                $Value = hexdec(bin2hex($Value));
-                break;
+                return ord($Value) == 0x01;
+            case self::VT_SignedInteger:   
+                if (((unpack("c", $Value)[1] >> 7) & 1) == 1){//Wenn Wert negativ ist (höchstes Bit = 1)
+                    $add = str_repeat("FF", PHP_INT_SIZE - strlen($Value));//Auffüllen auf PHP_INT_SIZE (meistens 32- oder 64-Bit)...
+                    $bin = base_convert($add, 16, 2).base_convert(unpack($this->GetPackFormat($VarType, $Value), $Value)[1], 10, 2);//...und mit Original-Wert zusammensetzen (als Binär-String)
+                    //Da bindec immer nach unsigned umrechnet, muss Wert entsprechende umgekehrt werden
+                    for ($i = 0; $i < PHP_INT_SIZE*8; $i++) {
+                        $bin[$i] = strval(intval(!(bool)$bin[$i]));//flip 0 zu 1 und umgekehrt
+                    }
+                    return (bindec($bin) + 1) * -1;//positive Zahl wieder in Negative umwandeln
+                }
+                return intval(bin2hex($Value), 16);
+            case self::VT_UnsignedInteger:                
+                return intval(bin2hex($Value), 16);
             case self::VT_Float:
-                if ($quantity < 2){//String ist zu kurz für Float
+                if (strlen($Value) < 2){//String ist zu kurz für Float
                     return null;
                 }
-                $Value = unpack("G", $Value)[1]; //Gleitkommazahl (maschinenabhängige Größe, Byte-Folge Big Endian)
-                break;
+                return unpack($this->GetPackFormat($VarType), $Value)[1]; 
             case self::VT_String:
-                $Value = trim($Value);
-                break;
+                return trim($Value);
             default:
                 return null;
         }
-        return $Value;
+    }
+
+    /**
+     * Ermittelt $format für die Funktion pack / unpack basierend auf der Länge von $Value und dem VariablenTyp $VarType.
+     * Dabei wird immer davon ausgegangen, dass $Value als BigEndian vorhanden ist.
+     * @param int $VarType der ModBus-Datentyp
+     * @param string optional $Value die ModBus-Daten
+     * @return mixed Format-String oder null, wenn Konvertierung nicht möglich ist
+     * @access private
+     */
+    private function GetPackFormat(int $VarType, string $Value = ""){
+        switch ($VarType) {
+            case self::VT_SignedInteger:
+                $format = array(1 => "C", 2 => "n", 4 => "N", 8 => "J");//8Bit Signed, 16-/32-/64Bit Signed BigEndian
+                if (key_exists(strlen($Value), $format)){
+                    return $format[strlen($Value)];
+                }
+                return "C*"; //8Bit Signed für alle Zeichen
+            case self::VT_Float:
+                return "G"; //Gleitkommazahl BigEndian
+            default:
+                echo "Wrong VarType($VarType) for GetPackFormat."; //Wird nur für Programmierer auftauchen, daher so
+                return null;
+        }
     }
 
     /**

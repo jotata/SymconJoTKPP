@@ -3,13 +3,12 @@
  * @File:			 TODOs.txt
  * @Create Date:	 30.05.2019 09:59:20
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 19.10.2019 18:12:08
+ * @Last Modified:	 27.10.2019 18:41:35
  * @Modified By:	 Jonathan Tanner
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
  * 					 (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
  */
 
-- Werte für Actual Battery Power sind beim Entladen korrekt, beim Laden jedoch nicht. Vermutlich ein Bug in der FW des Wechselrichters (Anfrage bei Kostal offen).
 - Wert für PSSB fuse state ist "Fuse fail" obwohl alles i.O. ist. Vermutlich ein Bug in der FW des Wechselrichters (Anfrage bei Kostal offen). 
 - Fehlerbehebung hängender Prozess wenn RequestRead bei Modul-Update läuft (ist ev. ein IPS-Bug: https://www.symcon.de/forum/threads/41792-Prozess-PREFIX_RequestRead-bleibt-bei-Modul-Update-h%C3%A4ngen)

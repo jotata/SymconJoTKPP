@@ -403,6 +403,17 @@
         "VarType": $VT_Float$,
         "MBType": $MB_BigEndian_WordSwap$
     },
+    "ACInverterPower": {
+        "Name": "Actual Inverter Generation power",
+        "Group": "AC",
+        "Profile": "~Power",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 575,
+        "Quantity": 1,
+        "Factor": 0.001,
+        "VarType": $VT_SignedInteger$,
+        "MBType": $MB_BigEndian_WordSwap$
+    },
     "PMCosPhi": {
         "Name": "Cos φ (powermeter)",
         "Group": "Powermeter",

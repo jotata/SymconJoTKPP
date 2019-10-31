@@ -4,7 +4,7 @@
  * @File:			 JoT_Traits.php                                                             *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 01.10.2019 23:28:45                                                           *
+ * @Last Modified:	 31.10.2019 17:28:41                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -91,7 +91,6 @@ trait VariableProfile {
                 $Prefix = self::PREFIX;
             }
             if (substr($Name, strlen("$Prefix.")) !== "$Prefix."){//Modul-Prefix zu Namen hinzufügen
-                $this->LogMessage("Variable profile name '$Name' did not include module prefix. Changed name to '$Prefix.$Name'.", KL_NOTIFY);
                 $Name = "$Prefix.$Name";
             }
         }

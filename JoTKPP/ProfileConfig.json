@@ -208,7 +208,7 @@
         "Digits": 1,
         "Associations": [
             {
-                "Value": 5,
+                "Value": 0,
                 "Name": "Empty (%s%%)",
                 "Icon": "Battery",
                     "Color": "0xff0000"

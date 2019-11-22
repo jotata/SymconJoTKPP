@@ -4,13 +4,18 @@
  * @File:			 JoT_Traits.php                                                             *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 31.10.2019 17:28:41                                                           *
+ * @Last Modified:	 22.11.2019 18:51:59                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
  * 					 (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)                  *
  ***************************************************************************************************/
 
+ /**
+ * Allgemeine Konstanten
+ */
+const DEBUG_FORMAT_TEXT = 0;
+const DEBUG_FORMAT_HEX = 1;
 
 /**
  * Trait mit Hilfsfunktionen für Variablen-Profile.
@@ -147,19 +152,78 @@ trait VariableProfile {
 }
 
 /**
+ * Funktionen zum Übersetzen von IPS-Konstanten.
+ * @param $value = der zu übersetzende Wert
+ * @return string der übersetzte Wert
+ * @access private
+ */
+trait Translation {
+    private function TranslateVarType($value){
+		switch ($value){
+			case -1:
+				return $this->Translate("All");
+			case VARIABLETYPE_BOOLEAN:
+				return "Boolean";
+			case VARIABLETYPE_FLOAT:
+				return "Float";
+			case VARIABLETYPE_INTEGER:
+				return "Integer";
+			case VARIABLETYPE_STRING:
+				return "String";
+		}
+		return $value;
+	}
+	private function TranslateObjType($value){
+		//Modul-Bezeichnung
+		if ((substr($value, 0, 1).substr($value, -1)) == "{}"){//Modul-GUID
+			if (IPS_ModuleExists($value)){
+				$m = IPS_GetModule($value);
+				if ($m['Vendor'] != ""){
+					return $m['ModuleName']." (".$m['Vendor'].")";
+				}
+				return $m['ModuleName'];
+			}
+		} else {//ObjectType
+			switch ($value){
+				case "":
+				case -1:
+					return $this->Translate("All");
+				case OBJECTTYPE_CATEGORY:
+					return $this->Translate("Category");
+				case OBJECTTYPE_EVENT:
+					return $this->Translate("Event");
+				case OBJECTTYPE_INSTANCE:
+					return $this->Translate("Instance");
+				case OBJECTTYPE_LINK:
+					return $this->Translate("Link");
+				case OBJECTTYPE_MEDIA:
+					return $this->Translate("Media");
+				case OBJECTTYPE_SCRIPT:
+					return $this->Translate("Script");
+				case OBJECTTYPE_VARIABLE:
+					return $this->Translate("Variable");
+			}
+		}
+		return $value;
+	}
+}
+
+/**
  * Funktion zum Vertecken von public functions
  */
 trait RequestAction {
     /**
-     * IPS-Funktion IPS_RequestAction.
+     * IPS-Funktion IPS_RequestAction($InstanceID, $Ident, $Value).
      * Wird verwendet um aus dem WebFront Variablen zu "schalten" (offiziell) oder public functions zu verstecken (inoffiziell)
-     * Benötigt die versteckte Function mehrere Parameter, müssen diese als Array in $Value übergeben werden.
+     * Benötigt die versteckte Function mehrere Parameter, müssen diese als JSON in $Value übergeben werden.
+     * Idee: https://www.symcon.de/forum/threads/38463-RegisterTimer-zum-Aufruf-nicht-%C3%B6ffentlicher-Funktionen?p=370053#post370053
      * @param string $Ident - Function oder Variable zum aktualisieren / ausführen.
      * @param string $Value - Wert für die Variable oder Parameter für den Befehl
      * @access public
      */
     public function RequestAction($Ident, $Value){
         if (method_exists($this, $Ident)){
+            $this->SendDebug("RequestAction", "Function: '$Ident' Parameter(s): '$Value'", 0);
             return $this->$Ident($Value);//versteckte public function aufrufen
         }
         parent::RequestAction($Ident, $Value);//offizielle Verwendung

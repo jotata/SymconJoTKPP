@@ -103,6 +103,9 @@ Um diesen Hänger zu vermeiden, kann man vor dem Update den "Aktualisierungs-Int
 | JoTKPP | Device | Kostal     | PIKO IQ         | JoTKPP | {E64278F5-1942-5343-E226-8673886E2D05} |
 
 ### 2. Changelog
+Version 1.3
+- Fehler im Profil "JoTKPP.Battery.Charge" behoben, welcher dazu führte, dass IPS beim Anzeigen von Diagrammen mit diesem Profil abstürzte.
+
 Version 1.2
 - Überprüfung der übergeordneten Instanzen optimiert
 - Fehler bei Umrechnung von SInt-Werten (z.B. Actual Battery Power) behoben, wenn diese einen negativen Wert haben

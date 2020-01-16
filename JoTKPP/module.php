@@ -4,7 +4,7 @@
  * @File:			 module.php                                                                    *
  * @Create Date:	 27.04.2019 11:51:35                                                           *
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 14.10.2019 20:59:43                                                           *
+ * @Last Modified:	 27.10.2019 18:58:09                                                           *
  * @Modified By:	 Jonathan Tanner                                                               *
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
@@ -97,7 +97,7 @@ class JoTKPP extends JoTModBus {
             $variable['Group'] = $config['Group'];
             $variable['Name'] = $config['Name'];
             $variable['cName'] = "";
-            $variable['Profile'] = $config['Profile'];
+            $variable['Profile'] = $this->CheckProfileName($config['Profile']);//Damit wird der PREFIX immer davor hinzugefügt
             $variable['cProfile'] = "";
             $variable['Poll'] = false;
             if (key_exists("Poll", $config)){

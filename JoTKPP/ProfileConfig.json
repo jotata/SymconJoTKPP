@@ -209,22 +209,27 @@
         "Associations": [
             {
                 "Value": 0,
-                "Name": "Empty (%s%%)",
+                "Name": "Empty (%.0f%%)",
+                "Icon": "Battery",
+                    "Color": "0xff0000"
+            },{
+                "Value": 5,
+                "Name": "Empty (%.0f%%)",
                 "Icon": "Battery",
                     "Color": "0xff0000"
             },{
                 "Value": 9,
-                "Name": "Low (%s%%)",
+                "Name": "Low (%.0f%%)",
                 "Icon": "Battery",
                 "Color": "0xff9800"
             },{
                 "Value": 10,
-                "Name": "%s%%",
+                "Name": "%.0f%%",
                 "Icon": "Battery",
                 "Color": "0x00ff00"
             },{
                 "Value": 99,
-                "Name": "Full (%s%%)",
+                "Name": "Full (%.0f%%)",
                 "Icon": "Battery",
                 "Color": "0x00ff00"
             }

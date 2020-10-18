@@ -8,7 +8,8 @@
         "Quantity": 16,
         "Factor": 0,
         "VarType": $VT_String$,
-        "MBType": $MB_BigEndian$
+        "MBType": $MB_BigEndian$,
+        "FWVersion": "1.42"
     },
     "ProductName": {
         "Name": "Inverter Product Name",
@@ -19,7 +20,8 @@
         "Quantity": 32,
         "Factor": 0,
         "VarType": $VT_String$,
-        "MBType": $MB_BigEndian$
+        "MBType": $MB_BigEndian$,
+        "FWVersion": "1.42"
     },
     "PowerClass": {
         "Name": "Inverter Power Class",
@@ -30,7 +32,8 @@
         "Quantity": 32,
         "Factor": 0,
         "VarType": $VT_String$,
-        "MBType": $MB_BigEndian$
+        "MBType": $MB_BigEndian$,
+        "FWVersion": "1.42"
     },
     "ArticleNumber": {
         "Name": "Inverter article number",
@@ -41,7 +44,8 @@
         "Quantity": 8,
         "Factor": 0,
         "VarType": $VT_String$,
-        "MBType": $MB_BigEndian$
+        "MBType": $MB_BigEndian$,
+        "FWVersion": "1.42"
     },
     "SerialNr": {
         "Name": "Inverter serial number",
@@ -52,7 +56,8 @@
         "Quantity": 8,
         "Factor": 0,
         "VarType": $VT_String$,
-        "MBType": $MB_BigEndian$
+        "MBType": $MB_BigEndian$,
+        "FWVersion": "1.42"
     },
     "NetworkName": {
         "Name": "Inverter network name",
@@ -63,7 +68,32 @@
         "Quantity": 32,
         "Factor": 0,
         "VarType": $VT_String$,
-        "MBType": $MB_BigEndian$
+        "MBType": $MB_BigEndian$,
+        "FWVersion": "1.42"
+    },
+    "TotalDCPower": {
+        "Name": "Total DC power",
+        "Group": "DeviceInfo",
+        "Profile": "~Power",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 100,
+        "Quantity": 2,
+        "Factor": 1,
+        "VarType": $VT_Float$,
+        "MBType": $MB_BigEndian$,
+        "FWVersion": "1.42"
+    },
+    "SensorType": {
+        "Name": "Installed Powermeter",
+        "Group": "DeviceInfo",
+        "Profile": "Sensor.Type",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 1082,
+        "Quantity": 1,
+        "Factor": 0,
+        "VarType": $VT_UnsignedInteger$,
+        "MBType": $MB_BigEndian$,
+        "FWVersion": "1.44"
     },
     "NumberACPhases": {
         "Name": "Number of AC phases",
@@ -74,7 +104,8 @@
         "Quantity": 1,
         "Factor": 1,
         "VarType": $VT_UnsignedInteger$,
-        "MBType": $MB_BigEndian$
+        "MBType": $MB_BigEndian$,
+        "FWVersion": "1.42"
     },
     "NumberPVStrings": {
         "Name": "Number of PV strings",
@@ -85,7 +116,8 @@
         "Quantity": 1,
         "Factor": 1,
         "VarType": $VT_UnsignedInteger$,
-        "MBType": $MB_BigEndian$
+        "MBType": $MB_BigEndian$,
+        "FWVersion": "1.42"
     },
     "HardwareVersion": {
         "Name": "Hardware-Version",
@@ -96,7 +128,8 @@
         "Quantity": 1,
         "Factor": 1,
         "VarType": $VT_UnsignedInteger$,
-        "MBType": $MB_BigEndian$
+        "MBType": $MB_BigEndian$,
+        "FWVersion": "1.42"
     },
     "SoftwareVersionMC": {
         "Name": "Software-Version MC",
@@ -107,7 +140,8 @@
         "Quantity": 8,
         "Factor": 0,
         "VarType": $VT_String$,
-        "MBType": $MB_BigEndian$
+        "MBType": $MB_BigEndian$,
+        "FWVersion": "1.42"
     },
     "SoftwareVersionIOC": {
         "Name": "Software-Version IOC",
@@ -118,7 +152,8 @@
         "Quantity": 8,
         "Factor": 0,
         "VarType": $VT_String$,
-        "MBType": $MB_BigEndian$
+        "MBType": $MB_BigEndian$,
+        "FWVersion": "1.42"
     },
     "InverterState": {
         "Name": "Inverter state",
@@ -130,6 +165,7 @@
         "Factor": 1,
         "VarType": $VT_UnsignedInteger$,
         "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42",
         "Poll": true
     },
     "EnergyManagerState": {
@@ -140,8 +176,9 @@
         "Address": 104,
         "Quantity": 2,
         "Factor": 1,
-        "VarType": $VT_Float$,
+        "VarType": $VT_UnsignedInteger$,
         "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42",
         "Poll": true
     },
     "FuseState": {
@@ -154,6 +191,7 @@
         "Factor": 1,
         "VarType": $VT_Float$,
         "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42",
         "Poll": true
     },
     "ConsFromAC": {
@@ -165,7 +203,8 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "ConsFromBT": {
         "Name": "Home own consumtion from battery",
@@ -176,7 +215,8 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "ConsFromPV": {
         "Name": "Home own consumtion from PV",
@@ -187,7 +227,8 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "ConsFromACTot": {
         "Name": "Total home consumtion from grid",
@@ -198,7 +239,8 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "ConsFromBTTot": {
         "Name": "Total home consumtion from battery",
@@ -209,7 +251,8 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "ConsFromPVTot": {
         "Name": "Total home consumtion from PV",
@@ -220,7 +263,8 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "ConsTot": {
         "Name": "Total home consumtion",
@@ -231,7 +275,8 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "ConsRate": {
         "Name": "Total home consumtion rate",
@@ -242,7 +287,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "ACLimitEVU": {
         "Name": "Power limit from EVU",
@@ -254,6 +300,7 @@
         "Factor": 1,
         "VarType": $VT_Float$,
         "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42",
         "Poll": true
     },
     "ACFrequency": {
@@ -265,7 +312,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "ACCurrentP1": {
         "Name": "Current phase 1",
@@ -276,7 +324,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "ACActivePowerP1": {
         "Name": "Active power phase 1",
@@ -288,6 +337,7 @@
         "Factor": 0.001,
         "VarType": $VT_Float$,
         "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42",
         "Poll": true
     },
     "ACVoltageP1": {
@@ -299,7 +349,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "ACCurrentP2": {
         "Name": "Current phase 2",
@@ -310,7 +361,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "ACActivePowerP2": {
         "Name": "Active power phase 2",
@@ -322,6 +374,7 @@
         "Factor": 0.001,
         "VarType": $VT_Float$,
         "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42",
         "Poll": true
     },
     "ACVoltageP2": {
@@ -333,7 +386,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "ACCurrentP3": {
         "Name": "Current phase 3",
@@ -344,7 +398,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "ACActivePowerP3": {
         "Name": "Active power phase 3",
@@ -356,6 +411,7 @@
         "Factor": 0.001,
         "VarType": $VT_Float$,
         "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42",
         "Poll": true
     },
     "ACVoltageP3": {
@@ -367,7 +423,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "ACActivePowerTot": {
         "Name": "Total AC active power",
@@ -379,6 +436,7 @@
         "Factor": 0.001,
         "VarType": $VT_Float$,
         "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42",
         "Poll": true
     },
     "ACReactivePowerTot": {
@@ -390,7 +448,8 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "ACApparentPowerTot": {
         "Name": "Total AC apparent power",
@@ -401,7 +460,8 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "ACInverterPower": {
         "Name": "Actual Inverter Generation power",
@@ -412,7 +472,8 @@
         "Quantity": 1,
         "Factor": 0.001,
         "VarType": $VT_SignedInteger$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "PMCosPhi": {
         "Name": "Cos φ (powermeter)",
@@ -423,7 +484,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "PMFrequency": {
         "Name": "Grid Frequency (powermeter)",
@@ -434,7 +496,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "PMCurrentP1": {
         "Name": "Current phase 1 (powermeter)",
@@ -445,7 +508,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "PMActivePowerP1": {
         "Name": "Active power phase 1 (powermeter)",
@@ -456,7 +520,8 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "PMVoltageP1": {
         "Name": "Voltage phase 1 (powermeter)",
@@ -467,7 +532,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "PMCurrentP2": {
         "Name": "Current phase 2 (powermeter)",
@@ -478,7 +544,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "PMActivePowerP2": {
         "Name": "Active power phase 2 (powermeter)",
@@ -489,7 +556,8 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "PMVoltageP2": {
         "Name": "Voltage phase 2 (powermeter)",
@@ -500,7 +568,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "PMCurrentP3": {
         "Name": "Current phase 3 (powermeter)",
@@ -511,7 +580,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "PMActivePowerP3": {
         "Name": "Active power phase 3 (powermeter)",
@@ -522,7 +592,8 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "PMVoltageP3": {
         "Name": "Voltage phase 3 (powermeter)",
@@ -533,7 +604,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "PMActivePowerTot": {
         "Name": "Total AC active power (powermeter)",
@@ -545,6 +617,7 @@
         "Factor": 0.001,
         "VarType": $VT_Float$,
         "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42",
         "Poll": true
     },
     "PMReactivePowerTot": {
@@ -556,7 +629,8 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "PMApparentPowerTot": {
         "Name": "Total AC apparent power (powermeter)",
@@ -567,73 +641,20 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
-    "BTCurrent": {
-        "Name": "Actual battery current",
-        "Group": "Battery",
-        "Profile": "~Ampere",
-        "Function": $FC_Read_HoldingRegisters$,
-        "Address": 200,
-        "Quantity": 2,
-        "Factor": 1,
-        "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
-    },
-    "BTPower": {
-        "Name": "Actual battery power",
-        "Group": "Battery",
-        "Profile": "~Power",
-        "Function": $FC_Read_HoldingRegisters$,
-        "Address": 582,
-        "Quantity": 1,
-        "Factor": 0.001,
-        "VarType": $VT_SignedInteger$,
-        "MBType": $MB_BigEndian_WordSwap$
-    },
-    "BTVoltage": {
-        "Name": "Actual battery voltage",
-        "Group": "Battery",
-        "Profile": "~Volt",
-        "Function": $FC_Read_HoldingRegisters$,
-        "Address": 216,
-        "Quantity": 2,
-        "Factor": 1,
-        "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
-    },
-    "BTCharge": {
-        "Name": "Actual battery state of charge",
-        "Group": "Battery",
-        "Profile": "Battery.Charge",
-        "Function": $FC_Read_HoldingRegisters$,
-        "Address": 210,
-        "Quantity": 2,
-        "Factor": 1,
-        "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
-    },
-    "BTTemperature": {
-        "Name": "Actual battery temperature",
-        "Group": "Battery",
-        "Profile": "~Temperature",
-        "Function": $FC_Read_HoldingRegisters$,
-        "Address": 214,
-        "Quantity": 2,
-        "Factor": 1,
-        "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
-    },
-    "BTCycles": {
-        "Name": "Number of battery cycles",
-        "Group": "Battery",
+    "BTReadyFlag": {
+        "Name": "Battery ready flag",
+        "Group": "DeviceInfo",
         "Profile": "",
         "Function": $FC_Read_HoldingRegisters$,
-        "Address": 194,
+        "Address": 208,
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "BTManufacturer": {
         "Name": "Battery Manufacturer",
@@ -644,7 +665,188 @@
         "Quantity": 8,
         "Factor": 0,
         "VarType": $VT_String$,
-        "MBType": $MB_BigEndian$
+        "MBType": $MB_BigEndian$,
+        "FWVersion": "1.42"
+    },
+    "BTType": {
+        "Name": "Battery Type",
+        "Group": "DeviceInfo",
+        "Profile": "Battery.Type",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 588,
+        "Quantity": 1,
+        "Factor": 0,
+        "VarType": $VT_UnsignedInteger$,
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
+    },
+    "BTFirmwareMC": {
+        "Name": "Battery Firmware MC",
+        "Group": "DeviceInfo",
+        "Profile": "",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 515,
+        "Quantity": 2,
+        "Factor": 0,
+        "VarType": $VT_UnsignedInteger$,
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
+    },
+    "BTCrossCapacity": {
+        "Name": "Battery gross capacity",
+        "Group": "DeviceInfo",
+        "Profile": "Battery.Capacity",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 512,
+        "Quantity": 2,
+        "Factor": 0,
+        "VarType": $VT_UnsignedInteger$,
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
+    },
+    "BTActualSOC": {
+        "Name": "Battery actual SOC",
+        "Group": "Battery",
+        "Profile": "Percent.Int",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 514,
+        "Quantity": 1,
+        "Factor": 0,
+        "VarType": $VT_UnsignedInteger$,
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
+    },
+    "BTCurrent": {
+        "Name": "Actual battery current",
+        "Group": "Battery",
+        "Profile": "~Ampere",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 200,
+        "Quantity": 2,
+        "Factor": 1,
+        "VarType": $VT_Float$,
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
+    },
+    "BTPower": {
+        "Name": "Actual battery power",
+        "Group": "Battery",
+        "Profile": "~Power",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 582,
+        "Quantity": 1,
+        "Factor": 0.001,
+        "VarType": $VT_SignedInteger$,
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
+    },
+    "BTVoltage": {
+        "Name": "Actual battery voltage",
+        "Group": "Battery",
+        "Profile": "~Volt",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 216,
+        "Quantity": 2,
+        "Factor": 1,
+        "VarType": $VT_Float$,
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
+    },
+    "BTCharge": {
+        "Name": "Actual battery state of charge",
+        "Group": "Battery",
+        "Profile": "Battery.Charge",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 210,
+        "Quantity": 2,
+        "Factor": 1,
+        "VarType": $VT_Float$,
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
+    },
+    "BTTemperature": {
+        "Name": "Actual battery temperature",
+        "Group": "Battery",
+        "Profile": "~Temperature",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 214,
+        "Quantity": 2,
+        "Factor": 1,
+        "VarType": $VT_Float$,
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
+    },
+    "BTCycles": {
+        "Name": "Number of battery cycles",
+        "Group": "Battery",
+        "Profile": "",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 194,
+        "Quantity": 2,
+        "Factor": 1,
+        "VarType": $VT_Float$,
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
+    },
+    "BTcEnergyDCTot": {
+        "Name": "Total battery DC charge energy",
+        "Group": "Battery",
+        "Profile": "~Electricity",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 1046,
+        "Quantity": 2,
+        "Factor": 0.001,
+        "VarType": $VT_UnsignedInteger$,
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.44"
+    },
+    "BTdEnergyDCTot": {
+        "Name": "Total battery DC discharge energy",
+        "Group": "Battery",
+        "Profile": "~Electricity",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 1048,
+        "Quantity": 2,
+        "Factor": 0.001,
+        "VarType": $VT_UnsignedInteger$,
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.44"
+    },
+    "BTcEnergyACTot": {
+        "Name": "Total battery AC charge energy",
+        "Group": "Battery",
+        "Profile": "~Electricity",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 1050,
+        "Quantity": 2,
+        "Factor": 0.001,
+        "VarType": $VT_UnsignedInteger$,
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.44"
+    },
+    "BTcEnergyGridTot": {
+        "Name": "Total battery grid charge energy",
+        "Group": "Battery",
+        "Profile": "~Electricity",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 1048,
+        "Quantity": 2,
+        "Factor": 0.001,
+        "VarType": $VT_UnsignedInteger$,
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.44"
+    },
+    "BTdEnergyGridTot": {
+        "Name": "Total battery grid discharge energy",
+        "Group": "Battery",
+        "Profile": "~Electricity",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 1048,
+        "Quantity": 2,
+        "Factor": 0.001,
+        "VarType": $VT_UnsignedInteger$,
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.44"
     },
     "PVCurrentDC1": {
         "Name": "Current DC1",
@@ -655,7 +857,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "PVPowerDC1": {
         "Name": "Power DC1",
@@ -667,6 +870,7 @@
         "Factor": 0.001,
         "VarType": $VT_Float$,
         "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42",
         "Poll": true
     },
     "PVVoltageDC1": {
@@ -678,7 +882,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "PVCurrentDC2": {
         "Name": "Current DC2",
@@ -689,7 +894,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "PVPowerDC2": {
         "Name": "Power DC2",
@@ -701,6 +907,7 @@
         "Factor": 0.001,
         "VarType": $VT_Float$,
         "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42",
         "Poll": true
     },
     "PVVoltageDC2": {
@@ -712,7 +919,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "PVCurrentDC3": {
         "Name": "Current DC3",
@@ -723,7 +931,8 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "PVPowerDC3": {
         "Name": "Power DC3",
@@ -735,6 +944,7 @@
         "Factor": 0.001,
         "VarType": $VT_Float$,
         "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42",
         "Poll": true
     },
     "PVVoltageDC3": {
@@ -746,19 +956,69 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "PVPowerTot": {
-        "Name": "Total DC power",
+        "Name": "Total DC power from PV",
         "Group": "PV",
         "Profile": "~Power",
         "Function": $FC_Read_HoldingRegisters$,
-        "Address": 100,
+        "Address": 1066,
         "Quantity": 2,
         "Factor": 0.001,
-        "VarType": $VT_Float$,
+        "VarType": $VT_UnsignedInteger$,
         "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.44",
         "Poll": true
+    },
+    "PVEnergyTot": {
+        "Name": "Total DC energy from PV",
+        "Group": "PV",
+        "Profile": "~Electricity",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 1056,
+        "Quantity": 2,
+        "Factor": 0.001,
+        "VarType": $VT_UnsignedInteger$,
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.44"
+    },
+    "PVEnergyDC1": {
+        "Name": "Total energy from DC1",
+        "Group": "PV",
+        "Profile": "~Electricity",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 1058,
+        "Quantity": 2,
+        "Factor": 0.001,
+        "VarType": $VT_UnsignedInteger$,
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.44"
+    },
+    "PVEnergyDC2": {
+        "Name": "Total energy from DC2",
+        "Group": "PV",
+        "Profile": "~Electricity",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 1060,
+        "Quantity": 2,
+        "Factor": 0.001,
+        "VarType": $VT_UnsignedInteger$,
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.44"
+    },
+    "PVEnergyDC3": {
+        "Name": "Total energy from DC3",
+        "Group": "PV",
+        "Profile": "~Electricity",
+        "Function": $FC_Read_HoldingRegisters$,
+        "Address": 1062,
+        "Quantity": 2,
+        "Factor": 0.001,
+        "VarType": $VT_UnsignedInteger$,
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.44"
     },
     "YieldDaily": {
         "Name": "Daily yield",
@@ -769,7 +1029,8 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "YieldMonthly": {
         "Name": "Monthly yield",
@@ -780,7 +1041,8 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "YieldYearly": {
         "Name": "Yearly yield",
@@ -791,7 +1053,8 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     },
     "YieldTot": {
         "Name": "Total yield",
@@ -802,6 +1065,7 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": $VT_Float$,
-        "MBType": $MB_BigEndian_WordSwap$
+        "MBType": $MB_BigEndian_WordSwap$,
+        "FWVersion": "1.42"
     }
 }

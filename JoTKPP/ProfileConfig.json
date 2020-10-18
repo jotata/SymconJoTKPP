@@ -104,7 +104,7 @@
         ]
     },{
         "ProfileName": "Status.KostalEM",
-        "ProfileType": $VT_Float$,
+        "ProfileType": $VT_Integer$,
         "Icon": "Graph",
         "Prefix": "",
         "Suffix": "",
@@ -148,14 +148,14 @@
         "Associations": [
             {
                 "Value": 0,
-                "Name": "Fuse Fail",
-                "Icon": "Warning",
-                "Color": "0xff9800"
-            },{
-                "Value": 1,
                 "Name": "Fuse Ok",
                 "Icon": "Ok",
                 "Color": -1
+            },{
+                "Value": 1,
+                "Name": "Fuse Fail",
+                "Icon": "Warning",
+                "Color": "0xff9800"
             },{
                 "Value": 255,
                 "Name": "Unknown",
@@ -188,6 +188,17 @@
     },{
         "ProfileName": "Percent",
         "ProfileType": $VT_Float$,
+        "Icon": "",
+        "Prefix": "",
+        "Suffix": " %",
+        "MinValue": 0,
+        "MaxValue": 100,
+        "StepSize": 0,
+        "Digits": 1,
+        "Associations": []
+    },{
+        "ProfileName": "Percent.Int",
+        "ProfileType": $VT_Integer$,
         "Icon": "",
         "Prefix": "",
         "Suffix": " %",
@@ -232,6 +243,67 @@
                 "Name": "Full (%.0f%%)",
                 "Icon": "Battery",
                 "Color": "0x00ff00"
+            }
+        ]
+    },{
+        "ProfileName": "Battery.Type",
+        "ProfileType": $VT_Integer$,
+        "Icon": "Battery",
+        "Prefix": "",
+        "Suffix": "",
+        "MinValue": 0,
+        "MaxValue": 0,
+        "StepSize": 0,
+        "Digits": 0,
+        "Associations": [
+            {
+                "Value": 0,
+                "Name": "No battery (only PV)",
+                "Icon": "EnergySolar",
+                "Color": -1
+            },{
+                "Value": 2,
+                "Name": "Li-Io battery SONY / MURATA",
+                "Icon": "EnergyStorage",
+                "Color": -1
+            },{
+                "Value": 4,
+                "Name": "Li-Io battery BYD / BBOX",
+                "Icon": "EnergyStorage",
+                "Color": -1
+            }
+        ]
+    },{
+        "ProfileName": "Sensor.Type",
+        "ProfileType": $VT_Integer$,
+        "Icon": "Network",
+        "Prefix": "",
+        "Suffix": "",
+        "MinValue": 0,
+        "MaxValue": 0,
+        "StepSize": 0,
+        "Digits": 0,
+        "Associations": [
+            {
+                "Value": 0,
+                "Name": "SDM 630 (B+G E-Tech GmbH)",
+                "Icon": "Network",
+                "Color": -1
+            },{
+                "Value": 1,
+                "Name": "B-Control EM-300 LR (TQ Systems)",
+                "Icon": "Network",
+                "Color": -1
+            },{
+                "Value": 3,
+                "Name": "KOSTAL Smart Energy Meter (KOSTAL)",
+                "Icon": "Network",
+                "Color": -1
+            },{
+                "Value": 255,
+                "Name": "No powermeter",
+                "Icon": "Cross",
+                "Color": -1
             }
         ]
     }

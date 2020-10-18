@@ -4,10 +4,10 @@
     "name": "JoTKPP",
     "url": "https://github.com/jotata/SymconJoTKPP#symconjotkpp",
     "compatibility": {
-        "version": "5.2",
+        "version": "5.5",
         "date": 0
     },
-    "version": "1.3",
+    "version": "1.4",
     "build": 0,
     "date": 0
 }

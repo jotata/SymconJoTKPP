@@ -3,13 +3,19 @@
  * @File:			 TODOs.txt
  * @Create Date:	 30.05.2019 09:59:20
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 16.01.2020 10:35:13
+ * @Last Modified:	 18.10.2020 22:25:02
  * @Modified By:	 Jonathan Tanner
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
  * 					 (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
  */
 
-x Falsche Definition (%s) in den Assoziationden des Profiles "JoTKPP-Battery.Charge"
-- Wert für PSSB fuse state ist "Fuse fail" obwohl alles i.O. ist. Vermutlich ein Bug in der FW des Wechselrichters (Anfrage bei Kostal offen). 
+? Wert für PSSB fuse state ist "Fuse fail" obwohl alles i.O. ist. Vermutlich ein Bug in der FW des Wechselrichters (Anfrage bei Kostal offen). Im Moment das Profil umgedreht.
 - Fehlerbehebung hängender Prozess wenn RequestRead bei Modul-Update läuft (ist ev. ein IPS-Bug: https://www.symcon.de/forum/threads/41792-Prozess-PREFIX_RequestRead-bleibt-bei-Modul-Update-h%C3%A4ngen)
+- Integration neue ModBus-Spezifikationen Version 1.9
+  x Allgemeine Anpassungen
+  - Prüfung auf FW-Version und Aktivierung nur möglich wenn diese erfüllt ist
+  - Kapitel 3.4 "Batterie-Management" lesend
+  - Kapitel 3.4 "Batterie-Management" schreibend
+- Profil "Status.KostalEM" muss gelöscht und neu angelegt werden (allgemeines Profil-Update einbauen)
+- Integration "virtueller" PV-Überschuss

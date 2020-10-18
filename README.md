@@ -103,7 +103,7 @@ Um diesen Hänger zu vermeiden, kann man vor dem Update den "Aktualisierungs-Int
 | JoTKPP | Device | Kostal     | PIKO IQ         | JoTKPP | {E64278F5-1942-5343-E226-8673886E2D05} |
 
 ### 2. Changelog
-Version 1.4
+Version 1.4 (ALPHA)
 - Folgende zusätzliche Parameter hinzugefügt: Installed powermeter, Total DC power, Battery ready flag, Battery cross capacity, Battery actual SOC, Battery Firmware MC, Battery Type, Total battery AC/DC (dis)charge, Total energy from PV(1-3)
 - Folgende Parameter korrigiert: State of energy manager, Total DC power from PV
 - Profil Status.KostalFuse umgedreht (kann leider nicht testen, ob dies bei einer ausgelösten Sicherung nun korrekt funktioniert)

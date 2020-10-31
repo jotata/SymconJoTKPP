@@ -1,7 +1,7 @@
 [
     {
         "ProfileName": "Status.KostalWR",
-        "ProfileType": $VT_Integer$,
+        "ProfileType": "$VT_Integer",
         "Icon": "Graph",
         "Prefix": "",
         "Suffix": "",
@@ -104,7 +104,7 @@
         ]
     },{
         "ProfileName": "Status.KostalEM",
-        "ProfileType": $VT_Integer$,
+        "ProfileType": "$VT_Integer",
         "Icon": "Graph",
         "Prefix": "",
         "Suffix": "",
@@ -137,7 +137,7 @@
         ]
     },{
         "ProfileName": "Status.KostalFuse",
-        "ProfileType": $VT_Float$,
+        "ProfileType": "$VT_Float",
         "Icon": "Distance",
         "Prefix": "",
         "Suffix": "",
@@ -165,7 +165,7 @@
         ]
     },{
         "ProfileName": "Power.VA",
-        "ProfileType": $VT_Float$,
+        "ProfileType": "$VT_Float",
         "Icon": "Electricity",
         "Prefix": "",
         "Suffix": " VA",
@@ -176,7 +176,7 @@
         "Associations": []
     },{
         "ProfileName": "Power.VaR",
-        "ProfileType": $VT_Float$,
+        "ProfileType": "$VT_Float",
         "Icon": "Electricity",
         "Prefix": "",
         "Suffix": " VaR",
@@ -187,7 +187,7 @@
         "Associations": []
     },{
         "ProfileName": "Percent",
-        "ProfileType": $VT_Float$,
+        "ProfileType": "$VT_Float",
         "Icon": "",
         "Prefix": "",
         "Suffix": " %",
@@ -198,7 +198,7 @@
         "Associations": []
     },{
         "ProfileName": "Percent.Int",
-        "ProfileType": $VT_Integer$,
+        "ProfileType": "$VT_Integer",
         "Icon": "",
         "Prefix": "",
         "Suffix": " %",
@@ -209,7 +209,7 @@
         "Associations": []
     },{
         "ProfileName": "Battery.Charge",
-        "ProfileType": $VT_Float$,
+        "ProfileType": "$VT_Float",
         "Icon": "Battery",
         "Prefix": "",
         "Suffix": "",
@@ -247,7 +247,7 @@
         ]
     },{
         "ProfileName": "Battery.Type",
-        "ProfileType": $VT_Integer$,
+        "ProfileType": "$VT_Integer",
         "Icon": "Battery",
         "Prefix": "",
         "Suffix": "",
@@ -275,7 +275,7 @@
         ]
     },{
         "ProfileName": "Sensor.Type",
-        "ProfileType": $VT_Integer$,
+        "ProfileType": "$VT_Integer",
         "Icon": "Network",
         "Prefix": "",
         "Suffix": "",

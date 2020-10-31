@@ -21,6 +21,7 @@ const DEBUG_FORMAT_HEX = 1;
  * Trait mit Hilfsfunktionen für Variablen-Profile.
  */
 trait VariableProfile {
+    use Translation;
     /**
     * Liest die JSON-Profil-Definition aus $JsonFile (UTF-8) und erstellt/aktualisiert die entsprechenden Profile.
     * @param string $JsonFile mit Profil-Definitionen gemäss Rückgabewert von IPS_GetVariableProfile.
@@ -28,14 +29,10 @@ trait VariableProfile {
     * @access protected
     */
     protected function ConfigProfiles(string $JsonFile, $ReplaceMap = []){
-        $config = file_get_contents($JsonFile);
-        foreach ($ReplaceMap as $search => $replace){
-            $config = str_replace($search, $replace, $config);
-        }
-        $profiles = json_decode($config, true, 5);
+        $JSON = $this->GetJSONwithVariables($JsonFile, $ReplaceMap);
+        $profiles = json_decode($JSON, true, 5);
         if (json_last_error() !== JSON_ERROR_NONE){
             echo("ConfigProfiles - Error in Profile-JSON (".json_last_error_msg()."). Please check \$ReplaceMap or File-Content of $JsonFile.");
-            echo($config);
             exit;
         }
         foreach ($profiles as $profile){
@@ -205,7 +202,24 @@ trait Translation {
 			}
 		}
 		return $value;
-	}
+    }
+    /**
+    * Liest JSON aus $JsonFile (UTF-8) und ersetzt darin Variablen von $ReplaceMap.
+    * @param string $JsonFile mit als JSON formatiertem Text.
+    * @param array $ReplaceMap mit Key -> Values welche in JSON ersetzt werden sollen.
+    * @return string mit ersetzten Variabeln im JSON.
+    * @access protected
+    */
+    protected function GetJSONwithVariables(string $JsonFile, $ReplaceMap = []){
+        $JSON = file_get_contents($JsonFile);
+        foreach ($ReplaceMap as $search => $replace){
+            if (is_string($replace)){
+                $replace = "\"$replace\""; 
+            }
+            $JSON = str_replace("\"$search\"", $replace, $JSON);
+        }
+        return $JSON;
+    }
 }
 
 /**

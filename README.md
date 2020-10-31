@@ -107,6 +107,8 @@ Version 1.4 (ALPHA)
 - Folgende zusätzliche Parameter hinzugefügt: Installed powermeter, Total DC power, Battery ready flag, Battery cross capacity, Battery actual SOC, Battery Firmware MC, Battery Type, Total battery AC/DC (dis)charge, Total energy from PV(1-3)
 - Folgende Parameter korrigiert: State of energy manager, Total DC power from PV
 - Profil Status.KostalFuse umgedreht (kann leider nicht testen, ob dies bei einer ausgelösten Sicherung nun korrekt funktioniert)
+- Verbesserung bei den JSON-Konfigurations-Daten
+- Verbesserung beim Device-Discovery (inkl. Prüfung bei Änderung des Gateways)
 
 Version 1.3
 - Fehler im Profil "JoTKPP.Battery.Charge" behoben, welcher dazu führte, dass IPS beim Anzeigen von Diagrammen mit diesem Profil abstürzte.

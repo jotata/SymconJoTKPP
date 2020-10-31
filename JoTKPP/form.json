@@ -14,7 +14,7 @@
         {
             "name": "Device",
             "type": "Label",
-            "caption": "Reading device information..."
+            "caption": "$DeviceString"
         },{
             "type": "RowLayout",
             "items": [
@@ -37,8 +37,9 @@
             "type": "List",
             "name": "ModuleVariables",
             "caption": "Device Parameters",
+            "visible": true,
             "add": false,
-            "delete": false,
+            "delete": true,
             "sort": {
                 "column": "Group",
                 "direction": "ascending"
@@ -70,6 +71,10 @@
                     "name": "cProfile",
                     "width": "200px"
                 },{
+                    "caption": "FW",
+                    "name": "FWVersion",
+                    "width": "60px"
+                },{
                     "caption": "Active",
                     "name": "Poll",
                     "width": "50px",
@@ -80,7 +85,7 @@
                     }
                 }
             ],
-            "values": "$ModuleVariablesValues$"
+            "values": "$ModuleVariablesValues"
         }
     ],
     "actions":[]

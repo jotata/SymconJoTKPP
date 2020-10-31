@@ -23,6 +23,7 @@ class JoTKPP extends JoTModBus {
     protected const PREFIX = "JoTKPP";
     
     use VariableProfile;
+    use Translation;
     use RequestAction;
 
     /**
@@ -32,14 +33,13 @@ class JoTKPP extends JoTModBus {
      */
     public function Create(){
         parent::Create();
-        $this->ConfigProfiles(__DIR__."/ProfileConfig.json", ['$VT_Float$' => self::VT_Float, '$VT_Integer$' => self::VT_Integer]);
+        $this->ConfigProfiles(__DIR__."/ProfileConfig.json", ['$VT_Float' => self::VT_Float, '$VT_Integer' => self::VT_Integer]);
         $this->RegisterPropertyString("ModuleVariables", json_encode([]));
         $this->RegisterPropertyInteger("PollTime", 0);
         $this->RegisterPropertyInteger("CheckFWTime", 0);
         $this->RegisterTimer("RequestRead", 0, static::PREFIX . '_RequestRead($_IPS["TARGET"]);');
         $this->RegisterTimer("CheckFW", 0, static::PREFIX . '_CheckFirmwareUpdate($_IPS["TARGET"]);');
-        $this->RegisterTimer("DeviceDiscovery", 0, 'IPS_RequestAction($_IPS["TARGET"], "DeviceDiscovery", "");');
-        $this->RegisterMessage($this->InstanceID, FM_CONNECT);
+        $this->RegisterMessage($this->InstanceID, FM_CONNECT);//Gateway wurde geändert
     }
 
     /**
@@ -88,54 +88,68 @@ class JoTKPP extends JoTModBus {
      * @access public
      */
     public function GetConfigurationForm(){
-        //Values für Liste vorbereiten (vorhandene Variabeln)
-        $mbConfig = $this->GetModBusConfig();
         $values = [];
-        $variable = [];
-        foreach ($mbConfig as $ident => $config){
-            $variable['Ident'] = $ident;
-            $variable['Group'] = $config['Group'];
-            $variable['Name'] = $config['Name'];
-            $variable['cName'] = "";
-            $variable['Profile'] = $this->CheckProfileName($config['Profile']);//Damit wird der PREFIX immer davor hinzugefügt
-            $variable['cProfile'] = "";
-            $variable['Poll'] = false;
-            if (key_exists("Poll", $config)){
-                //Übernimmt Poll nur initial bei Erstellung der Instanz (als Vorschlag), danach wird Poll von ModuleVariables überschrieben
-                $variable['Poll'] = $config['Poll'];
-            }
-            if(($id = @IPS_GetObjectIDByIdent($ident, $this->InstanceID)) !== false){//Falls Variable bereits existiert, deren Werte übernehmen
-                $obj = IPS_GetObject($id);
-                $var = IPS_GetVariable($id);
-                if ($obj['ObjectName'] != $config['Name']){
-                    $variable['cName'] = $obj['ObjectName'];
+        $device = $this->GetDeviceInfo();
+        //ModBus-Parameter nur anzeigen wenn FW-Version bekannt ist
+        if (key_exists("FWVersion", $device) && $device['FWVersion'] != "") {
+            $fwVersion = floatval($device['FWVersion']);
+
+            //Values für Liste vorbereiten (vorhandene Variabeln)
+            $mbConfig = $this->GetModBusConfig();
+            $variable = [];
+            foreach ($mbConfig as $ident => $config) {
+                $variable['Ident'] = $ident;
+                $variable['Group'] = $config['Group'];
+                $variable['Name'] = $config['Name'];
+                $variable['cName'] = '';
+                $variable['Profile'] = $this->CheckProfileName($config['Profile']); //Damit wird der PREFIX immer davor hinzugefügt
+                $variable['cProfile'] = '';
+                $variable['FWVersion'] = floatval($config['FWVersion']);
+                $variable['Poll'] = false;
+                if (array_key_exists('Poll', $config)) {
+                    //Übernimmt Poll nur initial bei Erstellung der Instanz (als Vorschlag), danach wird Poll von ModuleVariables überschrieben
+                    $variable['Poll'] = $config['Poll'];
                 }
-                $variable['Pos'] = $obj['ObjectPosition'];
-                $variable['cProfile'] = $var['VariableCustomProfile'];
+                if (($id = @IPS_GetObjectIDByIdent($ident, $this->InstanceID)) !== false) {//Falls Variable bereits existiert, deren Werte übernehmen
+                    $obj = IPS_GetObject($id);
+                    $var = IPS_GetVariable($id);
+                    if ($obj['ObjectName'] != $config['Name']) {
+                        $variable['cName'] = $obj['ObjectName'];
+                    }
+                    $variable['Pos'] = $obj['ObjectPosition'];
+                    $variable['cProfile'] = $var['VariableCustomProfile'];
+                }
+
+                //Nur Variablen aktivieren, welche mit der aktuellen FW abrufbar sind
+                $variable['deletable'] = false;
+                $variable['editable'] = true;
+                if ($fwVersion < $variable['FWVersion']) {
+                    $variable['editable'] = false;
+                    $variable['Poll'] = false;
+                }
+
+                $values[$ident] = $variable;
             }
-            $values[$ident] = $variable;
+
+            //Sortieren der Einträge - muss analog ModuleVariables sein (sonst entsteht bei neuen / geänderten Definitionen ein Durcheinander)
+            $mvKeys = array_column(json_decode($this->ReadPropertyString('ModuleVariables'), 1), 'Ident');
+            $sValues = [];
+            foreach ($mvKeys as $ident) {
+                if (array_key_exists($ident, $mbConfig) === false) {//Definition wurde aus ModBusConfig.json entfernt/umbenannt - Möglichkeit zur Löschung freischalten
+                    $values[$ident]['Name'] = $this->Translate('ModBus-Definition for this entry does not exist anymore.');
+                    $values[$ident]['rowColor'] = '#FFC0C0';
+                    $values[$ident]['deletable'] = true;
+                }
+                $sValues[] = $values[$ident];
+                unset($values[$ident]);
+            }
+            $values = array_merge($sValues, array_values($values)); //neue Definitionen am Ende einfügen
         }
 
-        //Sortieren der Einträge - muss analog ModuleVariables sein (sonst entsteht bei neuen / geänderten Definitionen ein Durcheinander)
-        $mvKeys = array_column(json_decode($this->ReadPropertyString("ModuleVariables"), 1), "Ident");
-        $sValues = [];
-        foreach ($mvKeys as $ident){
-            if (key_exists($ident, $mbConfig) === false){//Definition wurde aus ModBusConfig.json entfernt/umbenannt - Sollte, falls einmal nötig, in eimem Update-Prozess aus ModuleVariables entfernt werden.
-                $values[$ident]['Name'] = $this->Translate("ModBus-Definition for this entry does not exist anymore.");
-                $values[$ident]['rowColor'] = "#FFC0C0";
-            }
-            $sValues[] = $values[$ident];
-            unset($values[$ident]);
-        }
-        $values = array_merge($sValues, array_values($values));//neue Definitionen am Ende einfügen
-
-        //DeviceDiscovery starten
-        $this->SetTimerInterval("DeviceDiscovery", 2000);
-        
-        //Formular vorbereiten
+        //Variabeln in $form ersetzen
         $form = file_get_contents(__DIR__ . "/form.json");
-        $form = str_replace('"$ModuleVariablesValues$"', json_encode($values), $form);//Values für 'ModuleVariables' setzen
-        //echo "Form: $form";
+        $form = str_replace("\$DeviceString", $device['String'], $form);
+        $form = str_replace('"$ModuleVariablesValues"', json_encode($values), $form); //Values für 'ModuleVariables' setzen
         return $form;
     }
 
@@ -147,24 +161,96 @@ class JoTKPP extends JoTModBus {
     private function GetModBusConfig(){
         $config = $this->GetBuffer("ModBusConfig");
         if ($config == ""){//erstes Laden aus File & Ersetzen der ModBus-Konstanten
-            $config = file_get_contents(__DIR__."/ModBusConfig.json");
-            $config = str_replace('$FC_Read_HoldingRegisters$', self::FC_Read_HoldingRegisters, $config);
-            $config = str_replace('$VT_String$', self::VT_String, $config);
-            $config = str_replace('$VT_UnsignedInteger$', self::VT_UnsignedInteger, $config);
-            $config = str_replace('$VT_Float$', self::VT_Float, $config);
-            $config = str_replace('$VT_SignedInteger$', self::VT_SignedInteger, $config);
-            $config = str_replace('$MB_BigEndian_WordSwap$', self::MB_BigEndian_WordSwap, $config);
-            $config = str_replace('$MB_BigEndian$', self::MB_BigEndian, $config);
+            $config = $this->GetJSONwithVariables(__DIR__."/ModBusConfig.json", [
+                '$FC_Read_HoldingRegisters' => self::FC_Read_HoldingRegisters,
+                '$VT_String' => self::VT_String,
+                '$VT_UnsignedInteger' => self::VT_UnsignedInteger,
+                '$VT_Float' => self::VT_Float,
+                '$VT_SignedInteger' => self::VT_SignedInteger,
+                '$MB_BigEndian_WordSwap' => self::MB_BigEndian_WordSwap,
+                '$MB_BigEndian' => self::MB_BigEndian
+            ]);
             $this->SetBuffer("ModBusConfig", $config);
-        } 
+        }
         //JSON in Array umwandeln
         $aConfig = json_decode($config, true, 4);
         if (json_last_error() !== JSON_ERROR_NONE){//Fehler darf nur beim Entwickler auftreten (nach Anpassung der JSON-Daten). Wird daher direkt als echo ohne Übersetzung ausgegeben.
-            echo("GetModBusConfig - Error in JSON (".json_last_error_msg()."). Please check Replacements and File-Content of ".__DIR__."/ModBusConfig.json");
-            echo($config);
+            echo("GetModBusConfig - Error in JSON (".json_last_error_msg()."). Please check ReplaceMap / Variables and File-Content of ".__DIR__."/ModBusConfig.json");
             exit;
         }
         return $aConfig;
+    }
+
+    /**
+    * Liest Informationen zur Geräte-Erkennung vom Gerät aus und aktualisiert diese im Formular
+    * @access private
+    * @return array mit Geräte-Informationen oder Fehlermeldung
+    */
+    private function GetDeviceInfo(){
+        $device = json_decode($this->GetBuffer("DeviceInfo"), 1);//Aktuell bekannte Geräte-Parameter aus Cache holen
+
+        //Prüfen ob es sich um einen Kostal Wechselrichter handelt
+        $read = $this->Translate("Reading device information...");
+        $this->UpdateFormField("Device", "caption", $read . "(Manufacturer)");
+        $mfc = $this->RequestReadIdent("Manufacturer");
+        if ($mfc !== "KOSTAL"){
+            $device['String'] = $this->Translate("Device information could not be read. Gateway settings correct?");
+            $device['Error'] = true;
+            $this->UpdateFormField("Device", "caption", $device['String']);
+            $this->LogMessage($device['String'], KL_ERROR);
+            return $device;
+        }
+
+        //SerienNr lesen
+        $this->UpdateFormField("Device", "caption", $read . "(SerialNr)");
+        $serialNr = $this->RequestReadIdent("SerialNr");
+        if (is_null($device) || $device['SerialNr'] !== $serialNr){//Neue SerienNr/Gerät - Werte neu einlesen
+            $device = ['Manufacturer' => $mfc, 'Error' => false];
+        }
+        $device['SerialNr'] = $serialNr;
+
+        //Folgende Werte könnten ändern, daher immer auslesen
+        $this->UpdateFormField("Device", "caption", $read . "(NetworkName)");
+        $device['NetworkName'] = $this->RequestReadIdent("NetworkName");
+        $this->UpdateFormField("Device", "caption", $read . "(SoftwareVersionMC)");
+        $device['FWVersion'] = $this->RequestReadIdent("SoftwareVersionMC");
+
+        //unbekannte Werte vom Gerät auslesen
+        $idents = ["ProductName", "PowerClass", "BTReadyFlag", "SensorType"];
+        foreach ($idents as $ident){
+            if (!key_exists($ident, $device) || is_null($device[$ident])){
+                if ($this->IsIdentAvailable($ident, $device['FWVersion'])) {
+                    $this->UpdateFormField('Device', 'caption', $read . "($ident)");
+                    $device[$ident] = $this->RequestReadIdent($ident);
+                }
+            }
+        }
+        
+        $device['String'] = $device['Manufacturer']." ".$device['ProductName']." ".$device['PowerClass']." ($serialNr) - ".$device['NetworkName']." - FW ".$device['FWVersion'];
+        $this->UpdateFormField("Device", "caption", $device['String']);
+
+        $this->SetBuffer("DeviceInfo", json_encode($device));//Aktuell bekannte Geräte-Parameter im Cache zwischenspeichern
+        return $device;
+    }
+
+    /**
+     * Prüft ob $Ident in der ModBus-Config für $FWVersion vorhanden ist.
+     * @param $Ident der zu lesende ModBus-Parameter
+     * @param optional $FWVersion die geprüft werden soll
+     * @access private
+     * @return boolean
+     */
+    private function IsIdentAvailable(string $Ident, string $FWVersion = ""){
+        if ($FWVersion == ""){
+            $FWVersion = json_decode($this->GetBuffer("DeviceInfo"), 1)['FWVersion'];
+        }
+        $mbConfig = $this->GetModBusConfig();
+        if (key_exists($Ident, $mbConfig)){//Konfiguration ist vorhanden
+            if (floatval($FWVersion) >= floatval($mbConfig[$Ident]['FWVersion'])){//FW-Version passt
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -173,56 +259,15 @@ class JoTKPP extends JoTModBus {
      * @access public
      */
     public function MessageSink($TimeStamp, $SenderID, $MessageID, $Data) {
-        if ($MessageID == FM_CONNECT){
-            $this->LogMessage("Gateway has changed: " . print_r($Data, true), KL_MESSAGE);
-            $this->SetTimerInterval("DeviceDiscovery", 2000);
-            $this->UpdateFormField("Device", "caption", $this->Translate("Reading device information..."));
-        }
-    }
-
-    /**
-    * Liest Informationen zur Geräte-Erkennung vom Gerät aus und aktualisiert diese im Formular
-    * @access private
-    */
-    private function DeviceDiscovery(){
-        $device = json_decode($this->GetBuffer("DeviceInfo"), 1);//Aktuell bekannte Geräte-Parameter aus Cache holen
-        if (is_null($device)){//initiale Werte wenn Buffer leer
-            $device = ['Retry' => 0, 'SerialNr' => null];
-        }
-        $dev = $this->Translate("Reading device information...") . " (" . ($device['Retry'] + 1). ")";
-        $serialNr = $this->RequestReadIdent("SerialNr");
-        if (is_string($serialNr)){//Wenn SerienNr lesbar ist auch weitere Parameter auslesen
-            if ($serialNr !== $device['SerialNr']){//Werte bei anderer SN zurücksetzen
-                $device = ['Retry' => 0, 'SerialNr' => $serialNr];
+        if ($MessageID == FM_CONNECT){//Gateway wurde geändert
+            $this->RegisterOnceTimer("GetDeviceInfo", 'IPS_RequestAction($_IPS["TARGET"], "GetDeviceInfo", "");');
+            foreach ($this->GetMessageList() as $id => $msgs){//Nachrichten von alten GWs deaktivieren
+                $this->UnregisterMessage($id, IM_CHANGESETTINGS);
             }
-            //unbekannte Werte vom Gerät auslesen
-            $idents = ["Manufacturer", "ProductName", "PowerClass"];
-            foreach ($idents as $ident){
-                if (!key_exists($ident, $device) || is_null($device[$ident])){
-                    $device[$ident] = $this->RequestReadIdent($ident);
-                    if ((!is_null($device[$ident]) && !is_string($device[$ident])) || (is_string($device[$ident]) && strlen($device[$ident]) < 2)){//falsches ModBus-Gerät
-                        $device[$ident] = null;
-                        $device['Retry'] = 99;
-                        break;
-                    }
-                }
-            }
-            $device['NetworkName'] = $this->RequestReadIdent("NetworkName");//könnte ändern, daher immer auslesen
-            //Erfahrungsgemäss hat der WR manchmal ein Problem bei der Rückgabe dieser Werte. Daher...
-            if (array_search(null, $device, true) === false){//nur wenn alle Werte bekannt sind...
-                $dev = $device['Manufacturer']." ".$device['ProductName']." ".$device['PowerClass']." ($serialNr) - ".$device['NetworkName'];
-                $this->SetTimerInterval("DeviceDiscovery", 0);
-                $device['Retry'] = 0;
-            }
+            $this->RegisterMessage(IPS_GetInstance($this->InstanceID)['ConnectionID'], IM_CHANGESETTINGS);
+        } else if ($MessageID == IM_CHANGESETTINGS){//Einstellungen im Gateway wurde geändert
+            $this->RegisterOnceTimer("GetDeviceInfo", 'IPS_RequestAction($_IPS["TARGET"], "GetDeviceInfo", "");');
         }
-        if ($device['Retry'] >= 2){//sonst, nach 2 Versuchen abbrechen
-            $dev = $this->Translate("Device information could not be read. Gateway settings correct?");
-            $this->SetTimerInterval("DeviceDiscovery", 0);
-            $device['Retry'] = -1;
-        }
-        $device['Retry'] = $device['Retry'] + 1;
-        $this->SetBuffer("DeviceInfo", json_encode($device));//Aktuell bekannte Geräte-Parameter im Cache zwischenspeichern
-        $this->UpdateFormField("Device", "caption", $dev);
     }
 
     /**

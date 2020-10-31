@@ -37,7 +37,7 @@ class JoTModBus extends IPSModule {
     protected const FC_Write_SingleHoldingRegister = 6;
     protected const FC_Write_MultipleCoils = 15;
     protected const FC_Write_MultipleHoldingRegisters = 16;
-    protected const STATUS_Instance_Active = 102;
+    protected const STATUS_Ok_InstanceActive = 102;
     protected const STATUS_Error_RequestTimeout = 408;
     protected const STATUS_Error_PreconditionRequired = 428;
     private const PREFIX = "JoTMB";
@@ -106,8 +106,8 @@ class JoTModBus extends IPSModule {
                 $this->SendDebug("ConvertMBtoPHP Addr $Address VarType $VarType", $value, 0);
                 $value = $this->CalcFactor($value, $Factor);
                 $this->SendDebug("CalcFactor Addr $Address Factor $Factor", $value, 0);
-                if($this->GetStatus() !== self::STATUS_Instance_Active){
-                    $this->SetStatus(self::STATUS_Instance_Active);
+                if($this->GetStatus() !== self::STATUS_Ok_InstanceActive){
+                    $this->SetStatus(self::STATUS_Ok_InstanceActive);
                 }
                 return $value;
             }

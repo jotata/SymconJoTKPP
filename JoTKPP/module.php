@@ -21,6 +21,7 @@ require_once(__DIR__ . "/../libs/JoT_ModBus.php");  //Bibliothek für ModBus-Int
  */
 class JoTKPP extends JoTModBus {
     protected const PREFIX = "JoTKPP";
+    protected const STATUS_Error_WrongDevice = 416;
     
     use VariableProfile;
     use Translation;
@@ -198,6 +199,9 @@ class JoTKPP extends JoTModBus {
             $device['Error'] = true;
             $this->UpdateFormField("Device", "caption", $device['String']);
             $this->LogMessage($device['String'], KL_ERROR);
+            if ($this->GetStatus() == self::STATUS_Ok_InstanceActive){
+                $this->SetStatus(self::STATUS_Error_WrongDevice);
+            }
             return $device;
         }
 

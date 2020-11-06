@@ -16,9 +16,43 @@
     ],
     "elements":[
         {
-            "name": "Device",
-            "type": "Label",
-            "caption": "$DeviceString"
+            "type": "RowLayout",
+            "items": [
+                {
+                    "name": "Device",
+                    "type": "Label",
+                    "caption": "$DeviceString"
+                },{
+                    "name": "DeviceInfo",
+                    "type": "PopupButton",
+                    "caption": "Device Info",
+                    "popup": {
+                        "caption": "Device Info",
+                        "items": [
+                            {
+                                "type": "List",
+                                "name": "DeviceInfoValues",
+                                "sort": {
+                                    "column": "Name",
+                                    "direction": "ascending"
+                                },
+                                "columns": [
+                                    {
+                                        "caption": "Name",
+                                        "name": "Name",
+                                        "width": "150px"
+                                    },{
+                                        "caption": "Value",
+                                        "name": "Value",
+                                        "width": "auto"
+                                    }
+                                ],
+                                "values": "$DeviceInfoValues"
+                            }
+                        ]
+                    }
+                }
+            ]
         },{
             "type": "RowLayout",
             "items": [

@@ -150,6 +150,10 @@ class JoTKPP extends JoTModBus {
         //Variabeln in $form ersetzen
         $form = file_get_contents(__DIR__ . "/form.json");
         $form = str_replace("\$DeviceString", $device['String'], $form);
+        foreach ($device as $ident => $value) {
+            $diValues[] = ["Name" => $ident, "Value" => $value];
+        }
+        $form = str_replace('"$DeviceInfoValues"', json_encode($diValues), $form); //Values für 'DeviceInfos' setzen
         $form = str_replace('"$ModuleVariablesValues"', json_encode($values), $form); //Values für 'ModuleVariables' setzen
         return $form;
     }
@@ -184,10 +188,11 @@ class JoTKPP extends JoTModBus {
 
     /**
     * Liest Informationen zur Geräte-Erkennung vom Gerät aus und aktualisiert diese im Formular
-    * @access private
+    * @access public
     * @return array mit Geräte-Informationen oder Fehlermeldung
     */
-    private function GetDeviceInfo(){
+    public function GetDeviceInfo(){
+        $this->UpdateFormField("DeviceInfo", "visible", false);
         $device = json_decode($this->GetBuffer("DeviceInfo"), 1);//Aktuell bekannte Geräte-Parameter aus Cache holen
 
         //Prüfen ob es sich um einen Kostal Wechselrichter handelt
@@ -199,7 +204,7 @@ class JoTKPP extends JoTModBus {
             $device['Error'] = true;
             $this->UpdateFormField("Device", "caption", $device['String']);
             $this->LogMessage($device['String'], KL_ERROR);
-            if ($this->GetStatus() == self::STATUS_Ok_InstanceActive){
+            if ($this->GetStatus() == self::STATUS_Ok_InstanceActive){//ModBus-Verbindung OK, aber falsche Antwort
                 $this->SetStatus(self::STATUS_Error_WrongDevice);
             }
             return $device;
@@ -220,7 +225,7 @@ class JoTKPP extends JoTModBus {
         $device['FWVersion'] = $this->RequestReadIdent("SoftwareVersionMC");
 
         //unbekannte Werte vom Gerät auslesen
-        $idents = ["ProductName", "PowerClass", "BTReadyFlag", "SensorType"];
+        $idents = ["ProductName", "PowerClass", "BTReadyFlag", "SensorType", "BTType", "BTCrossCapacity", "BTManufacturer", "NumberPVStrings", "HardwareVersion"];
         foreach ($idents as $ident){
             if (!key_exists($ident, $device) || is_null($device[$ident])){
                 if ($this->IsIdentAvailable($ident, $device['FWVersion'])) {
@@ -230,8 +235,9 @@ class JoTKPP extends JoTModBus {
             }
         }
         
-        $device['String'] = $device['Manufacturer']." ".$device['ProductName']." ".$device['PowerClass']." ($serialNr) - ".$device['NetworkName']." - FW ".$device['FWVersion'];
+        $device['String'] = $device['Manufacturer']." ".$device['ProductName']." ".$device['PowerClass']." ($serialNr) - ".$device['NetworkName'];
         $this->UpdateFormField("Device", "caption", $device['String']);
+        $this->UpdateFormField("DeviceInfo", "visible", true);
 
         $this->SetBuffer("DeviceInfo", json_encode($device));//Aktuell bekannte Geräte-Parameter im Cache zwischenspeichern
         return $device;
@@ -246,7 +252,12 @@ class JoTKPP extends JoTModBus {
      */
     private function IsIdentAvailable(string $Ident, string $FWVersion = ""){
         if ($FWVersion == ""){
-            $FWVersion = json_decode($this->GetBuffer("DeviceInfo"), 1)['FWVersion'];
+            $FWVersion = json_decode($this->GetBuffer("DeviceInfo"), 1);
+            if (!key_exists("FWVersion", $FWVersion)){
+                $FWVersion = "??";
+            } else {
+                $FWVersion = $FWVersion['FWVersion'];
+            }
         }
         $mbConfig = $this->GetModBusConfig();
         if (key_exists($Ident, $mbConfig)){//Konfiguration ist vorhanden
@@ -292,8 +303,8 @@ class JoTKPP extends JoTModBus {
         $values = [];
         $mvKeys = array_flip(array_column($moduleVariables, "Ident"));
         foreach ($mbConfig as $ident => $config){//Loop durch $mbConfig, damit Werte auch ausgelesen werden können, wenn Instanz noch nicht gespeichert ist.
-            //Wenn ENTWEDER entsprechende Variable auf Poll ODER $force true ODER aktuelle Variable in Liste der angeforderten Idents
-            if ((key_exists($ident, $mvKeys) && $moduleVariables[$mvKeys[$ident]]['Poll'] == true && $force === false) || $force === true || (is_string($force) && strpos($force, $ident) !== false)){
+            //Wenn ENTWEDER entsprechende Variable auf Poll ODER $force true ODER aktuelle Variable in Liste der angeforderten Idents (strpos mit Leerzeichen, da mehrere Idents ebenfalls mit Leerzeichen getrennt werden).
+            if ((key_exists($ident, $mvKeys) && $moduleVariables[$mvKeys[$ident]]['Poll'] == true && $force === false) || $force === true || (is_string($force) && strpos(" $force ", " $ident ") !== false)){
                 $this->SendDebug("RequestRead", "Ident: $ident on Address: ".$config['Address'], 0);
                 $value = $this->ReadModBus($config['Function'], $config['Address'], $config['Quantity'], $config['Factor'], $config['MBType'], $config['VarType']);
                 if (@IPS_GetObjectIDByIdent($ident, $this->InstanceID) !== false){//Instanz-Variablen sind nur für Werte mit aktivem Polling vorhanden

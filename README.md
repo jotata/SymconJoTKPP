@@ -89,6 +89,7 @@ Um diesen Hänger zu vermeiden, kann man vor dem Update den "Aktualisierungs-Int
   - JoTKPP_RequestReadIdent(string $Ident): Liest alle Werte, deren Ident angegeben wird (mehrere Idents werden durch ein Leerzeichen getrennt).*
   - JoTKPP_RequestReadGroup(string $Gruppe): Liest alle Werte, deren Gruppe angegeben wird (mehrere Gruppen werden durch ein Leerzeichen getrennt).*
   - JoTKPP_CheckFirmwareUpdate(): Holt den Namen der aktuellsten FW-Datei bei Kostal, speichert diese in einer Instanz-Variable und gibt sie als String zurück.
+  - JoTKPP_GetDeviceInfo(): Gibt die wichtigsten Geräte-Informationen als Array zurück.
 
   *) Die Werte werden auch gelesen, wenn der Haken "Aktiv" nicht gesetzt ist. Sie werden dann jedoch nur als Array zurückgegeben und nicht in eine Instanz-Variable geschrieben.
   
@@ -109,6 +110,9 @@ Version 1.4 (ALPHA)
 - Profil Status.KostalFuse umgedreht (kann leider nicht testen, ob dies bei einer ausgelösten Sicherung nun korrekt funktioniert)
 - Verbesserung bei den JSON-Konfigurations-Daten
 - Verbesserung beim Device-Discovery (inkl. Prüfung bei Änderung des Gateways)
+- Fehler mit JoTKPP_RequestReadIdents behoben, wenn Idents gleichen String enthalten
+- Neue Public Function JoTKPP_GetDeviceInfo() hinzugefügt
+- Geräte-Informationen können nun direkt in der Instanzkonfiguration angezeigt werden
 
 Version 1.3
 - Fehler im Profil "JoTKPP.Battery.Charge" behoben, welcher dazu führte, dass IPS beim Anzeigen von Diagrammen mit diesem Profil abstürzte.

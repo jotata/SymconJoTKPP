@@ -88,7 +88,7 @@ class JoTKPP extends JoTModBus {
      * @return string JSON-Codiertes Formular
      * @access public
      */
-    public function GetConfigurationForm(){
+    public function GetConfigurationFormOld(){
         $values = [];
         $device = $this->GetDeviceInfo();
         //ModBus-Parameter nur anzeigen wenn FW-Version bekannt ist
@@ -140,6 +140,82 @@ class JoTKPP extends JoTModBus {
                     $values[$ident]['Name'] = $this->Translate('ModBus-Definition for this entry does not exist anymore.');
                     $values[$ident]['rowColor'] = '#FFC0C0';
                     $values[$ident]['deletable'] = true;
+                }
+                $sValues[] = $values[$ident];
+                unset($values[$ident]);
+            }
+            $values = array_merge($sValues, array_values($values)); //neue Definitionen am Ende einfügen
+        }
+
+        //Variabeln in $form ersetzen
+        $form = file_get_contents(__DIR__ . "/form.json");
+        $form = str_replace("\$DeviceString", $device['String'], $form);
+        foreach ($device as $ident => $value) {
+            $diValues[] = ["Name" => $ident, "Value" => $value];
+        }
+        $form = str_replace('"$DeviceInfoValues"', json_encode($diValues), $form); //Values für 'DeviceInfos' setzen
+        $form = str_replace('"$ModuleVariablesValues"', json_encode($values), $form); //Values für 'ModuleVariables' setzen
+        return $form;
+    }
+    public function GetConfigurationForm(){
+        $values = [];
+        $device = $this->GetDeviceInfo();
+        //ModBus-Parameter nur anzeigen wenn FW-Version bekannt ist
+        if (key_exists("FWVersion", $device) && $device['FWVersion'] != "") {
+            $fwVersion = floatval($device['FWVersion']);
+
+            //Values für Liste vorbereiten (vorhandene Variabeln)
+            $mbConfig = $this->GetModBusConfig();
+            $variable = [];
+            $eid = 1;
+            foreach ($mbConfig as $ident => $config) {
+                if (array_key_exists($config['Group'], $values) === false){//Gruppe exstiert im Tree noch nicht
+                    $values[$config['Group']] = ["Group" => $config['Group'], "Ident" => $config['Group'], "id" => $eid++, "parent" => 0, "rowColor" => "#DFDFDF", "editable" => false, "deletable" => false];
+                }
+                $variable['parent'] = $values[$config['Group']]['id'];
+                $variable['id'] = $eid++;
+                $variable['Group'] = $config['Group'];
+                $variable['Ident'] = $ident;
+                $variable['Name'] = $config['Name'];
+                $variable['cName'] = '';
+                $variable['Profile'] = $this->CheckProfileName($config['Profile']); //Damit wird der PREFIX immer davor hinzugefügt
+                $variable['cProfile'] = '';
+                $variable['FWVersion'] = floatval($config['FWVersion']);
+                $variable['Poll'] = false;
+                if (array_key_exists('Poll', $config)) {
+                    //Übernimmt Poll nur initial bei Erstellung der Instanz (als Vorschlag), danach wird Poll von ModuleVariables überschrieben
+                    $variable['Poll'] = $config['Poll'];
+                }
+                if (($id = @IPS_GetObjectIDByIdent($ident, $this->InstanceID)) !== false) {//Falls Variable bereits existiert, deren Werte übernehmen
+                    $obj = IPS_GetObject($id);
+                    $var = IPS_GetVariable($id);
+                    if ($obj['ObjectName'] != $config['Name']) {
+                        $variable['cName'] = $obj['ObjectName'];
+                    }
+                    $variable['Pos'] = $obj['ObjectPosition'];
+                    $variable['cProfile'] = $var['VariableCustomProfile'];
+                }
+
+                //Nur Variablen aktivieren, welche mit der aktuellen FW abrufbar sind
+                $variable['deletable'] = false;
+                $variable['editable'] = true;
+                if ($fwVersion < $variable['FWVersion']) {
+                    $variable['editable'] = false;
+                    $variable['Poll'] = false;
+                }
+
+                $values[$ident] = $variable;
+            }
+
+            //Sortieren der Einträge - muss analog ModuleVariables sein (sonst entsteht bei neuen / geänderten Definitionen ein Durcheinander)
+            $mvKeys = array_column(json_decode($this->ReadPropertyString('ModuleVariables'), 1), 'Ident');
+            $sValues = [];
+            foreach ($mvKeys as $ident) {
+                if (array_key_exists($ident, $values) === false) {//Definition wurde aus ModBusConfig.json entfernt/umbenannt
+                    $values[$ident]['Name'] = sprintf($this->Translate("ModBus-Definition for '%s' does not exist anymore."), $ident);
+                    $values[$ident]['rowColor'] = '#FFC0C0';
+                    $values[$ident]['deletable'] = true;
+                    $values[$ident]['id'] = $eid++;
                 }
                 $sValues[] = $values[$ident];
                 unset($values[$ident]);

@@ -26,7 +26,7 @@ Die Daten werden mittels ModBus abgefragt. Der Benutzer kann frei entscheiden, w
 Das Modul prüft zudem, ob online eine neue FW-Version für den Wechselrichter verfügbar ist.
 
 ## 2. Voraussetzungen
- - IPS 5.2 oder höher  
+ - IPS 5.5 oder höher  
  - Kostal Wechselrichter mit aktivierter ModBus-Schnittstelle
 
 ## 3. Unterstütze Geräte

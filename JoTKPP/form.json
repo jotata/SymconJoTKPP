@@ -72,14 +72,14 @@
                 }
             ]
         },{
-            "type": "List",
+            "type": "Tree",
             "name": "ModuleVariables",
             "caption": "Device Parameters",
             "visible": true,
             "add": false,
             "delete": true,
             "sort": {
-                "column": "Group",
+                "column": "Ident",
                 "direction": "ascending"
             },
             "columns": [

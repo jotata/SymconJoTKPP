@@ -27,7 +27,7 @@
             "Error reading FW-Version from '%s'!": "Fehler beim lesen der FW-Version von '%s'!",
             "Reading device information...": "Lese Geräte-Informationen...",
             "Device information could not be read. Gateway settings correct?": "Geräte-Informationen konnten nicht gelesen werden. Gateway Einstellungen korrekt?",
-            "ModBus-Definition for this entry does not exist anymore.": "ModBus-Definition für diesen Eintrag existiert nicht mehr."
+            "ModBus-Definition for '%s' does not exist anymore.": "ModBus-Definition für '%s' existiert nicht mehr."
         }
     }
 }

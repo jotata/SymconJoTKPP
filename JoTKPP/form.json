@@ -86,11 +86,13 @@
                 {
                     "caption": "Group",
                     "name": "Group",
-                    "width": "150px"
+                    "width": "150px",
+                    "onClick": "IPS_RequestAction($id, 'FormAddIdent', json_encode(array('Group', $RequestRead.' '.$ModuleVariables['Group'])));"
                 },{
                     "caption": "Ident",
                     "name": "Ident",
                     "width": "200px",
+                    "onClick": "IPS_RequestAction($id, 'FormAddIdent', json_encode(array('Ident', $RequestRead.' '.$ModuleVariables['Ident'])));",
                     "save": true
                 },{
                     "caption": "Name",
@@ -124,6 +126,49 @@
                 }
             ],
             "values": "$ModuleVariablesValues"
+        },{
+            "type": "RowLayout",
+            "items": [
+                {
+                    "type": "ValidationTextBox",
+                    "name": "RequestRead",
+                    "caption": "",
+                    "width": "800px",
+                    "enabled": true,
+                    "save": false
+                },{
+                    "type": "Button",
+                    "caption": "Clear",
+                    "onClick": "IPS_RequestAction($id, 'FormAddIdent', json_encode(array('Group', '')));"
+                },{
+                    "type": "ValidationTextBox",
+                    "name": "EventName",
+                    "caption": "Event Name",
+                    "save": false
+                },{
+                    "type": "Select",
+                    "name": "EventType",
+                    "caption": "Event Type",
+                    "width": "100px",
+                    "save": false,
+                    "options": [
+                        { "caption": "Cyclic", "value": 1 },
+                        { "caption": "Trigger", "value": 0 }
+                    ]
+                },{
+                    "type": "Button",
+                    "name": "CreateEvent",
+                    "caption": "Create Event",
+                    "enabled": false,
+                    "onClick": "IPS_RequestAction($id, 'CreateEvent', json_encode(array($EventName, $EventType, $RequestRead))); echo '$EventCreated';"
+                },{
+                    "type": "OpenObjectButton",
+                    "name": "OpenEvent",
+                    "caption": "Edit Event",
+                    "visible": false,
+                    "objectID": 0
+                }
+            ]
         }
     ],
     "actions":[]

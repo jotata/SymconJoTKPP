@@ -88,75 +88,6 @@ class JoTKPP extends JoTModBus {
      * @return string JSON-Codiertes Formular
      * @access public
      */
-    public function GetConfigurationFormOld(){
-        $values = [];
-        $device = $this->GetDeviceInfo();
-        //ModBus-Parameter nur anzeigen wenn FW-Version bekannt ist
-        if (key_exists("FWVersion", $device) && $device['FWVersion'] != "") {
-            $fwVersion = floatval($device['FWVersion']);
-
-            //Values für Liste vorbereiten (vorhandene Variabeln)
-            $mbConfig = $this->GetModBusConfig();
-            $variable = [];
-            foreach ($mbConfig as $ident => $config) {
-                $variable['Ident'] = $ident;
-                $variable['Group'] = $config['Group'];
-                $variable['Name'] = $config['Name'];
-                $variable['cName'] = '';
-                $variable['Profile'] = $this->CheckProfileName($config['Profile']); //Damit wird der PREFIX immer davor hinzugefügt
-                $variable['cProfile'] = '';
-                $variable['FWVersion'] = floatval($config['FWVersion']);
-                $variable['Poll'] = false;
-                if (array_key_exists('Poll', $config)) {
-                    //Übernimmt Poll nur initial bei Erstellung der Instanz (als Vorschlag), danach wird Poll von ModuleVariables überschrieben
-                    $variable['Poll'] = $config['Poll'];
-                }
-                if (($id = @IPS_GetObjectIDByIdent($ident, $this->InstanceID)) !== false) {//Falls Variable bereits existiert, deren Werte übernehmen
-                    $obj = IPS_GetObject($id);
-                    $var = IPS_GetVariable($id);
-                    if ($obj['ObjectName'] != $config['Name']) {
-                        $variable['cName'] = $obj['ObjectName'];
-                    }
-                    $variable['Pos'] = $obj['ObjectPosition'];
-                    $variable['cProfile'] = $var['VariableCustomProfile'];
-                }
-
-                //Nur Variablen aktivieren, welche mit der aktuellen FW abrufbar sind
-                $variable['deletable'] = false;
-                $variable['editable'] = true;
-                if ($fwVersion < $variable['FWVersion']) {
-                    $variable['editable'] = false;
-                    $variable['Poll'] = false;
-                }
-
-                $values[$ident] = $variable;
-            }
-
-            //Sortieren der Einträge - muss analog ModuleVariables sein (sonst entsteht bei neuen / geänderten Definitionen ein Durcheinander)
-            $mvKeys = array_column(json_decode($this->ReadPropertyString('ModuleVariables'), 1), 'Ident');
-            $sValues = [];
-            foreach ($mvKeys as $ident) {
-                if (array_key_exists($ident, $mbConfig) === false) {//Definition wurde aus ModBusConfig.json entfernt/umbenannt - Möglichkeit zur Löschung freischalten
-                    $values[$ident]['Name'] = $this->Translate('ModBus-Definition for this entry does not exist anymore.');
-                    $values[$ident]['rowColor'] = '#FFC0C0';
-                    $values[$ident]['deletable'] = true;
-                }
-                $sValues[] = $values[$ident];
-                unset($values[$ident]);
-            }
-            $values = array_merge($sValues, array_values($values)); //neue Definitionen am Ende einfügen
-        }
-
-        //Variabeln in $form ersetzen
-        $form = file_get_contents(__DIR__ . "/form.json");
-        $form = str_replace("\$DeviceString", $device['String'], $form);
-        foreach ($device as $ident => $value) {
-            $diValues[] = ["Name" => $ident, "Value" => $value];
-        }
-        $form = str_replace('"$DeviceInfoValues"', json_encode($diValues), $form); //Values für 'DeviceInfos' setzen
-        $form = str_replace('"$ModuleVariablesValues"', json_encode($values), $form); //Values für 'ModuleVariables' setzen
-        return $form;
-    }
     public function GetConfigurationForm(){
         $values = [];
         $device = $this->GetDeviceInfo();
@@ -170,7 +101,8 @@ class JoTKPP extends JoTModBus {
             $eid = 1;
             foreach ($mbConfig as $ident => $config) {
                 if (array_key_exists($config['Group'], $values) === false){//Gruppe exstiert im Tree noch nicht
-                    $values[$config['Group']] = ["Group" => $config['Group'], "Ident" => $config['Group'], "id" => $eid++, "parent" => 0, "rowColor" => "#DFDFDF", "editable" => false, "deletable" => false];
+                    //$values[$config['Group']] = ["Group" => $config['Group'], "Ident" => $config['Group'], "id" => $eid++, "parent" => 0, "rowColor" => "#DFDFDF", "editable" => false, "deletable" => false];
+                    $values[$config['Group']] = ["Group" => $config['Group'], "Ident" => "", "id" => $eid++, "parent" => 0, "rowColor" => "#DFDFDF", "editable" => false, "deletable" => false];
                 }
                 $variable['parent'] = $values[$config['Group']]['id'];
                 $variable['id'] = $eid++;
@@ -230,8 +162,56 @@ class JoTKPP extends JoTModBus {
             $diValues[] = ["Name" => $ident, "Value" => $value];
         }
         $form = str_replace('"$DeviceInfoValues"', json_encode($diValues), $form); //Values für 'DeviceInfos' setzen
-        $form = str_replace('"$ModuleVariablesValues"', json_encode($values), $form); //Values für 'ModuleVariables' setzen
+        $form = str_replace('"$ModuleVariablesValues"', json_encode($values), $form); //Values für 'IdentList' setzen
+        $form = str_replace('$EventCreated', $this->Translate("Event was created. Please check/change settings."), $form); //Values für 'IdentList' setzen
         return $form;
+    }
+
+    /**
+    * Fügt einen Ident zur Liste für CreateEvent hinzu
+    * @param string $Submit json_codiertes Array(string Type, string Ident(s))
+    * @access private
+    */
+    private function FormAddIdent(string $Submit){
+        $Submit = json_decode($Submit, 1);
+        $lastType = $this->GetBuffer("lastType");
+        $type = $Submit[0];
+        $ident = $Submit[1];
+        if ($lastType !== $type){
+            $ident = @array_pop(explode(" ", $ident));//letzen (neuen) Wert nehmen
+        } else {
+            $ident = implode(" ", array_unique(explode(" ", $ident)));//doppelte Werte entfernen
+        }
+        $this->UpdateFormField("CreateEvent", "enabled", ($ident !== ""));
+        $this->UpdateFormField("RequestRead", "caption", static::PREFIX."_RequestRead$type");
+        $this->UpdateFormField("RequestRead", "value", $ident);
+        $this->SetBuffer("lastType", $type);
+    }
+
+    /**
+    * Erstellt einen Event mit Action RequestReadGroup/Ident($Idents)
+    * @param string string $Submit json_codiertes Array(string EventName, string EventType, string Ident(s))
+    * @access private
+    */
+    private function CreateEvent(string $Submit){
+        $Submit = json_decode($Submit, 1);
+        $eventName = $Submit[0];
+        $eventType = $Submit[1];
+        $idents = $Submit[2];
+        $type = $this->GetBuffer("lastType");
+        $action = static::PREFIX."_RequestRead$type(\$_IPS['TARGET'], '$idents');";
+        $eId = IPS_CreateEvent($eventType);
+        IPS_SetParent($eId, $this->InstanceID);
+        IPS_SetName($eId, $eventName);
+        IPS_SetEventScript($eId, $action);
+        if ($eventType == EVENTTYPE_CYCLIC){
+            IPS_SetEventCyclic($eId, 0, 0, 0, 0, 1, 30);//alle 30 Sekunden
+        }
+        IPS_SetEventActive($eId, false); 
+        $this->UpdateFormField("OpenEvent", "caption", sprintf($this->Translate("Check Event (%s)"), $eId));
+        $this->UpdateFormField("OpenEvent", "objectID", $eId);
+        $this->UpdateFormField("OpenEvent", "visible", true);
+        IPS_LogMessage(static::PREFIX." (#".$this->InstanceID.")", "#$eId - ".$this->Translate("Event was created. Please check/change settings."));
     }
 
     /**

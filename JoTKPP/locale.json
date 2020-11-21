@@ -27,7 +27,16 @@
             "Error reading FW-Version from '%s'!": "Fehler beim lesen der FW-Version von '%s'!",
             "Reading device information...": "Lese Geräte-Informationen...",
             "Device information could not be read. Gateway settings correct?": "Geräte-Informationen konnten nicht gelesen werden. Gateway Einstellungen korrekt?",
-            "ModBus-Definition for '%s' does not exist anymore.": "ModBus-Definition für '%s' existiert nicht mehr."
+            "ModBus-Definition for '%s' does not exist anymore.": "ModBus-Definition für '%s' existiert nicht mehr.",
+            "Clear": "Leeren",
+            "Event Name": "Ereignis Name",
+            "Event Type": "Ereignis Art",
+            "Cyclic": "Zyklisch",
+            "Trigger": "Ausgelöst",
+            "Create Event": "Ereignis erstellen",
+            "Event was created. Please check/change settings.": "Ereignis wurde erstellt. Bitte Einstellungen prüfen/anpassen.",
+            "Check Event (%s)": "Ereignis (%s) prüfen"
+
         }
     }
 }

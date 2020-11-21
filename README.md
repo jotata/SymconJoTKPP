@@ -81,6 +81,14 @@ Um diesen Hänger zu vermeiden, kann man vor dem Update den "Aktualisierungs-Int
    - Profil: Standard-Profil des Modules.
    - Eigenes Profil: Ihr könnt der Instanz-Variable ein eigenes Profil zuweisen (z.B. für Batterie-Ladezustand). Dieses wird dann hier angezeigt.
    - Aktiv: Wenn der Haken gesetzt ist, wird einen entsprechende Instanz-Variable erstellt. VORSICHT: Wird der Haken entfernt und die Konfiguration gespeichert, so wird die entsprechende Instanz-Variable gelöscht.
+   - Zusätzliche Abfragen erstellen:
+     - Gewünsche Gruppen ODER Idents anklicken -> diese werden unten aufgelistet und können von hier direkt kopiert werden um ein Ereignis anzupassen oder in einer Modulfunktion abzufragen.
+     - Einen Namen für das Ereignis eingeben (optional)
+     - Den Ereignis-Typ auswählen
+     - Das Ereignis mit dem Button "Ereignis erstellen" einrichten (das Ereignis wird nur erstellt, jedoch nicht aktiviert)
+     - Mit dem zusätzliche Button "Ereignis (xxxxx) prüfen" kann das neu erstelle Ereignis direkt geöffnet und angepasst / aktiviert werden
+     Mit den Bedingungen eines Ereignisses ist es möglich, sehr komplexe Abfrage-Muster zu erstellen (z.B. PV-Werte nur tagsüber abfragen, wenn da auch ein Strom fliesst).
+     Ereignisse schreiben die Werte nur in eine Staus-Variable, wenn diese vorher unter Geräte-Eigenschaften "aktiviert" wurden. Dort kann der Abfrage-Intervall dan einfach auf "0" gestellt werden.
 
   ### 3. Modul-Funktionen
   Die folgenden Funktionen stehen in IPS-Ereignissen/-Scripts zur Verfügung:
@@ -113,6 +121,7 @@ Version 1.4 (ALPHA)
 - Fehler mit JoTKPP_RequestReadIdents behoben, wenn Idents gleichen String enthalten
 - Neue Public Function JoTKPP_GetDeviceInfo() hinzugefügt
 - Geräte-Informationen können nun direkt in der Instanzkonfiguration angezeigt werden
+- Im Konfigurationsformular ist es nun möglich, einzelne Idents / Gruppen auszuwählen und für deren Abfrage ein Ereignis zu erstellen
 
 Version 1.3
 - Fehler im Profil "JoTKPP.Battery.Charge" behoben, welcher dazu führte, dass IPS beim Anzeigen von Diagrammen mit diesem Profil abstürzte.

@@ -3,7 +3,7 @@
  * @File:			 TODOs.txt
  * @Create Date:	 30.05.2019 09:59:20
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 07.11.2020 20:39:41
+ * @Last Modified:	 21.11.2020 17:55:20
  * @Modified By:	 Jonathan Tanner
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -15,7 +15,7 @@
 x Variabeln in JSON-Dateien so einbauen, dass das JSON valide ist und die Variablen mit einer generischen Funktion ausgetauscht werden können.
 x Verbesserung des Device-Discoverys
 - Fehler beim Laden des Konfigurationsformulares wenn Gruppen-Reihenfolge innerhalb ModBusConfig.json ändert.
-- Anstatt einzelner Poll-Liste eine Liste mit unterschiedlichen Poll-Timer-Gruppen (Intervall, Idents, Aktiv), welche auch via Public Function (de)aktiviert werden kann. -> ev als Ereignisse, da dann ein/aus & Bedingungen schon vorhanden sind.
+x Anstatt einzelner Poll-Liste eine Liste mit unterschiedlichen Poll-Timer-Gruppen (Intervall, Idents, Aktiv), welche auch via Public Function (de)aktiviert werden kann. -> ev als Ereignisse, da dann ein/aus & Bedingungen schon vorhanden sind.
 - Integration neue ModBus-Spezifikationen Version 1.9
   x Allgemeine Anpassungen
   x Prüfung auf FW-Version und Aktivierung nur möglich wenn diese erfüllt ist

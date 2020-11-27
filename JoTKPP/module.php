@@ -4,7 +4,7 @@
  * @File:			 module.php
  * @Create Date:	 27.04.2019 11:51:35
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 27.11.2020 22:14:58
+ * @Last Modified:	 27.11.2020 22:22:29
  * @Modified By:	 Jonathan Tanner
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0

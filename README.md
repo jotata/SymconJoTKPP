@@ -112,43 +112,43 @@ Um diesen Hänger zu vermeiden, kann man vor dem Update den "Aktualisierungs-Int
 | JoTKPP | Device | Kostal     | PIKO IQ         | JoTKPP | {E64278F5-1942-5343-E226-8673886E2D05} |
 
 ### 2. Changelog
-Version 1.4 (ALPHA)
-- Folgende zusätzliche Parameter hinzugefügt: Installed powermeter, Total DC power, Battery ready flag, Battery cross capacity, Battery actual SOC, Battery Firmware MC, Battery Type, Total battery AC/DC (dis)charge, Total energy from PV(1-3)
-- Folgende Parameter korrigiert: State of energy manager, Total DC power from PV
-- Profil Status.KostalFuse umgedreht (kann leider nicht testen, ob dies bei einer ausgelösten Sicherung nun korrekt funktioniert)
-- Verbesserung bei den JSON-Konfigurations-Daten
-- Verbesserung beim Device-Discovery (inkl. Prüfung bei Änderung des Gateways)
-- Fehler mit JoTKPP_RequestReadIdents behoben, wenn Idents gleichen String enthalten
-- Neue Public Function JoTKPP_GetDeviceInfo() hinzugefügt
-- Geräte-Informationen können nun direkt in der Instanzkonfiguration angezeigt werden
-- Im Konfigurationsformular ist es nun möglich, einzelne Idents / Gruppen auszuwählen und für deren Abfrage ein Ereignis zu erstellen
-- Interne Variablen optimiert
-- Verbesserte Fehlermeldungen bei Modul-Funktionen
+Version 1.4 (BETA)
+- Folgende zusätzliche Parameter hinzugefügt: Installed powermeter, Total DC power, Battery ready flag, Battery cross capacity, Battery actual SOC, Battery Firmware MC, Battery Type, Total battery AC/DC (dis)charge, Total energy from PV(1-3).
+- Folgende Parameter korrigiert: State of energy manager, Total DC power from PV.
+- Profil Status.KostalFuse umgedreht (kann leider nicht testen, ob dies bei einer ausgelösten Sicherung nun korrekt funktioniert).
+- Verbesserung bei den JSON-Konfigurations-Daten.
+- Verbesserung beim Device-Discovery (inkl. Prüfung bei Änderung des Gateways).
+- Fehler mit JoTKPP_RequestReadIdents behoben, wenn Idents gleichen String enthalten.
+- Neue Public Function JoTKPP_GetDeviceInfo() hinzugefügt.
+- Geräte-Informationen können nun direkt in der Instanzkonfiguration angezeigt werden.
+- Im Konfigurationsformular ist es nun möglich, einzelne Idents / Gruppen auszuwählen und für deren Abfrage ein Ereignis zu erstellen.
+- Interne Variablen optimiert.
+- Verbesserte Fehlermeldungen bei Modul-Funktionen.
 
 Version 1.3
 - Fehler im Profil "JoTKPP.Battery.Charge" behoben, welcher dazu führte, dass IPS beim Anzeigen von Diagrammen mit diesem Profil abstürzte.
 
 Version 1.2
-- Überprüfung der übergeordneten Instanzen optimiert
-- Fehler bei Umrechnung von SInt-Werten (z.B. Actual Battery Power) behoben, wenn diese einen negativen Wert haben
-- Zusätzlicher Wert "Actual Inverter Generation power" hinzugefügt
+- Überprüfung der übergeordneten Instanzen optimiert.
+- Fehler bei Umrechnung von SInt-Werten (z.B. Actual Battery Power) behoben, wenn diese einen negativen Wert haben.
+- Zusätzlicher Wert "Actual Inverter Generation power" hinzugefügt.
 
 Version 1.1
-- Timer für FW-Update-Check in Konfigurationsformular integriert
-- Default-Positionen auf 10er-Zahlen angepasst, damit Sortierung auch innerhalb einer Gruppe möglich ist
-- Zusätzliche Meldung im Debug-Log
+- Timer für FW-Update-Check in Konfigurationsformular integriert.
+- Default-Positionen auf 10er-Zahlen angepasst, damit Sortierung auch innerhalb einer Gruppe möglich ist.
+- Zusätzliche Meldung im Debug-Log.
 
 Version 1.0 (RC1)
-- Bezeichnungen für Powermeter-Werte angepasst
-- Verbesserte Fehlerausgabe ModBus
+- Bezeichnungen für Powermeter-Werte angepasst.
+- Verbesserte Fehlerausgabe ModBus.
 
 Version 0.9:  
-- Messwerte für Powermeter hinzugefügt
-- Verbesserungen beim DeviceDiscovery
-- Änderung des Gateways wird nun erkannt und verarbeitet
+- Messwerte für Powermeter hinzugefügt.
+- Verbesserungen beim DeviceDiscovery.
+- Änderung des Gateways wird nun erkannt und verarbeitet.
 
 Version 0.8:  
-- Erste öffentliche Beta-Version
+- Erste öffentliche Beta-Version.
 - Feedbacks zu Fehlern aber auch funktionierende Geräte & Konfigurationen sind willkommen.
 
 ### 3. Spenden    

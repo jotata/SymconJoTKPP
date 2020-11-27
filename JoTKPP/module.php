@@ -4,7 +4,7 @@
  * @File:			 module.php
  * @Create Date:	 27.04.2019 11:51:35
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 27.11.2020 21:26:43
+ * @Last Modified:	 27.11.2020 22:14:58
  * @Modified By:	 Jonathan Tanner
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -68,8 +68,8 @@ class JoTKPP extends JoTModBus {
             return;
         }//Ende Migration
 
-        $pollIdents = explode(" ", $this->ReadPropertyString("PollIdents"));
         $mbConfig = $this->GetModBusConfig();
+        $pollIdents = explode(" ", $this->ReadPropertyString("PollIdents"));
         $groups = array_values(array_unique(array_column($mbConfig, "Group")));
         $vars = [];
 
@@ -93,9 +93,12 @@ class JoTKPP extends JoTModBus {
         }
         //... und erstellen / löschen / aktualisieren
         foreach ($vars as $ident => $values){
-            $varType = $this->GetIPSVarType($mbConfig[$ident]['VarType'], $mbConfig[$ident]['Factor']);
-            $profile = $this->CheckProfileName($mbConfig[$ident]['Profile']);
-            $this->MaintainVariable($ident, $mbConfig[$ident]['Name'], $varType, $profile, $values['Position'], $values['Keep']);
+            if ($values['Keep']) {
+                $name = $mbConfig[$ident]['Name'];
+                $varType = $this->GetIPSVarType($mbConfig[$ident]['VarType'], $mbConfig[$ident]['Factor']);
+                $profile = $this->CheckProfileName($mbConfig[$ident]['Profile']);
+            }
+            $this->MaintainVariable($ident, $name, $varType, $profile, $values['Position'], $values['Keep']);
         }
         
         //Timer für Polling (de)aktivieren
@@ -264,6 +267,15 @@ class JoTKPP extends JoTModBus {
                 '$MB_BigEndian' => self::MB_BigEndian
             ]);
             $this->SetBuffer("ModBusConfig", $config);
+            //Bei Modul-Updates kann es sein, dass Einträge in der ModBusConfig umbenannt oder ganz gelöscht werden.
+            //Die dadurch ungültig gewordenen Idents müssen aus der Property 'PollIdents' entfernt werden, damit es nicht zu Fehlern kommt.
+            $pollIdents = $this->ReadPropertyString("PollIdents");
+            $knownIdents = implode(" ", array_intersect(explode(" ", $pollIdents), array_keys(json_decode($config, true, 3))));//am Ende bleiben nur die Idents aus $pollIdents übrig, welche auch in $config vorhaden sind
+            if (json_last_error() == JSON_ERROR_NONE && $knownIdents !== $pollIdents){//Property nur aktualisieren, wenn keine Fehler in der ModBusConfig.json vorhanden sind, da sonst Property 'beschädigt' würde
+                //Schreibe bereinigte Property 'PollIdents' zurück und wende diese an
+                IPS_SetProperty($this->InstanceID, "PollIdents", $knownIdents);
+                IPS_ApplyChanges($this->InstanceID);
+            }
         }
         //JSON in Array umwandeln
         $aConfig = json_decode($config, true, 4);

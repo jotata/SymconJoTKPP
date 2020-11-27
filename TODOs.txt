@@ -3,7 +3,7 @@
  * @File:			 TODOs.txt
  * @Create Date:	 30.05.2019 09:59:20
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 27.11.2020 22:27:30
+ * @Last Modified:	 27.11.2020 23:47:43
  * @Modified By:	 Jonathan Tanner
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -19,8 +19,8 @@ x ApplyChanges & RequestRead überarbeiten für neue Property PollIdents.
 x Ident aus PollList entfernen, wenn dieser in ModBus-Config nicht mehr definiert ist.
 x Property ModuleVariables auflösen und in Property PollIdents konvertieren.
 x Anstatt einzelner Poll-Liste eine Liste mit unterschiedlichen Poll-Timer-Gruppen (Intervall, Idents, Aktiv), welche auch via Public Function (de)aktiviert werden kann. -> ev als Ereignisse, da dann ein/aus & Bedingungen schon vorhanden sind.
+x Profil "Status.KostalEM" muss gelöscht und neu angelegt werden (allgemeines Profil-Update einbauen)
 - Style-Check und Modul-Tests einführen
-- Profil "Status.KostalEM" muss gelöscht und neu angelegt werden (allgemeines Profil-Update einbauen)
 - Integration "virtueller" PV-Überschuss
 - Integration neue ModBus-Spezifikationen Version 1.9
   x Allgemeine Anpassungen

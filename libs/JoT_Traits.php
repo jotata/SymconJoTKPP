@@ -1,15 +1,15 @@
 <?php
-/***************************************************************************************************
- * @Package:		 libs                                                                          *
- * @File:			 JoT_Traits.php                                                             *
- * @Create Date:	 27.04.2019 11:51:35                                                           *
- * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 22.11.2019 18:51:59                                                           *
- * @Modified By:	 Jonathan Tanner                                                               *
- * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
- * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
- * 					 (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)                  *
- ***************************************************************************************************/
+/**
+ * @Package:		 libs
+ * @File:			 JoT_Traits.php
+ * @Create Date:	 27.04.2019 11:51:35
+ * @Author:			 Jonathan Tanner - admin@tanner-info.ch
+ * @Last Modified:	 27.11.2020 23:46:28
+ * @Modified By:	 Jonathan Tanner
+ * @Copyright:		 Copyright(c) 2019 by JoT Tanner
+ * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
+ * 					 (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
+ */
 
  /**
  * Allgemeine Konstanten
@@ -32,7 +32,7 @@ trait VariableProfile {
         $JSON = $this->GetJSONwithVariables($JsonFile, $ReplaceMap);
         $profiles = json_decode($JSON, true, 5);
         if (json_last_error() !== JSON_ERROR_NONE){
-            echo("ConfigProfiles - Error in Profile-JSON (".json_last_error_msg()."). Please check \$ReplaceMap or File-Content of $JsonFile.");
+            echo("INSTANCE: ".$this->InstanceID." ACTION: ConfigProfiles: Error in Profile-JSON (".json_last_error_msg()."). Please check \$ReplaceMap or File-Content of $JsonFile.");
             exit;
         }
         foreach ($profiles as $profile){
@@ -54,8 +54,21 @@ trait VariableProfile {
         } else {
             $exProfile = IPS_GetVariableProfile($Name);
             if ($exProfile['ProfileType'] != $Profile['ProfileType']) {
-                echo("MaintainProfile - Variable profile type does not match for profile $Name");
-                exit;
+                //Prüfe ob Profil ausserhalb des Modules genutz wird
+                $insts = IPS_GetInstanceListByModuleID(static::MODULEID);
+                $vars = IPS_GetVariableList();
+                foreach ($vars as $vId){
+                    $var = IPS_GetVariable($vId);
+                    if ($var['VariableProfile'] == $Name || $var['VariableCustomProfile'] == $Name){
+                        if (IPS_GetObject($vId)['ObjectIdent'] == "" || array_search(IPS_GetParent($vId), $insts) === false) {//Variable ist keine Instanz-Variable ODER gehört nicht zu einer Instanz von diesem Modul
+                            echo("INSTANCE: ".$this->InstanceID." ACTION: MaintainProfile: Variable profile type (".$Profile['ProfileType'].") does not match for profile '$Name'. Can not move profile because it is used by other variable ($vId). Please fix manually!");
+                            exit;
+                        }
+                    }
+                }
+                //Profil nur von diesem Modul verwendet - Löschen und neu erstellen
+                IPS_DeleteVariableProfile($Name);
+                IPS_CreateVariableProfile($Name, $Profile['ProfileType']);
             }
         }
         if (key_exists("Icon", $Profile)){
@@ -129,6 +142,7 @@ trait VariableProfile {
      * @param int $DataType - DatenTyp der anzuzeigenden Profile.
      * @access protected
      */
+    /* IPS bietet ab Version 5.5 ein FormularElement 'SelectProfile'
     protected function UpdateSelectProfile(int $DataType){
         if ($DataType >= 0){
             if ($DataType >= 10){//Selbstdefinierte Datentypen sollten immer das 10-fache der System-VariablenTypen sein.
@@ -145,7 +159,7 @@ trait VariableProfile {
         } else {
             $this->UpdateFormField("SelectProfile", "enabled", false);
         }
-    }
+    }*/
 }
 
 /**

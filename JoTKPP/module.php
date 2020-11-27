@@ -4,7 +4,7 @@
  * @File:			 module.php
  * @Create Date:	 27.04.2019 11:51:35
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 27.11.2020 22:22:29
+ * @Last Modified:	 27.11.2020 23:19:41
  * @Modified By:	 Jonathan Tanner
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -21,6 +21,7 @@ require_once(__DIR__ . "/../libs/JoT_ModBus.php");  //Bibliothek für ModBus-Int
  */
 class JoTKPP extends JoTModBus {
     protected const PREFIX = "JoTKPP";
+    protected const MODULEID = "{E64278F5-1942-5343-E226-8673886E2D05}";
     protected const STATUS_Error_WrongDevice = 416;
     
     use VariableProfile;

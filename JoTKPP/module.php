@@ -1,15 +1,15 @@
 <?php
-/***************************************************************************************************
- * @Package:		 JoTKPP                                                          *
- * @File:			 module.php                                                                    *
- * @Create Date:	 27.04.2019 11:51:35                                                           *
- * @Author:			 Jonathan Tanner - admin@tanner-info.ch                                        *
- * @Last Modified:	 27.10.2019 18:58:09                                                           *
- * @Modified By:	 Jonathan Tanner                                                               *
- * @Copyright:		 Copyright(c) 2019 by JoT Tanner                                               *
- * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0                   *
- * 					 (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)                  *
- ***************************************************************************************************/
+/**
+ * @Package:		 JoTKPP
+ * @File:			 module.php
+ * @Create Date:	 27.04.2019 11:51:35
+ * @Author:			 Jonathan Tanner - admin@tanner-info.ch
+ * @Last Modified:	 27.11.2020 21:26:43
+ * @Modified By:	 Jonathan Tanner
+ * @Copyright:		 Copyright(c) 2019 by JoT Tanner
+ * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
+ * 					 (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
+ */
 
 
 require_once(__DIR__ . "/../libs/JoT_Traits.php");  //Bibliothek mit allgemeinen Definitionen & Traits
@@ -35,7 +35,8 @@ class JoTKPP extends JoTModBus {
     public function Create(){
         parent::Create();
         $this->ConfigProfiles(__DIR__."/ProfileConfig.json", ['$VT_Float' => self::VT_Float, '$VT_Integer' => self::VT_Integer]);
-        $this->RegisterPropertyString("ModuleVariables", json_encode([]));
+        $this->RegisterPropertyString("PollIdents", "");
+        $this->RegisterPropertyString("ModuleVariables", "");//wird seit V1.4 nicht mehr benötigt, aber IPS crasht beim Modul-Reload, wenn die Eigenschaft entfernt wird :-(
         $this->RegisterPropertyInteger("PollTime", 0);
         $this->RegisterPropertyInteger("CheckFWTime", 0);
         $this->RegisterTimer("RequestRead", 0, static::PREFIX . '_RequestRead($_IPS["TARGET"]);');
@@ -50,21 +51,51 @@ class JoTKPP extends JoTModBus {
      */
     public function ApplyChanges(){
         parent::ApplyChanges();
-        $moduleVariables = json_decode($this->ReadPropertyString("ModuleVariables"), 1);
+
+        //Migration Propertys < V1.4
+        $oldMV = $this->ReadPropertyString("ModuleVariables");
+        if ($oldMV !== ""){//Alte Property 'ModuleVariables' muss zu neuer Property 'PollIdents' konvertiert werden
+            $oldMV = array_column(json_decode($oldMV, 1), "Poll", "Ident");
+            $pollIdents = $this->ReadPropertyString("PollIdents");
+            foreach ($oldMV as $ident => $poll){
+                if ($poll){
+                    $pollIdents = "$pollIdents $ident";
+                }
+            }
+            IPS_SetProperty($this->InstanceID, "ModuleVariables", "");//alte Property "ausser Betrieb nehmen"
+            IPS_SetProperty($this->InstanceID, "PollIdents", $pollIdents);//konvertierte Werte in neuer Property speichern
+            IPS_ApplyChanges($this->InstanceID);
+            return;
+        }//Ende Migration
+
+        $pollIdents = explode(" ", $this->ReadPropertyString("PollIdents"));
         $mbConfig = $this->GetModBusConfig();
         $groups = array_values(array_unique(array_column($mbConfig, "Group")));
+        $vars = [];
 
-        //Bestehende Instanz-Variablen pflegen...
-        foreach ($moduleVariables as $var){
-            $ident = $var['Ident'];
-            if ($var['Poll'] == false || !key_exists($ident, $mbConfig)){//wenn nicht gepollt oder in ModBusConfig nicht mehr vorhanden
-                $this->UnregisterVariable($ident);
-            } else if (@IPS_GetObjectIDByIdent($ident, $this->InstanceID) === false){//wenn Instanz-Variable nicht vorhanden
-                $varType = $this->GetIPSVarType($mbConfig[$ident]['VarType'], $mbConfig[$ident]['Factor']);
-                $profile = $this->CheckProfileName($mbConfig[$ident]['Profile']);
-                $pos = array_search($mbConfig[$ident]['Group'], $groups)*20;//20er Schritte, damit User innerhalb der Gruppen-Position auch sortieren kann
-                $this->MaintainVariable($ident, $mbConfig[$ident]['Name'], $varType, $profile, $pos, true);
+        //Instanz-Variablen vorbereiten...
+        foreach ($pollIdents as $ident) {
+            $pos = array_search($mbConfig[$ident]['Group'], $groups)*20;//20er Schritte, damit User innerhalb der Gruppen-Position auch sortieren kann
+            $vars[$ident] = ['Keep' => true, 'Position' => $pos];
+        }
+        $children = IPS_GetChildrenIDs($this->InstanceID);
+        foreach ($children as $cId){
+            if (IPS_VariableExists($cId)) {
+                $ident = IPS_GetObject($cId)['ObjectIdent'];
+                if ($ident !== ""){//Nur Instanz-Variablen verarbeiten
+                    $pos = IPS_GetObject($cId)['ObjectPosition'];
+                    $vars[$ident] = ['Keep' => true, 'Position' => $pos];
+                    if (array_search($ident, $pollIdents) === false || array_key_exists($ident, $mbConfig) === false) {//Wenn in PollIdents ODER ModBusConfig nicht mehr vorhanden - löschen
+                        $vars[$ident]['Keep'] = false;
+                    }
+                }
             }
+        }
+        //... und erstellen / löschen / aktualisieren
+        foreach ($vars as $ident => $values){
+            $varType = $this->GetIPSVarType($mbConfig[$ident]['VarType'], $mbConfig[$ident]['Factor']);
+            $profile = $this->CheckProfileName($mbConfig[$ident]['Profile']);
+            $this->MaintainVariable($ident, $mbConfig[$ident]['Name'], $varType, $profile, $values['Position'], $values['Keep']);
         }
         
         //Timer für Polling (de)aktivieren
@@ -91,68 +122,52 @@ class JoTKPP extends JoTModBus {
     public function GetConfigurationForm(){
         $values = [];
         $device = $this->GetDeviceInfo();
-        //ModBus-Parameter nur anzeigen wenn FW-Version bekannt ist
-        if (key_exists("FWVersion", $device) && $device['FWVersion'] != "") {
+        $fwVersion = 0;
+        if (array_key_exists('FWVersion', $device) && $device['FWVersion'] != '') {
             $fwVersion = floatval($device['FWVersion']);
-
-            //Values für Liste vorbereiten (vorhandene Variabeln)
-            $mbConfig = $this->GetModBusConfig();
-            $variable = [];
-            $eid = 1;
-            foreach ($mbConfig as $ident => $config) {
-                if (array_key_exists($config['Group'], $values) === false){//Gruppe exstiert im Tree noch nicht
-                    //$values[$config['Group']] = ["Group" => $config['Group'], "Ident" => $config['Group'], "id" => $eid++, "parent" => 0, "rowColor" => "#DFDFDF", "editable" => false, "deletable" => false];
-                    $values[$config['Group']] = ["Group" => $config['Group'], "Ident" => "", "id" => $eid++, "parent" => 0, "rowColor" => "#DFDFDF", "editable" => false, "deletable" => false];
+        }
+        $pollIdents = $this->ReadPropertyString("PollIdents");
+        $mbConfig = $this->GetModBusConfig();
+        $variable = [];
+        $eid = 1;
+        //Values für Liste vorbereiten (vorhandene Variabeln)
+        foreach ($mbConfig as $ident => $config) {
+            if (array_key_exists($config['Group'], $values) === false){//Gruppe exstiert im Tree noch nicht
+                $values[$config['Group']] = ["Group" => $config['Group'], "Ident" => "", "id" => $eid++, "parent" => 0, "rowColor" => "#DFDFDF", "expanded" => false, "editable" => false, "deletable" => false];
+            }
+            $variable['parent'] = $values[$config['Group']]['id'];
+            $variable['id'] = $eid++;
+            $variable['Group'] = $config['Group'];
+            $variable['Ident'] = $ident;
+            $variable['Name'] = $config['Name'];
+            $variable['cName'] = '';
+            $variable['Profile'] = $this->CheckProfileName($config['Profile']); //Damit wird der PREFIX immer davor hinzugefügt
+            $variable['cProfile'] = '';
+            $variable['FWVersion'] = floatval($config['FWVersion']);
+            $variable['Poll'] = false;
+            if (strpos(" $pollIdents ", " $ident ") !== false) {//Aktivierte Idents markieren und Gruppe öffnen
+                $variable['Poll'] = true;
+                $values[$config['Group']]['expanded'] = true;
+            }
+            if (($id = @IPS_GetObjectIDByIdent($ident, $this->InstanceID)) !== false) {//Falls Variable bereits existiert, deren Werte übernehmen
+                $obj = IPS_GetObject($id);
+                $var = IPS_GetVariable($id);
+                if ($obj['ObjectName'] != $config['Name']) {
+                    $variable['cName'] = $obj['ObjectName'];
                 }
-                $variable['parent'] = $values[$config['Group']]['id'];
-                $variable['id'] = $eid++;
-                $variable['Group'] = $config['Group'];
-                $variable['Ident'] = $ident;
-                $variable['Name'] = $config['Name'];
-                $variable['cName'] = '';
-                $variable['Profile'] = $this->CheckProfileName($config['Profile']); //Damit wird der PREFIX immer davor hinzugefügt
-                $variable['cProfile'] = '';
-                $variable['FWVersion'] = floatval($config['FWVersion']);
+                $variable['Pos'] = $obj['ObjectPosition'];
+                $variable['cProfile'] = $var['VariableCustomProfile'];
+            }
+
+            //Nur Variablen aktivieren, welche mit der aktuellen FW abrufbar sind
+            $variable['deletable'] = false;
+            $variable['editable'] = true;
+            if ($fwVersion < $variable['FWVersion']) {
+                $variable['editable'] = false;
                 $variable['Poll'] = false;
-                if (array_key_exists('Poll', $config)) {
-                    //Übernimmt Poll nur initial bei Erstellung der Instanz (als Vorschlag), danach wird Poll von ModuleVariables überschrieben
-                    $variable['Poll'] = $config['Poll'];
-                }
-                if (($id = @IPS_GetObjectIDByIdent($ident, $this->InstanceID)) !== false) {//Falls Variable bereits existiert, deren Werte übernehmen
-                    $obj = IPS_GetObject($id);
-                    $var = IPS_GetVariable($id);
-                    if ($obj['ObjectName'] != $config['Name']) {
-                        $variable['cName'] = $obj['ObjectName'];
-                    }
-                    $variable['Pos'] = $obj['ObjectPosition'];
-                    $variable['cProfile'] = $var['VariableCustomProfile'];
-                }
-
-                //Nur Variablen aktivieren, welche mit der aktuellen FW abrufbar sind
-                $variable['deletable'] = false;
-                $variable['editable'] = true;
-                if ($fwVersion < $variable['FWVersion']) {
-                    $variable['editable'] = false;
-                    $variable['Poll'] = false;
-                }
-
-                $values[$ident] = $variable;
             }
 
-            //Sortieren der Einträge - muss analog ModuleVariables sein (sonst entsteht bei neuen / geänderten Definitionen ein Durcheinander)
-            $mvKeys = array_column(json_decode($this->ReadPropertyString('ModuleVariables'), 1), 'Ident');
-            $sValues = [];
-            foreach ($mvKeys as $ident) {
-                if (array_key_exists($ident, $values) === false) {//Definition wurde aus ModBusConfig.json entfernt/umbenannt
-                    $values[$ident]['Name'] = sprintf($this->Translate("ModBus-Definition for '%s' does not exist anymore."), $ident);
-                    $values[$ident]['rowColor'] = '#FFC0C0';
-                    $values[$ident]['deletable'] = true;
-                    $values[$ident]['id'] = $eid++;
-                }
-                $sValues[] = $values[$ident];
-                unset($values[$ident]);
-            }
-            $values = array_merge($sValues, array_values($values)); //neue Definitionen am Ende einfügen
+            $values[$ident] = $variable;
         }
 
         //Variabeln in $form ersetzen
@@ -162,14 +177,31 @@ class JoTKPP extends JoTModBus {
             $diValues[] = ["Name" => $ident, "Value" => $value];
         }
         $form = str_replace('"$DeviceInfoValues"', json_encode($diValues), $form); //Values für 'DeviceInfos' setzen
-        $form = str_replace('"$ModuleVariablesValues"', json_encode($values), $form); //Values für 'IdentList' setzen
-        $form = str_replace('$EventCreated', $this->Translate("Event was created. Please check/change settings."), $form); //Values für 'IdentList' setzen
+        $form = str_replace('"$IdentListValues"', json_encode(array_values($values)), $form); //Values für 'IdentList' setzen
+        $form = str_replace('$EventCreated', $this->Translate("Event was created. Please check/change settings."), $form); //Übersetzungen einfügen
         return $form;
     }
 
     /**
+    * Fügt einen Ident zu PollIdents hinzu oder entfernt ihn
+    * @param string $Submit json_codiertes Array(boolean Poll, string Ident, string PollIdents)
+    * @access private
+    */
+    private function FormEditIdent(string $Submit){
+        $Submit = json_decode($Submit, 1);
+        $poll = $Submit[0];
+        $ident = $Submit[1];
+        $pollIdents = $Submit[2];
+        $pollIdents = trim(str_replace(" $ident ", " ", " $pollIdents "));//Ident aus der Liste löschen
+        if ($poll){//Ident hinzufügen, wenn dieser aktiviert wurde
+            $pollIdents = "$pollIdents $ident";
+        }        
+        $this->UpdateFormField("PollIdents", "value", trim($pollIdents));
+    }
+
+    /**
     * Fügt einen Ident zur Liste für CreateEvent hinzu
-    * @param string $Submit json_codiertes Array(string Type, string Ident(s))
+    * @param string $Submit json_codiertes Array(string Type, string ReadIdents)
     * @access private
     */
     private function FormAddIdent(string $Submit){
@@ -211,7 +243,7 @@ class JoTKPP extends JoTModBus {
         $this->UpdateFormField("OpenEvent", "caption", sprintf($this->Translate("Check Event (%s)"), $eId));
         $this->UpdateFormField("OpenEvent", "objectID", $eId);
         $this->UpdateFormField("OpenEvent", "visible", true);
-        IPS_LogMessage(static::PREFIX." (#".$this->InstanceID.")", "#$eId - ".$this->Translate("Event was created. Please check/change settings."));
+        IPS_LogMessage(static::PREFIX, "INSTANCE: ".$this->InstanceID." ACTION: CreateEvent: #$eId - ".$this->Translate("Event was created. Please check/change settings."));
     }
 
     /**
@@ -349,18 +381,27 @@ class JoTKPP extends JoTModBus {
      * @return array mit den angeforderten Werten, NULL bei Fehler oder Wert wenn nur ein Wert.
      */
     public function RequestRead(){
-        $force = false;//$force = true wird über die Funktion RequestReadAll aktiviert oder String mit Ident über die Funktion RequestReadIdent/Group
+        $force = $this->ReadPropertyString("PollIdents");//$force = true wird über die Funktion RequestReadAll aktiviert oder String mit Ident über die Funktion RequestReadIdent/Group
         if (func_num_args() == 1){//Intergation auf diese Art, da sonst in __generated.inc.php ein falscher Eintrag mit der PREFIX_Funktion erstellt wird
             $force = func_get_arg(0);
         };
-
         $mbConfig = $this->GetModBusConfig();
-        $moduleVariables = json_decode($this->ReadPropertyString("ModuleVariables"), 1);
+
+        //Prüfe auf ungültige Idents
+        if (is_string($force)){
+            $unknown = array_diff(explode(" ", $force), array_keys($mbConfig));
+            if (count($unknown) > 0){
+                $msg = $this->Translate("Unknown Ident(s)").": ".implode(", ", $unknown);
+                $this->SendDebug("RequestRead", $msg, 0);
+                echo "INSTANCE: ".$this->InstanceID." ACTION: RequestRead: $msg\r\n";
+            }
+        }
+
+        //ModBus-Abfrage durchführen
         $values = [];
-        $mvKeys = array_flip(array_column($moduleVariables, "Ident"));
-        foreach ($mbConfig as $ident => $config){//Loop durch $mbConfig, damit Werte auch ausgelesen werden können, wenn Instanz noch nicht gespeichert ist.
-            //Wenn ENTWEDER entsprechende Variable auf Poll ODER $force true ODER aktuelle Variable in Liste der angeforderten Idents (strpos mit Leerzeichen, da mehrere Idents ebenfalls mit Leerzeichen getrennt werden).
-            if ((key_exists($ident, $mvKeys) && $moduleVariables[$mvKeys[$ident]]['Poll'] == true && $force === false) || $force === true || (is_string($force) && strpos(" $force ", " $ident ") !== false)){
+        foreach ($mbConfig as $ident => $config){//Loop durch $mbConfig, damit Werte auch ausgelesen werden können, wenn Instanz noch nicht gespeichert ist. Dadurch werden auch nur gültige ModBus-Configs abgefragt.
+            //Wenn $force true ODER aktuelle Variable in Liste der angeforderten/gepollten Idents (strpos mit Leerzeichen, da mehrere Idents ebenfalls mit Leerzeichen getrennt werden).
+            if ($force === true || (is_string($force) && strpos(" $force ", " $ident ") !== false)){
                 $this->SendDebug("RequestRead", "Ident: $ident on Address: ".$config['Address'], 0);
                 $value = $this->ReadModBus($config['Function'], $config['Address'], $config['Quantity'], $config['Factor'], $config['MBType'], $config['VarType']);
                 if (@IPS_GetObjectIDByIdent($ident, $this->InstanceID) !== false){//Instanz-Variablen sind nur für Werte mit aktivem Polling vorhanden
@@ -398,8 +439,9 @@ class JoTKPP extends JoTModBus {
      * @return array mit den angeforderten Werten.
      */
     public function RequestReadIdent(string $Ident){
+        $Ident = trim($Ident);
         if ($Ident == ""){
-            echo $this->Translate("Ident(s) can not be empty!");
+            echo "INSTANCE: ".$this->InstanceID." ACTION: RequestReadIdent: ".$this->Translate("Ident(s) can not be empty!")."\r\n";
             return null;
         }
         return $this->RequestRead($Ident);
@@ -413,8 +455,8 @@ class JoTKPP extends JoTModBus {
      * @return array mit den angeforderten Werten.
      */
     public function RequestReadGroup(string $Group){
-        if ($Group == ""){
-            echo $this->Translate("Group(s) can not be empty!");
+        if (trim($Group) == ""){
+            echo "INSTANCE: ".$this->InstanceID." ACTION: RequestReadGroup: ".$this->Translate("Group(s) can not be empty!")."\r\n";
             return null;
         }
         $idents = "";
@@ -426,7 +468,7 @@ class JoTKPP extends JoTModBus {
         }
         $idents = trim($idents);
         if ($idents == ""){
-            echo sprintf($this->Translate("No idents found for group(s) '%s'!"), $Group);
+            echo "INSTANCE: ".$this->InstanceID." ACTION: RequestReadGroup: ".sprintf($this->Translate("No idents found for group(s) '%s'!"), $Group)."\r\n";
             return null;
         }
         return $this->RequestRead($idents);

@@ -3,7 +3,7 @@
  * @File:			 TODOs.txt
  * @Create Date:	 30.05.2019 09:59:20
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 21.11.2020 17:55:20
+ * @Last Modified:	 27.11.2020 21:25:07
  * @Modified By:	 Jonathan Tanner
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -14,7 +14,10 @@
 - Fehlerbehebung hängender Prozess wenn RequestRead bei Modul-Update läuft (ist ev. ein IPS-Bug: https://www.symcon.de/forum/threads/41792-Prozess-PREFIX_RequestRead-bleibt-bei-Modul-Update-h%C3%A4ngen)
 x Variabeln in JSON-Dateien so einbauen, dass das JSON valide ist und die Variablen mit einer generischen Funktion ausgetauscht werden können.
 x Verbesserung des Device-Discoverys
-- Fehler beim Laden des Konfigurationsformulares wenn Gruppen-Reihenfolge innerhalb ModBusConfig.json ändert.
+x Fehler beim Laden des Konfigurationsformulares wenn Gruppen-Reihenfolge innerhalb ModBusConfig.json ändert. 
+x ApplyChanges & RequestRead überarbeiten für neue Property PollIdents.
+-> Ident aus PollList entfernen, wenn dieser in ModBus-Config nicht mehr definiert ist.
+x Property ModuleVariables auflösen und in Property PollIdents konvertieren.
 x Anstatt einzelner Poll-Liste eine Liste mit unterschiedlichen Poll-Timer-Gruppen (Intervall, Idents, Aktiv), welche auch via Public Function (de)aktiviert werden kann. -> ev als Ereignisse, da dann ein/aus & Bedingungen schon vorhanden sind.
 - Integration neue ModBus-Spezifikationen Version 1.9
   x Allgemeine Anpassungen
@@ -23,3 +26,4 @@ x Anstatt einzelner Poll-Liste eine Liste mit unterschiedlichen Poll-Timer-Grupp
   - Kapitel 3.4 "Batterie-Management" schreibend
 - Profil "Status.KostalEM" muss gelöscht und neu angelegt werden (allgemeines Profil-Update einbauen)
 - Integration "virtueller" PV-Überschuss
+- Style-Check und Modul-Tests einführen

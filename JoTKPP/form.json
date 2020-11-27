@@ -73,11 +73,12 @@
             ]
         },{
             "type": "Tree",
-            "name": "ModuleVariables",
+            "name": "IdentList",
             "caption": "Device Parameters",
             "visible": true,
             "add": false,
             "delete": true,
+            "onEdit": "IPS_RequestAction($id, 'FormEditIdent', json_encode(array($IdentList['Poll'], $IdentList['Ident'], $PollIdents)));",
             "sort": {
                 "column": "Ident",
                 "direction": "ascending"
@@ -87,12 +88,12 @@
                     "caption": "Group",
                     "name": "Group",
                     "width": "150px",
-                    "onClick": "IPS_RequestAction($id, 'FormAddIdent', json_encode(array('Group', $RequestRead.' '.$ModuleVariables['Group'])));"
+                    "onClick": "IPS_RequestAction($id, 'FormAddIdent', json_encode(array('Group', $RequestRead.' '.$IdentList['Group'])));"
                 },{
                     "caption": "Ident",
                     "name": "Ident",
                     "width": "200px",
-                    "onClick": "IPS_RequestAction($id, 'FormAddIdent', json_encode(array('Ident', $RequestRead.' '.$ModuleVariables['Ident'])));",
+                    "onClick": "IPS_RequestAction($id, 'FormAddIdent', json_encode(array('Ident', $RequestRead.' '.$IdentList['Ident'])));",
                     "save": true
                 },{
                     "caption": "Name",
@@ -125,7 +126,14 @@
                     }
                 }
             ],
-            "values": "$ModuleVariablesValues"
+            "values": "$IdentListValues"
+        },{
+            "type": "ValidationTextBox",
+            "name": "PollIdents",
+            "width": "100%",
+            "enabled": true,
+            "visible": true,
+            "save": true
         },{
             "type": "RowLayout",
             "items": [

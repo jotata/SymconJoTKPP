@@ -165,8 +165,7 @@
         "Factor": 1,
         "VarType": "$VT_UnsignedInteger",
         "MBType": "$MB_BigEndian_WordSwap",
-        "FWVersion": "1.42",
-        "Poll": true
+        "FWVersion": "1.42"
     },
     "EnergyManagerState": {
         "Name": "Energy Manager state",
@@ -178,8 +177,7 @@
         "Factor": 1,
         "VarType": "$VT_UnsignedInteger",
         "MBType": "$MB_BigEndian_WordSwap",
-        "FWVersion": "1.42",
-        "Poll": true
+        "FWVersion": "1.42"
     },
     "FuseState": {
         "Name": "PSSB fuse state",
@@ -191,8 +189,7 @@
         "Factor": 1,
         "VarType": "$VT_Float",
         "MBType": "$MB_BigEndian_WordSwap",
-        "FWVersion": "1.42",
-        "Poll": true
+        "FWVersion": "1.42"
     },
     "ConsFromAC": {
         "Name": "Home own consumtion from grid",
@@ -300,8 +297,7 @@
         "Factor": 1,
         "VarType": "$VT_Float",
         "MBType": "$MB_BigEndian_WordSwap",
-        "FWVersion": "1.42",
-        "Poll": true
+        "FWVersion": "1.42"
     },
     "ACFrequency": {
         "Name": "Grid Frequency",
@@ -337,8 +333,7 @@
         "Factor": 0.001,
         "VarType": "$VT_Float",
         "MBType": "$MB_BigEndian_WordSwap",
-        "FWVersion": "1.42",
-        "Poll": true
+        "FWVersion": "1.42"
     },
     "ACVoltageP1": {
         "Name": "Voltage phase 1",
@@ -374,8 +369,7 @@
         "Factor": 0.001,
         "VarType": "$VT_Float",
         "MBType": "$MB_BigEndian_WordSwap",
-        "FWVersion": "1.42",
-        "Poll": true
+        "FWVersion": "1.42"
     },
     "ACVoltageP2": {
         "Name": "Voltage phase 2",
@@ -411,8 +405,7 @@
         "Factor": 0.001,
         "VarType": "$VT_Float",
         "MBType": "$MB_BigEndian_WordSwap",
-        "FWVersion": "1.42",
-        "Poll": true
+        "FWVersion": "1.42"
     },
     "ACVoltageP3": {
         "Name": "Voltage phase 3",
@@ -436,8 +429,7 @@
         "Factor": 0.001,
         "VarType": "$VT_Float",
         "MBType": "$MB_BigEndian_WordSwap",
-        "FWVersion": "1.42",
-        "Poll": true
+        "FWVersion": "1.42"
     },
     "ACReactivePowerTot": {
         "Name": "Total AC reactive power",
@@ -617,8 +609,7 @@
         "Factor": 0.001,
         "VarType": "$VT_Float",
         "MBType": "$MB_BigEndian_WordSwap",
-        "FWVersion": "1.42",
-        "Poll": true
+        "FWVersion": "1.42"
     },
     "PMReactivePowerTot": {
         "Name": "Total AC reactive power (powermeter)",
@@ -870,8 +861,7 @@
         "Factor": 0.001,
         "VarType": "$VT_Float",
         "MBType": "$MB_BigEndian_WordSwap",
-        "FWVersion": "1.42",
-        "Poll": true
+        "FWVersion": "1.42"
     },
     "PVVoltageDC1": {
         "Name": "Voltage DC1",
@@ -907,8 +897,7 @@
         "Factor": 0.001,
         "VarType": "$VT_Float",
         "MBType": "$MB_BigEndian_WordSwap",
-        "FWVersion": "1.42",
-        "Poll": true
+        "FWVersion": "1.42"
     },
     "PVVoltageDC2": {
         "Name": "Voltage DC2",
@@ -944,8 +933,7 @@
         "Factor": 0.001,
         "VarType": "$VT_Float",
         "MBType": "$MB_BigEndian_WordSwap",
-        "FWVersion": "1.42",
-        "Poll": true
+        "FWVersion": "1.42"
     },
     "PVVoltageDC3": {
         "Name": "Voltage DC3",
@@ -969,8 +957,7 @@
         "Factor": 0.001,
         "VarType": "$VT_UnsignedInteger",
         "MBType": "$MB_BigEndian_WordSwap",
-        "FWVersion": "1.44",
-        "Poll": true
+        "FWVersion": "1.44"
     },
     "PVEnergyTot": {
         "Name": "Total DC energy from PV",

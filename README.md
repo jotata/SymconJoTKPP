@@ -122,6 +122,8 @@ Version 1.4 (ALPHA)
 - Neue Public Function JoTKPP_GetDeviceInfo() hinzugefügt
 - Geräte-Informationen können nun direkt in der Instanzkonfiguration angezeigt werden
 - Im Konfigurationsformular ist es nun möglich, einzelne Idents / Gruppen auszuwählen und für deren Abfrage ein Ereignis zu erstellen
+- Interne Variablen optimiert
+- Verbesserte Fehlermeldungen bei Modul-Funktionen
 
 Version 1.3
 - Fehler im Profil "JoTKPP.Battery.Charge" behoben, welcher dazu führte, dass IPS beim Anzeigen von Diagrammen mit diesem Profil abstürzte.

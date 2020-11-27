@@ -21,6 +21,7 @@
             "Ident(s) can not be empty!": "Ident(s) darf nicht leer sein!",
             "Group(s) can not be empty!": "Gruppe(n) darf nicht leer sein!",
             "No idents found for group(s) '%s'!": "Keine Idents gefunden für Gruppe(n) '%s'!",
+            "Unknown Ident(s)": "Unbekannte(r) Ident(s)",
             "Check for FW-update": "Suche nach FW-Update",
             "Current FW-Version online": "Aktuelle FW-Version online",
             "New FW-Version available online (%s)": "Neue FW-Version verfügbar (%s)",
@@ -36,7 +37,6 @@
             "Create Event": "Ereignis erstellen",
             "Event was created. Please check/change settings.": "Ereignis wurde erstellt. Bitte Einstellungen prüfen/anpassen.",
             "Check Event (%s)": "Ereignis (%s) prüfen"
-
         }
     }
 }

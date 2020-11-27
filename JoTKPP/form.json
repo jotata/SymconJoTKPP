@@ -131,8 +131,8 @@
             "type": "ValidationTextBox",
             "name": "PollIdents",
             "width": "100%",
-            "enabled": true,
-            "visible": true,
+            "enabled": false,
+            "visible": false,
             "save": true
         },{
             "type": "RowLayout",

@@ -4,7 +4,7 @@
  * @File:			 module.php
  * @Create Date:	 27.04.2019 11:51:35
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 27.11.2020 23:19:41
+ * @Last Modified:	 27.11.2020 23:57:29
  * @Modified By:	 Jonathan Tanner
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -178,7 +178,9 @@ class JoTKPP extends JoTModBus {
         $form = file_get_contents(__DIR__ . "/form.json");
         $form = str_replace("\$DeviceString", $device['String'], $form);
         foreach ($device as $ident => $value) {
-            $diValues[] = ["Name" => $ident, "Value" => $value];
+            if ($ident != 'String' && $ident != 'Error') {
+                $diValues[] = ['Name' => $ident, 'Value' => $value];
+            }
         }
         $form = str_replace('"$DeviceInfoValues"', json_encode($diValues), $form); //Values für 'DeviceInfos' setzen
         $form = str_replace('"$IdentListValues"', json_encode(array_values($values)), $form); //Values für 'IdentList' setzen

@@ -3,7 +3,7 @@
  * @File:			 TODOs.txt
  * @Create Date:	 30.05.2019 09:59:20
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 27.11.2020 23:47:43
+ * @Last Modified:	 27.11.2020 23:58:29
  * @Modified By:	 Jonathan Tanner
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -11,7 +11,7 @@
  */
 
 ? Wert für PSSB fuse state ist "Fuse fail" obwohl alles i.O. ist. Vermutlich ein Bug in der FW des Wechselrichters (Anfrage bei Kostal offen). Im Moment das Profil umgedreht.
-- Fehlerbehebung hängender Prozess wenn RequestRead bei Modul-Update läuft (ist ev. ein IPS-Bug: https://www.symcon.de/forum/threads/41792-Prozess-PREFIX_RequestRead-bleibt-bei-Modul-Update-h%C3%A4ngen)
+x Fehlerbehebung hängender Prozess wenn RequestRead bei Modul-Update läuft (ist ev. ein IPS-Bug: https://www.symcon.de/forum/threads/41792-Prozess-PREFIX_RequestRead-bleibt-bei-Modul-Update-h%C3%A4ngen) -> Problem scheint mit 5.5 behoben
 x Variabeln in JSON-Dateien so einbauen, dass das JSON valide ist und die Variablen mit einer generischen Funktion ausgetauscht werden können.
 x Verbesserung des Device-Discoverys
 x Fehler beim Laden des Konfigurationsformulares wenn Gruppen-Reihenfolge innerhalb ModBusConfig.json ändert. 

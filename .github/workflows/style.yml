@@ -1,4 +1,4 @@
-name: CheckStyle
+name: Check Style
 
 on: [workflow_dispatch, push, pull_request]
 

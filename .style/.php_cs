@@ -1,20 +1,3 @@
-/*
- * @Package:		 .style
- * @File:			 .php_cs
- * @Create Date:	 28.11.2020 15:34:21
- * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 28.11.2020 15:35:11
- * @Modified By:	 Jonathan Tanner
- * @Copyright:		 Copyright(c) 2020 by JoT Tanner
- * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
- * 					 (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
- */
-
-
-
-
-
-
 <?php
 
 $finder = PhpCsFixer\Finder::create()

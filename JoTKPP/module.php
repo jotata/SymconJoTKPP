@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:			 module.php
  * @Create Date:	 27.04.2019 11:51:35
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 28.11.2020 16:52:55
+ * @Last Modified:	 28.11.2020 17:01:12
  * @Modified By:	 Jonathan Tanner
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -23,7 +23,7 @@ class JoTKPP extends JoTModBus {
     use VariableProfile;
     use Translation;
     use RequestAction;
-    protected const PREFIX='JoTKPP';
+    protected const PREFIX = 'JoTKPP';
     protected const MODULEID = '{E64278F5-1942-5343-E226-8673886E2D05}';
     protected const STATUS_Error_WrongDevice = 416;
 

@@ -12,7 +12,6 @@ declare(strict_types=1);
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
  * 					 (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
  */
-
 require_once __DIR__ . '/../libs/JoT_Traits.php';  //Bibliothek mit allgemeinen Definitionen & Traits
 
 /**

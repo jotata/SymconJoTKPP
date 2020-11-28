@@ -1,5 +1,6 @@
 [![IP-Symcon is awesome!](https://img.shields.io/badge/IP--Symcon-5.x-blue.svg)](https://www.symcon.de)
 [![Check Style](https://github.com/jotata/SymconJoTKPP/workflows/Check%20Style/badge.svg)](https://github.com/jotata/SymconJoTKPP/actions?query=workflow%3A%22Check+Style%22)
+[![Run Tests](https://github.com/jotata/SymconJoTKPP/workflows/Run%20Tests/badge.svg)](https://github.com/jotata/SymconJoTKPP/actions?query=workflow%3A%22Run+Tests%22)
 [![Tested with](https://img.shields.io/badge/Tested-Kostal%20PLENTICORE%20plus%207.0-blue)](https://www.kostal-solar-electric.com/de-de/produkte/solar-wechselrichter/plenticore-plus)
 [![Release Version](https://img.shields.io/github/v/release/jotata/SymconJoTKPP)](https://github.com/jotata/SymconJoTKPP/releases)
 

@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:			 JoTKPP_Test.php
  * @Create Date:	 28.11.2020 17:41:30
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 28.11.2020 21:39:13
+ * @Last Modified:	 28.11.2020 22:19:20
  * @Modified By:	 Jonathan Tanner
  * @Copyright:		 Copyright(c) 2020 by JoT Tanner
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -40,7 +40,7 @@ class JoTKPP_Test extends TestCase {
         $var3 = 5;
 
         $sum = $var1 + $var2 + $var3;
-        $this->assertEquals(10, $sum); //erfolgreicher Test
-        //$this->assertEquals(12, $sum); //fehlerhafter Test
+        //$this->assertEquals(10, $sum); //erfolgreicher Test
+        $this->assertEquals(12, $sum); //fehlerhafter Test
     }
 }

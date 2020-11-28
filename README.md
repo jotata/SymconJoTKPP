@@ -1,5 +1,5 @@
 [![IP-Symcon is awesome!](https://img.shields.io/badge/IP--Symcon-5.x-blue.svg)](https://www.symcon.de)
-[![CheckStyle](https://github.com/jotata/SymconJoTKPP/workflows/CheckStyle/badge.svg)](https://github.com/jotata/SymconJoTKPP/actions?query=workflow%3ACheckStyle)
+[![Check Style](../workflows/Check%20Style/badge.svg)](../actions?query=workflow%3A%22Check+Style%22)
 
 # SymconJoTKPP
 Erweiterung zur Abfrage der Werte eines Kostal Wechselrichters via ModBus in IP-Symcon.

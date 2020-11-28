@@ -1,3 +1,5 @@
+![CheckStyle](https://github.com/jotata/SymconJoTKPP/workflows/CheckStyle/badge.svg)
+
 # SymconJoTKPP
 Erweiterung zur Abfrage der Werte eines Kostal Wechselrichters via ModBus in IP-Symcon.
 

@@ -1,7 +1,7 @@
 [![IP-Symcon is awesome!](https://img.shields.io/badge/IP--Symcon-5.x-blue.svg)](https://www.symcon.de)
 [![Check Style](https://github.com/jotata/SymconJoTKPP/workflows/Check%20Style/badge.svg)](https://github.com/jotata/SymconJoTKPP/actions?query=workflow%3A%22Check+Style%22)
 [![Run Tests](https://github.com/jotata/SymconJoTKPP/workflows/Run%20Tests/badge.svg)](https://github.com/jotata/SymconJoTKPP/actions?query=workflow%3A%22Run+Tests%22)
-[![Tested with](https://img.shields.io/badge/Tested-Kostal%20PLENTICORE%20plus%207.0-blue)](https://www.kostal-solar-electric.com/de-de/produkte/solar-wechselrichter/plenticore-plus)
+[![Tested with](https://img.shields.io/badge/tested-Kostal%20PLENTICORE%20plus%207.0-blue)](https://www.kostal-solar-electric.com/de-de/produkte/solar-wechselrichter/plenticore-plus)
 [![Release Version](https://img.shields.io/github/v/release/jotata/SymconJoTKPP)](https://github.com/jotata/SymconJoTKPP/releases)
 
 # SymconJoTKPP
@@ -119,7 +119,7 @@ Um diesen Hänger zu vermeiden, kann man vor dem Update den "Aktualisierungs-Int
 | JoTKPP | Device | Kostal     | PIKO IQ         | JoTKPP | {E64278F5-1942-5343-E226-8673886E2D05} |
 
 ### 2. Changelog
-Version 1.4 (BETA)
+Version 1.4
 - Folgende zusätzliche Parameter hinzugefügt: Installed powermeter, Total DC power, Battery ready flag, Battery cross capacity, Battery actual SOC, Battery Firmware MC, Battery Type, Total battery AC/DC (dis)charge, Total energy from PV(1-3).
 - Folgende Parameter korrigiert: State of energy manager, Total DC power from PV.
 - Profil Status.KostalFuse umgedreht (kann leider nicht testen, ob dies bei einer ausgelösten Sicherung nun korrekt funktioniert).

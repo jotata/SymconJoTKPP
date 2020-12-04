@@ -88,12 +88,12 @@
                     "caption": "Group",
                     "name": "Group",
                     "width": "150px",
-                    "onClick": "IPS_RequestAction($id, 'FormAddIdent', json_encode(array('Group', $RequestRead.' '.$IdentList['Group'])));"
+                    "onClick": "IPS_RequestAction($id, 'FormAddIdent', json_encode(array('Group', $IdentList['Group'])));"
                 },{
                     "caption": "Ident",
                     "name": "Ident",
                     "width": "200px",
-                    "onClick": "IPS_RequestAction($id, 'FormAddIdent', json_encode(array('Ident', $RequestRead.' '.$IdentList['Ident'])));",
+                    "onClick": "IPS_RequestAction($id, 'FormAddIdent', json_encode(array('Ident', $IdentList['Ident'])));",
                     "save": true
                 },{
                     "caption": "Name",
@@ -127,16 +127,19 @@
                 }
             ],
             "values": "$IdentListValues"
-        },{
+        }
+    ],
+    "actions":[
+        {
             "type": "RowLayout",
             "items": [
                 {
                     "type": "ValidationTextBox",
                     "name": "RequestRead",
-                    "caption": "",
-                    "width": "800px",
+                    "caption": "$RequestReadCaption",
+                    "width": "1000px",
                     "enabled": true,
-                    "save": false
+                    "value": "$RequestReadValue"
                 },{
                     "type": "Button",
                     "caption": "Clear",
@@ -144,14 +147,12 @@
                 },{
                     "type": "ValidationTextBox",
                     "name": "EventName",
-                    "caption": "Event Name",
-                    "save": false
+                    "caption": "Event Name"
                 },{
                     "type": "Select",
                     "name": "EventType",
                     "caption": "Event Type",
                     "width": "100px",
-                    "save": false,
                     "options": [
                         { "caption": "Cyclic", "value": 1 },
                         { "caption": "Trigger", "value": 0 }
@@ -171,6 +172,5 @@
                 }
             ]
         }
-    ],
-    "actions":[]
+    ]
 }

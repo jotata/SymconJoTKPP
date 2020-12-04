@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:			 module.php
  * @Create Date:	 27.04.2019 11:51:35
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 04.12.2020 14:05:52
+ * @Last Modified:	 04.12.2020 15:00:55
  * @Modified By:	 Jonathan Tanner
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -43,6 +43,7 @@ class JoTKPP extends JoTModBus {
         $this->RegisterTimer('RequestRead', 0, static::PREFIX . '_RequestRead($_IPS["TARGET"]);');
         $this->RegisterTimer('CheckFW', 0, static::PREFIX . '_CheckFirmwareUpdate($_IPS["TARGET"]);');
         $this->RegisterMessage($this->InstanceID, FM_CONNECT); //Gateway wurde geändert
+        $this->SetBuffer('RequestReadType', 'Group');
     }
 
     /**
@@ -205,6 +206,8 @@ class JoTKPP extends JoTModBus {
         }
         $form = str_replace('"$DeviceInfoValues"', json_encode($diValues), $form); //Values für 'DeviceInfos' setzen
         $form = str_replace('"$IdentListValues"', json_encode(array_values($values)), $form); //Values für 'IdentList' setzen
+        $form = str_replace('$RequestReadCaption', static::PREFIX . '_RequestRead'. $this->GetBuffer('RequestReadType'), $form); //Caption für 'RequestRead' setzen
+        $form = str_replace('$RequestReadValue', $this->GetBuffer('RequestReadValue'), $form); //Value für 'RequestRead' setzen
         $form = str_replace('$EventCreated', $this->Translate('Event was created. Please check/change settings.'), $form); //Übersetzungen einfügen
         return $form;
     }
@@ -446,14 +449,17 @@ class JoTKPP extends JoTModBus {
 
     /**
      * Fügt einen Ident zur Liste für CreateEvent hinzu
-     * @param string $Submit json_codiertes Array(string Type, string ReadIdents)
+     * @param string $Submit json_codiertes Array(string Type, string Ident)
      * @access private
      */
     private function FormAddIdent(string $Submit) {
         $Submit = json_decode($Submit, true);
-        $lastType = $this->GetBuffer('lastType');
+        $lastType = $this->GetBuffer('RequestReadType');
         $type = $Submit[0];
         $ident = $Submit[1];
+        if ($ident !== ''){
+            $ident = trim($this->GetBuffer('RequestReadValue') . ' ' . $ident);
+        }
         if ($lastType !== $type) {
             $ident = @array_pop(explode(' ', $ident)); //letzen (neuen) Wert nehmen
         } else {
@@ -462,7 +468,8 @@ class JoTKPP extends JoTModBus {
         $this->UpdateFormField('CreateEvent', 'enabled', ($ident !== ''));
         $this->UpdateFormField('RequestRead', 'caption', static::PREFIX . "_RequestRead$type");
         $this->UpdateFormField('RequestRead', 'value', $ident);
-        $this->SetBuffer('lastType', $type);
+        $this->SetBuffer('RequestReadType', $type);
+        $this->SetBuffer('RequestReadValue', $ident);
     }
 
     /**
@@ -475,7 +482,7 @@ class JoTKPP extends JoTModBus {
         $eventName = $Submit[0];
         $eventType = $Submit[1];
         $idents = $Submit[2];
-        $type = $this->GetBuffer('lastType');
+        $type = $this->GetBuffer('RequestReadType');
         $action = static::PREFIX . "_RequestRead$type(\$_IPS['TARGET'], '$idents');";
         $eId = IPS_CreateEvent($eventType);
         IPS_SetParent($eId, $this->InstanceID);

@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:			 module.php
  * @Create Date:	 27.04.2019 11:51:35
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 04.12.2020 15:08:59
+ * @Last Modified:	 04.12.2020 16:47:59
  * @Modified By:	 Jonathan Tanner
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -521,9 +521,7 @@ class JoTKPP extends JoTModBus {
             $pollIdents = $this->ReadAttributeString('PollIdents');
             $knownIdents = implode(' ', array_intersect(explode(' ', $pollIdents), array_keys(json_decode($config, true, 3)))); //am Ende bleiben nur die Idents aus $pollIdents übrig, welche auch in $config vorhaden sind
             if (json_last_error() == JSON_ERROR_NONE && $knownIdents !== $pollIdents) {//Property nur aktualisieren, wenn keine Fehler in der ModBusConfig.json vorhanden sind, da sonst Property 'beschädigt' würde
-                //Schreibe bereinigte Werte für 'PollIdents' zurück und wende diese an
-                $this->WriteAttributeString('PollIdents', $knownIdents);
-                $this->ApplyChanges();
+                $this->WriteAttributeString('PollIdents', $knownIdents); //Schreibe bereinigte Werte für 'PollIdents' zurück
             }
         }
         //JSON in Array umwandeln

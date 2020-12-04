@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:			 module.php
  * @Create Date:	 27.04.2019 11:51:35
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 28.11.2020 17:01:12
+ * @Last Modified:	 04.12.2020 10:53:26
  * @Modified By:	 Jonathan Tanner
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -35,8 +35,9 @@ class JoTKPP extends JoTModBus {
     public function Create() {
         parent::Create();
         $this->ConfigProfiles(__DIR__ . '/ProfileConfig.json', ['$VT_Float' => self::VT_Float, '$VT_Integer' => self::VT_Integer]);
+        $this->RegisterAttributeString('PollIdents', '');
         $this->RegisterPropertyString('PollIdents', '');
-        $this->RegisterPropertyString('ModuleVariables', ''); //wird seit V1.4 nicht mehr benötigt, aber IPS crasht beim Modul-Reload, wenn die Eigenschaft entfernt wird :-(
+        $this->RegisterPropertyString('ModuleVariables', ''); //wird seit V1.4 nicht mehr benötigt, für Migration zu 'PollIdents' aber noch notwendig
         $this->RegisterPropertyInteger('PollTime', 0);
         $this->RegisterPropertyInteger('CheckFWTime', 0);
         $this->RegisterTimer('RequestRead', 0, static::PREFIX . '_RequestRead($_IPS["TARGET"]);');
@@ -54,29 +55,43 @@ class JoTKPP extends JoTModBus {
 
         //Migration Propertys < V1.4
         $oldMV = $this->ReadPropertyString('ModuleVariables');
-        if ($oldMV !== '') {//Alte Property 'ModuleVariables' muss zu neuer Property 'PollIdents' konvertiert werden
+        if ($oldMV !== '') {//Alte Property 'ModuleVariables' muss zu neuem Attribut 'PollIdents' konvertiert werden
             $oldMV = array_column(json_decode($oldMV, true), 'Poll', 'Ident');
-            $pollIdents = $this->ReadPropertyString('PollIdents');
+            $pollIdents = $this->ReadAttributeString('PollIdents');
             foreach ($oldMV as $ident => $poll) {
                 if ($poll) {
                     $pollIdents = "$pollIdents $ident";
                 }
             }
+            $this->SetBuffer('TempPollIdents', $pollIdents);//konvertierte Werte für neues Attribut (Anwendung / Speicherung erfolgt mittels ApplyChanges())
             IPS_SetProperty($this->InstanceID, 'ModuleVariables', ''); //alte Property "ausser Betrieb nehmen"
-            IPS_SetProperty($this->InstanceID, 'PollIdents', $pollIdents); //konvertierte Werte in neuer Property speichern
+            IPS_ApplyChanges($this->InstanceID);
+            return;
+        }//Ende Migration
+        //Migration Propertys < V1.4RC2
+        $oldMV = $this->ReadPropertyString('PollIdents');
+        if ($oldMV !== '') {//Alte Property 'PollIdents' muss zu neuem Attribut 'PollIdents' konvertiert werden
+            $this->SetBuffer('TempPollIdents', $oldMV);//konvertierte Werte in neuem Attribut speichern
+            IPS_SetProperty($this->InstanceID, 'PollIdents', ''); //alte Property "ausser Betrieb nehmen"
             IPS_ApplyChanges($this->InstanceID);
             return;
         }//Ende Migration
 
         $mbConfig = $this->GetModBusConfig();
-        $pollIdents = explode(' ', $this->ReadPropertyString('PollIdents'));
+        $pollIdents = $this->GetBuffer('TempPollIdents');
+        if ($pollIdents === ''){//Aufruf von ApplyChanges() erfolgte vor GetConfigurtionForm()
+            $pollIdents = $this->ReadAttributeString('PollIdents');
+        }
+        $pollIdents = explode(' ', $pollIdents);
         $groups = array_values(array_unique(array_column($mbConfig, 'Group')));
         $vars = [];
 
         //Instanz-Variablen vorbereiten...
-        foreach ($pollIdents as $ident) {
-            $pos = array_search($mbConfig[$ident]['Group'], $groups) * 20; //20er Schritte, damit User innerhalb der Gruppen-Position auch sortieren kann
-            $vars[$ident] = ['Keep' => true, 'Position' => $pos];
+        if ($pollIdents[0] !== ''){ //nur wenn pollIdents nicht leer ist
+            foreach ($pollIdents as $ident) {
+                $pos = array_search($mbConfig[$ident]['Group'], $groups) * 20; //20er Schritte, damit User innerhalb der Gruppen-Position auch sortieren kann
+                $vars[$ident] = ['Keep' => true, 'Position' => $pos];
+            }
         }
         $children = IPS_GetChildrenIDs($this->InstanceID);
         foreach ($children as $cId) {
@@ -91,7 +106,7 @@ class JoTKPP extends JoTModBus {
                 }
             }
         }
-        //... und erstellen / löschen / aktualisieren
+        //... und erstellen / löschen / aktualisieren...
         foreach ($vars as $ident => $values) {
             if ($values['Keep']) {
                 $name = $mbConfig[$ident]['Name'];
@@ -100,6 +115,8 @@ class JoTKPP extends JoTModBus {
             }
             $this->MaintainVariable($ident, $name, $varType, $profile, $values['Position'], $values['Keep']);
         }
+        //... und Idents definitiv speichern
+        $this->WriteAttributeString('PollIdents', implode(' ', $pollIdents));
 
         //Timer für Polling (de)aktivieren
         if ($this->ReadPropertyInteger('PollTime') > 0) {
@@ -129,7 +146,8 @@ class JoTKPP extends JoTModBus {
         if (array_key_exists('FWVersion', $device) && $device['FWVersion'] != '') {
             $fwVersion = floatval($device['FWVersion']);
         }
-        $pollIdents = $this->ReadPropertyString('PollIdents');
+        $pollIdents = $this->ReadAttributeString('PollIdents');
+        $this->SetBuffer('TempPollIdents', $pollIdents);
         $mbConfig = $this->GetModBusConfig();
         $variable = [];
         $eid = 1;
@@ -269,7 +287,7 @@ class JoTKPP extends JoTModBus {
      * @return array mit den angeforderten Werten, NULL bei Fehler oder Wert wenn nur ein Wert.
      */
     public function RequestRead() {
-        $force = $this->ReadPropertyString('PollIdents'); //$force = true wird über die Funktion RequestReadAll aktiviert oder String mit Ident über die Funktion RequestReadIdent/Group
+        $force = $this->ReadAttributeString('PollIdents'); //$force = true wird über die Funktion RequestReadAll aktiviert oder String mit Ident über die Funktion RequestReadIdent/Group
         if (func_num_args() == 1) {//Intergation auf diese Art, da sonst in __generated.inc.php ein falscher Eintrag mit der PREFIX_Funktion erstellt wird
             $force = func_get_arg(0);
         }
@@ -404,19 +422,19 @@ class JoTKPP extends JoTModBus {
 
     /**
      * Fügt einen Ident zu PollIdents hinzu oder entfernt ihn
-     * @param string $Submit json_codiertes Array(boolean Poll, string Ident, string PollIdents)
+     * @param string $Submit json_codiertes Array(boolean Poll, string Ident)
      * @access private
      */
     private function FormEditIdent(string $Submit) {
         $Submit = json_decode($Submit, true);
         $poll = $Submit[0];
         $ident = $Submit[1];
-        $pollIdents = $Submit[2];
+        $pollIdents = $this->GetBuffer('TempPollIdents');
         $pollIdents = trim(str_replace(" $ident ", ' ', " $pollIdents ")); //Ident aus der Liste löschen
         if ($poll) {//Ident hinzufügen, wenn dieser aktiviert wurde
             $pollIdents = "$pollIdents $ident";
         }
-        $this->UpdateFormField('PollIdents', 'value', trim($pollIdents));
+        $this->SetBuffer('TempPollIdents', trim($pollIdents));
     }
 
     /**
@@ -486,12 +504,12 @@ class JoTKPP extends JoTModBus {
             $this->SetBuffer('ModBusConfig', $config);
             //Bei Modul-Updates kann es sein, dass Einträge in der ModBusConfig umbenannt oder ganz gelöscht werden.
             //Die dadurch ungültig gewordenen Idents müssen aus der Property 'PollIdents' entfernt werden, damit es nicht zu Fehlern kommt.
-            $pollIdents = $this->ReadPropertyString('PollIdents');
+            $pollIdents = $this->ReadAttributeString('PollIdents');
             $knownIdents = implode(' ', array_intersect(explode(' ', $pollIdents), array_keys(json_decode($config, true, 3)))); //am Ende bleiben nur die Idents aus $pollIdents übrig, welche auch in $config vorhaden sind
             if (json_last_error() == JSON_ERROR_NONE && $knownIdents !== $pollIdents) {//Property nur aktualisieren, wenn keine Fehler in der ModBusConfig.json vorhanden sind, da sonst Property 'beschädigt' würde
-                //Schreibe bereinigte Property 'PollIdents' zurück und wende diese an
-                IPS_SetProperty($this->InstanceID, 'PollIdents', $knownIdents);
-                IPS_ApplyChanges($this->InstanceID);
+                //Schreibe bereinigte Werte für 'PollIdents' zurück und wende diese an
+                $this->SetBuffer('TempPollIdents', $knownIdents);
+                $this->ApplyChanges();
             }
         }
         //JSON in Array umwandeln

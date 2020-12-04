@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:			 module.php
  * @Create Date:	 27.04.2019 11:51:35
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 04.12.2020 15:00:55
+ * @Last Modified:	 04.12.2020 15:08:59
  * @Modified By:	 Jonathan Tanner
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -36,7 +36,7 @@ class JoTKPP extends JoTModBus {
         parent::Create();
         $this->ConfigProfiles(__DIR__ . '/ProfileConfig.json', ['$VT_Float' => self::VT_Float, '$VT_Integer' => self::VT_Integer]);
         $this->RegisterAttributeString('PollIdents', '');
-        $this->RegisterPropertyString('PollIdents', '');
+        $this->RegisterPropertyString('PollIdents', ''); //wird seit V1.4RC2 nicht mehr benötigt, für Migration zu aber noch notwendig
         $this->RegisterPropertyString('ModuleVariables', ''); //wird seit V1.4 nicht mehr benötigt, für Migration zu 'PollIdents' aber noch notwendig
         $this->RegisterPropertyInteger('PollTime', 0);
         $this->RegisterPropertyInteger('CheckFWTime', 0);
@@ -92,7 +92,7 @@ class JoTKPP extends JoTModBus {
 
         //Instanz-Variablen vorbereiten...
         foreach ($pollIdents as $ident) {
-            $pos = array_search($mbConfig[$ident]['Group'], $groups) * 20; //20er Schritte, damit User innerhalb der Gruppen-Position auch sortieren kann
+            $pos = array_search($mbConfig[$ident]['Group'], $groups) * 20 + 20; //*20, damit User innerhalb der Gruppen-Position auch sortieren kann - +20, damit Events zuoberst sind
             $vars[$ident] = ['Keep' => true, 'Position' => $pos];
         }
         $children = IPS_GetChildrenIDs($this->InstanceID);
@@ -206,7 +206,7 @@ class JoTKPP extends JoTModBus {
         }
         $form = str_replace('"$DeviceInfoValues"', json_encode($diValues), $form); //Values für 'DeviceInfos' setzen
         $form = str_replace('"$IdentListValues"', json_encode(array_values($values)), $form); //Values für 'IdentList' setzen
-        $form = str_replace('$RequestReadCaption', static::PREFIX . '_RequestRead'. $this->GetBuffer('RequestReadType'), $form); //Caption für 'RequestRead' setzen
+        $form = str_replace('$RequestReadCaption', static::PREFIX . '_RequestRead' . $this->GetBuffer('RequestReadType'), $form); //Caption für 'RequestRead' setzen
         $form = str_replace('$RequestReadValue', $this->GetBuffer('RequestReadValue'), $form); //Value für 'RequestRead' setzen
         $form = str_replace('$EventCreated', $this->Translate('Event was created. Please check/change settings.'), $form); //Übersetzungen einfügen
         return $form;
@@ -457,7 +457,7 @@ class JoTKPP extends JoTModBus {
         $lastType = $this->GetBuffer('RequestReadType');
         $type = $Submit[0];
         $ident = $Submit[1];
-        if ($ident !== ''){
+        if ($ident !== '') {
             $ident = trim($this->GetBuffer('RequestReadValue') . ' ' . $ident);
         }
         if ($lastType !== $type) {

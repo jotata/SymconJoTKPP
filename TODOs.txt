@@ -3,7 +3,7 @@
  * @File:			 TODOs.txt
  * @Create Date:	 30.05.2019 09:59:20
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 04.12.2020 10:10:28
+ * @Last Modified:	 04.12.2020 14:11:58
  * @Modified By:	 Jonathan Tanner
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -21,7 +21,7 @@ x Property ModuleVariables auflösen und in Property PollIdents konvertieren.
 x Anstatt einzelner Poll-Liste eine Liste mit unterschiedlichen Poll-Timer-Gruppen (Intervall, Idents, Aktiv), welche auch via Public Function (de)aktiviert werden kann. -> ev als Ereignisse, da dann ein/aus & Bedingungen schon vorhanden sind.
 x Profil "Status.KostalEM" muss gelöscht und neu angelegt werden (allgemeines Profil-Update einbauen)
 x Style-Check und Modul-Tests einführen
-=> Property 'PollIdents' in Attribut umwandeln
+x Property 'PollIdents' in Attribut umwandeln
 - Integration "virtueller" PV-Überschuss
 - Integration neue ModBus-Spezifikationen Version 1.9
   x Allgemeine Anpassungen
@@ -29,3 +29,6 @@ x Style-Check und Modul-Tests einführen
   - ModBus WordSwap automatisch erkennen
   - Kapitel 3.4 "Batterie-Management" lesend
   - Kapitel 3.4 "Batterie-Management" schreibend
+- Integration Tests
+  - Eintrag aus ModBusConfig.json entfernt - wird dieser automatisch bereinigt?
+  - PollListe leer -> Timer sollte gestoppt werden und kein Fehler auftauchen

@@ -1054,17 +1054,5 @@
         "VarType": "$VT_Float",
         "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
-    },
-    "TestTest": {
-        "Name": "TestTest",
-        "Group": "Test",
-        "Profile": "~Electricity",
-        "Function": "$FC_Read_HoldingRegisters",
-        "Address": 320,
-        "Quantity": 2,
-        "Factor": 0.001,
-        "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
-        "FWVersion": "1.42"
     }
 }

@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:			 JoTKPP_Test.php
  * @Create Date:	 28.11.2020 17:41:30
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 11.12.2020 17:49:50
+ * @Last Modified:	 11.12.2020 17:53:07
  * @Modified By:	 Jonathan Tanner
  * @Copyright:		 Copyright(c) 2020 by JoT Tanner
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -49,13 +49,12 @@ class JoTKPP_Test extends TestCase {
 
     //Testet ob die Instanz erstellt werden kann (auch wenn kein Gerät verfügbar ist)
     public function testCreateInstance() {
-        /*$soID = IPS_CreateInstance($this->socketID);
-        IPS_SetConfiguration($soID, json_encode(['Host' => '127.0.0.1', 'Open' => true, 'Port' => 1502]));
-        IPS_ApplyChanges($soID);
-        $gwID = IPS_CreateInstance($this->gatewayID);
-        IPS_SetConfiguration($gwID, json_encode(['DeviceID' => 71, 'GatewayMode' => 0, 'SwapWords' => 0]));
-        IPS_ApplyChanges($gwID);
-        */
+        //$soID = IPS_CreateInstance($this->socketID);
+        //IPS_SetConfiguration($soID, json_encode(['Host' => '127.0.0.1', 'Open' => true, 'Port' => 1502]));
+        //IPS_ApplyChanges($soID);
+        //$gwID = IPS_CreateInstance($this->gatewayID);
+        //IPS_SetConfiguration($gwID, json_encode(['DeviceID' => 71, 'GatewayMode' => 0, 'SwapWords' => 0]));
+        //IPS_ApplyChanges($gwID);
 
         //Modul 'ModBus Gateway' {A5F663AB-C400-4FE5-B207-4D67CC030564} ist in "Symcon-Simulator" nicht vorhanden. Instanz kann nicht erstellt werden.
         //Anfrage im Forum https://www.symcon.de/forum/threads/45276-Modul-ModBus-Gateway-in-Symcon-Simulator-%28SymconStubs%29-nicht-vorhanden

@@ -26,6 +26,7 @@
                     "name": "DeviceInfo",
                     "type": "PopupButton",
                     "caption": "Device Info",
+                    "visible": "$DeviceInfoVisible",
                     "popup": {
                         "caption": "Device Info",
                         "items": [

@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:			 module.php
  * @Create Date:	 27.04.2019 11:51:35
  * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 04.12.2020 16:47:59
+ * @Last Modified:	 11.12.2020 10:46:59
  * @Modified By:	 Jonathan Tanner
  * @Copyright:		 Copyright(c) 2019 by JoT Tanner
  * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -42,7 +42,7 @@ class JoTKPP extends JoTModBus {
         $this->RegisterPropertyInteger('CheckFWTime', 0);
         $this->RegisterTimer('RequestRead', 0, static::PREFIX . '_RequestRead($_IPS["TARGET"]);');
         $this->RegisterTimer('CheckFW', 0, static::PREFIX . '_CheckFirmwareUpdate($_IPS["TARGET"]);');
-        $this->RegisterMessage($this->InstanceID, FM_CONNECT); //Gateway wurde geändert
+        $this->RegisterMessage($this->InstanceID, IM_CONNECT); //Instanz verfügbar
         $this->SetBuffer('RequestReadType', 'Group');
     }
 
@@ -156,7 +156,7 @@ class JoTKPP extends JoTModBus {
         $mbConfig = $this->GetModBusConfig();
         $variable = [];
         $eid = 1;
-        //Values für Liste vorbereiten (vorhandene Variabeln)
+        //Values für IdentList vorbereiten
         foreach ($mbConfig as $ident => $config) {
             if (array_key_exists($config['Group'], $values) === false) {//Gruppe exstiert im Tree noch nicht
                 $values[$config['Group']] = ['Group' => $config['Group'], 'Ident' => '', 'id' => $eid++, 'parent' => 0, 'rowColor' => '#DFDFDF', 'expanded' => false, 'editable' => false, 'deletable' => false];
@@ -199,7 +199,13 @@ class JoTKPP extends JoTModBus {
         //Variabeln in $form ersetzen
         $form = file_get_contents(__DIR__ . '/form.json');
         $form = str_replace('$DeviceString', $device['String'], $form);
-        foreach ($device as $ident => $value) {
+        if ($device['Error']) {//'DeviceInfo' nur anzeigen, wenn kein Fehler beim Lesen der Geräte-Infos
+            $form = str_replace('"$DeviceInfoVisible"', 'false', $form);
+        } else {
+            $form = str_replace('"$DeviceInfoVisible"', 'true', $form);
+        }
+        $diValues = [];
+        foreach ($device as $ident => $value) { //DeviceInfo aufbereiten
             if ($ident != 'String' && $ident != 'Error') {
                 $diValues[] = ['Name' => $ident, 'Value' => $value];
             }
@@ -275,13 +281,19 @@ class JoTKPP extends JoTModBus {
      * @access public
      */
     public function MessageSink($TimeStamp, $SenderID, $MessageID, $Data) {
-        if ($MessageID == FM_CONNECT) {//Gateway wurde geändert
+        if ($MessageID == IM_CONNECT) {//Instanz verfügbar
+            $this->SendDebug('Instance ready', '', 0);
+            $this->RegisterMessage($this->InstanceID, FM_CONNECT); //Gateway wurde geändert
+            $this->RegisterMessage(IPS_GetInstance($this->InstanceID)['ConnectionID'], IM_CHANGESETTINGS); //Gateway-Einstellungen wurden geändert
+        } elseif ($MessageID == FM_CONNECT) {//Gateway wurde geändert
+            $this->SendDebug('Gateway changed', 'Gateway #' . IPS_GetInstance($this->InstanceID)['ConnectionID'], 0);
             $this->RegisterOnceTimer('GetDeviceInfo', 'IPS_RequestAction($_IPS["TARGET"], "GetDeviceInfo", "");');
             foreach ($this->GetMessageList() as $id => $msgs) {//Nachrichten von alten GWs deaktivieren
                 $this->UnregisterMessage($id, IM_CHANGESETTINGS);
             }
             $this->RegisterMessage(IPS_GetInstance($this->InstanceID)['ConnectionID'], IM_CHANGESETTINGS);
         } elseif ($MessageID == IM_CHANGESETTINGS) {//Einstellungen im Gateway wurde geändert
+            $this->SendDebug('Gateway settings changed', 'Gateway #' . IPS_GetInstance($this->InstanceID)['ConnectionID'], 0);
             $this->RegisterOnceTimer('GetDeviceInfo', 'IPS_RequestAction($_IPS["TARGET"], "GetDeviceInfo", "");');
         }
     }

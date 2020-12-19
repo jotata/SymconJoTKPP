@@ -1,16 +1,16 @@
 <?php
 
 declare(strict_types=1);
-/**
- * @Package:		 JoTKPP
- * @File:			 module.php
- * @Create Date:	 27.04.2019 11:51:35
- * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 11.12.2020 10:46:59
- * @Modified By:	 Jonathan Tanner
- * @Copyright:		 Copyright(c) 2019 by JoT Tanner
- * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
- * 					 (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
+/** 
+ * @Package:         JoTKPP
+ * @File:            module.php
+ * @Create Date:     09.07.2020 16:54:15
+ * @Author:          Jonathan Tanner - admin@tanner-info.ch
+ * @Last Modified:   19.12.2020 19:26:12
+ * @Modified By:     Jonathan Tanner
+ * @Copyright:       Copyright(c) 2020 by JoT Tanner
+ * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
+ *                   (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
  */
 require_once __DIR__ . '/../libs/JoT_Traits.php';  //Bibliothek mit allgemeinen Definitionen & Traits
 require_once __DIR__ . '/../libs/JoT_ModBus.php';  //Bibliothek für ModBus-Integration
@@ -40,6 +40,8 @@ class JoTKPP extends JoTModBus {
         $this->RegisterPropertyString('ModuleVariables', ''); //wird seit V1.4 nicht mehr benötigt, für Migration zu 'PollIdents' aber noch notwendig
         $this->RegisterPropertyInteger('PollTime', 0);
         $this->RegisterPropertyInteger('CheckFWTime', 0);
+        $this->RegisterPropertyBoolean('PVsurplus', false);
+        $this->RegisterPropertyString('PVspList', '');
         $this->RegisterTimer('RequestRead', 0, static::PREFIX . '_RequestRead($_IPS["TARGET"]);');
         $this->RegisterTimer('CheckFW', 0, static::PREFIX . '_CheckFirmwareUpdate($_IPS["TARGET"]);');
         $this->RegisterMessage($this->InstanceID, IM_CONNECT); //Instanz verfügbar
@@ -212,6 +214,7 @@ class JoTKPP extends JoTModBus {
         }
         $form = str_replace('"$DeviceInfoValues"', json_encode($diValues), $form); //Values für 'DeviceInfos' setzen
         $form = str_replace('"$IdentListValues"', json_encode(array_values($values)), $form); //Values für 'IdentList' setzen
+        $form = str_replace('"$PVspListVisible"', 'true', $form); //Visible für 'PVspList' setzen
         $form = str_replace('$RequestReadCaption', static::PREFIX . '_RequestRead' . $this->GetBuffer('RequestReadType'), $form); //Caption für 'RequestRead' setzen
         $form = str_replace('$RequestReadValue', $this->GetBuffer('RequestReadValue'), $form); //Value für 'RequestRead' setzen
         $form = str_replace('$EventCreated', $this->Translate('Event was created. Please check/change settings.'), $form); //Übersetzungen einfügen
@@ -568,5 +571,14 @@ class JoTKPP extends JoTModBus {
             }
         }
         return false;
+    }
+
+    /**
+     * Ändert die Anzeige von PVspList
+     * @param bool $Visible Wert für Anzeige der Liste
+     * @access private
+     */
+    private function FormTogglePVspList(bool $Visible) {
+        $this->UpdateFormField('PVspList', 'visible', $Visible);
     }
 }

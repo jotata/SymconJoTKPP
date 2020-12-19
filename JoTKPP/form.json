@@ -61,7 +61,7 @@
                     "name": "PollTime",
                     "type": "NumberSpinner",
                     "caption": "PollTime",
-                    "suffix": "Seconds"
+                    "suffix": " Seconds"
                 },{
                     "type": "Label",
                     "caption": "          "  
@@ -128,6 +128,98 @@
                 }
             ],
             "values": "$IdentListValues"
+        },{
+            "name": "PVsurplus",
+            "type": "CheckBox",
+            "caption": "Activate PV surplus",
+            "onChange": "IPS_RequestAction($id, 'FormTogglePVspList', $PVsurplus);"
+        },{
+            "type": "List",
+            "name": "PVspList",
+            "caption": "PV surplus",
+            "visible": "$PVspListVisible",
+            "add": true,
+            "delete": true,
+            "rowCount": 6,
+            "sort": {
+                "column": "Type",
+                "direction": "ascending"
+            },
+            "columns": [
+                {
+                    "caption": "Type",
+                    "name": "Type",
+                    "width": "150px",
+                    "add": "PVspFeedIn",
+                    "edit": {
+                        "type": "Select",
+                        "options": [
+                            { "caption": "Feed In", "value": "PVspFeedIn" },
+                            { "caption": "Reduction", "value": "PVspReduction" },
+                            { "caption": "Battery loading", "value": "PVspLoading" }
+                        ]
+                    }
+                },{
+                    "caption": "On Value",
+                    "name": "OnValue",
+                    "width": "200px",
+                    "add": 0,
+                    "edit": {
+                        "type": "NumberSpinner",
+                        "minimum": 1,
+                        "suffix": "W"
+                    }
+                },{
+                    "caption": "Off Difference",
+                    "name": "OffDiff",
+                    "width": "200px",
+                    "add": -100,
+                    "edit": {
+                        "type": "NumberSpinner",
+                        "maximum": 0,
+                        "suffix": "W"
+                    }
+                },{
+                    "caption": "Delay",
+                    "name": "Delay",
+                    "width": "200px",
+                    "add": 30,
+                    "edit": {
+                        "type": "NumberSpinner",
+                        "minimum": 0,
+                        "suffix": " Seconds",
+                        "align": "right"
+                    }
+                },{
+                    "caption": "Value",
+                    "name": "Value",
+                    "width": "auto",
+                    "add": 0,
+                    "edit": {
+                        "type": "NumberSpinner",
+                        "minimum": 1
+                    }
+                },{
+                    "caption": "Active",
+                    "name": "Active",
+                    "width": "50px",
+                    "align": "center",
+                    "add": true,
+                    "edit": {
+                        "type": "CheckBox"
+                    }
+                }
+            ],
+            "values": [
+                {
+                    "Type": "PVspFeedIn", 
+                    "OnValue": 1000, 
+                    "OffDiff": -100, 
+                    "Delay": 30, 
+                    "Value": 1,
+                    "deletable": false
+                }
+            ]
         }
     ],
     "actions":[

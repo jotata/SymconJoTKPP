@@ -1,14 +1,15 @@
-/*
- * @Package:		 jot.modbus
- * @File:			 LICENSE
- * @Create Date:	 07.06.2019 11:03:36
- * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified: 07.06.2019 11:04:23
- * @Modified By:	 Jonathan Tanner
- * @Copyright:		 Copyright(c) 2019 by JoT Tanner
- * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
- * 					 (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
+/**
+ * @Package:         JoT.KPP
+ * @File:            LICENSE
+ * @Create Date:     09.07.2020 16:54:15
+ * @Author:          Jonathan Tanner - admin@tanner-info.ch
+ * @Last Modified:   19.12.2020 21:26:34
+ * @Modified By:     Jonathan Tanner
+ * @Copyright:       Copyright(c) 2020 by JoT Tanner
+ * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
+ *                   (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
  */
+
 
 Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
 Public License

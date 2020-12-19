@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 /**
- * @Package:		 tests
- * @File:			 JoTKPP_Test.php
- * @Create Date:	 28.11.2020 17:41:30
- * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 11.12.2020 17:53:07
- * @Modified By:	 Jonathan Tanner
- * @Copyright:		 Copyright(c) 2020 by JoT Tanner
- * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
- * 					 (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
+ * @Package:         tests
+ * @File:            JoTKPP_Test.php
+ * @Create Date:     28.11.2020 17:41:30
+ * @Author:          Jonathan Tanner - admin@tanner-info.ch
+ * @Last Modified:   19.12.2020 21:27:46
+ * @Modified By:     Jonathan Tanner
+ * @Copyright:       Copyright(c) 2020 by JoT Tanner
+ * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
+ *                   (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
  */
 
 use PHPUnit\Framework\TestCase;

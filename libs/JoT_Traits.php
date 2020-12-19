@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 /**
- * @Package:		 libs
- * @File:			 JoT_Traits.php
- * @Create Date:	 27.04.2019 11:51:35
- * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 27.11.2020 23:46:28
- * @Modified By:	 Jonathan Tanner
- * @Copyright:		 Copyright(c) 2019 by JoT Tanner
- * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
- * 					 (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
+ * @Package:         libs
+ * @File:            JoT_Traits.php
+ * @Create Date:     09.07.2020 16:54:15
+ * @Author:          Jonathan Tanner - admin@tanner-info.ch
+ * @Last Modified:   19.12.2020 21:08:02
+ * @Modified By:     Jonathan Tanner
+ * @Copyright:       Copyright(c) 2020 by JoT Tanner
+ * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
+ *                   (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
  */
 
- /**
-  * Allgemeine Konstanten
-  */
+/**
+ * Allgemeine Konstanten
+ */
 const DEBUG_FORMAT_TEXT = 0;
 const DEBUG_FORMAT_HEX = 1;
 
@@ -210,7 +210,7 @@ trait Translation {
         }
         return $value;
     }
-    private function ConvertToBoolStr($value, bool $invert = false){
+    private function ConvertToBoolStr($value, bool $invert = false) {
         if (($value == true && $invert === false) || ($value == false && $invert === true)) {
             return 'true';
         } else {

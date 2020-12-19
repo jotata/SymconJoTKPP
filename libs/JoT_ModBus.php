@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 /**
- * @Package:		 libs
- * @File:			 JoT_ModBus.php
- * @Create Date:	 27.04.2019 11:51:35
- * @Author:			 Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:	 28.11.2020 12:37:19
- * @Modified By:	 Jonathan Tanner
- * @Copyright:		 Copyright(c) 2019 by JoT Tanner
- * @License:		 Creative Commons Attribution Non Commercial Share Alike 4.0
- * 					 (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
+ * @Package:         libs
+ * @File:            JoT_ModBus.php
+ * @Create Date:     09.07.2020 16:54:15
+ * @Author:          Jonathan Tanner - admin@tanner-info.ch
+ * @Last Modified:   19.12.2020 21:07:06
+ * @Modified By:     Jonathan Tanner
+ * @Copyright:       Copyright(c) 2020 by JoT Tanner
+ * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
+ *                   (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
  */
 require_once __DIR__ . '/../libs/JoT_Traits.php';  //Bibliothek mit allgemeinen Definitionen & Traits
 

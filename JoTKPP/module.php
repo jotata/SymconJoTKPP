@@ -1,12 +1,12 @@
 <?php
 
 declare(strict_types=1);
-/** 
+/**
  * @Package:         JoTKPP
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   19.12.2020 20:35:56
+ * @Last Modified:   19.12.2020 21:03:52
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0

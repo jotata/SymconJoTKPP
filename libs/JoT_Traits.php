@@ -136,32 +136,6 @@ trait VariableProfile {
         }
         return false;
     }
-
-    /**
-     * Lädt alle Profile vom Typ $DataType und aktualisiert im Konfigurations-Formular das Element mit Name "SelectProfile"
-     * mit den entsprechenden Optionen für diese Profile.
-     * Dies erlaubt ein dynamisches Select-Profile Feld in einem Konfigurations-Formular (Aufruf mittels IPS_RequestAction).
-     * @param int $DataType - DatenTyp der anzuzeigenden Profile.
-     * @access protected
-     */
-    /* IPS bietet ab Version 5.5 ein FormularElement 'SelectProfile'
-    protected function UpdateSelectProfile(int $DataType){
-        if ($DataType >= 0){
-            if ($DataType >= 10){//Selbstdefinierte Datentypen sollten immer das 10-fache der System-VariablenTypen sein.
-                $DataType = intval($DataType / 10);
-            }
-            $options[] = ['caption' => "", 'value' => ""];
-            $profiles = IPS_GetVariableProfileListByType($DataType);
-            foreach ($profiles as $profile) {
-                $options[] = ['caption' => $profile, 'value' => $profile];
-            }
-            $this->UpdateFormField("SelectProfile", "options", json_encode($options));
-            $this->UpdateFormField("SelectProfile", "value", "");
-            $this->UpdateFormField("SelectProfile", "enabled", true);
-        } else {
-            $this->UpdateFormField("SelectProfile", "enabled", false);
-        }
-    }*/
 }
 
 /**
@@ -235,6 +209,13 @@ trait Translation {
             }
         }
         return $value;
+    }
+    private function ConvertToBoolStr($value, bool $invert = false){
+        if (($value == true && $invert === false) || ($value == false && $invert === true)) {
+            return 'true';
+        } else {
+            return 'false';
+        }
     }
 }
 

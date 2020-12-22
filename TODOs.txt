@@ -3,7 +3,7 @@
  * @File:            TODOs.txt
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   19.12.2020 21:04:06
+ * @Last Modified:   22.12.2020 15:56:52
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -18,6 +18,11 @@
   - ModBus WordSwap automatisch erkennen
   - Kapitel 3.4 "Batterie-Management" lesend
   - Kapitel 3.4 "Batterie-Management" schreibend
+- Integration von berechneten Werten
+  - Total Hausverbrauch
+  - Total PV-Power
+  - Status Baterie (Laden / Entladen)
+  - Status Netz (Einspeisun / Bezug)
 - Integration Tests
   - Eintrag aus ModBusConfig.json entfernt - wird dieser automatisch bereinigt?
   - PollListe leer -> Timer sollte gestoppt werden und kein Fehler auftauchen

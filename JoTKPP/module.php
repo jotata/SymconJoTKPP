@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   19.12.2020 21:03:52
+ * @Last Modified:   22.12.2020 18:23:35
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -80,6 +80,7 @@ class JoTKPP extends JoTModBus {
             return;
         }//Ende Migration
 
+        //Variablen initialisieren
         $mbConfig = $this->GetModBusConfig();
         if (array_search('TempPollIdents', $this->GetBufferList()) === false) { //Buffer 'TempPollIdents' ist nicht initialisiert (GetConfigurationForm() wurde nie aufgerufen)
             $pollIdents = explode(' ', $this->ReadAttributeString('PollIdents'));
@@ -92,37 +93,53 @@ class JoTKPP extends JoTModBus {
         $groups = array_values(array_unique(array_column($mbConfig, 'Group')));
         $vars = [];
 
-        //Instanz-Variablen vorbereiten...
-        foreach ($pollIdents as $ident) {
-            $pos = array_search($mbConfig[$ident]['Group'], $groups) * 20 + 20; //*20, damit User innerhalb der Gruppen-Position auch sortieren kann - +20, damit Events zuoberst sind
-            $vars[$ident] = ['Keep' => true, 'Position' => $pos];
-        }
+        //Instanz-Variablen vorbereiten (Reihenfolge beachten)...
+        //1. Bestehende Instanz-Variablen
         $children = IPS_GetChildrenIDs($this->InstanceID);
         foreach ($children as $cId) {
-            if (IPS_VariableExists($cId)) {
+            if (IPS_VariableExists($cId)) { //Child ist Variable
                 $ident = IPS_GetObject($cId)['ObjectIdent'];
                 if ($ident !== '') {//Nur Instanz-Variablen verarbeiten
-                    $pos = IPS_GetObject($cId)['ObjectPosition'];
-                    $vars[$ident] = ['Keep' => true, 'Position' => $pos];
+                    $vars[$ident] = ['Keep' => true];
                     if (array_search($ident, $pollIdents) === false || array_key_exists($ident, $mbConfig) === false) {//Wenn in PollIdents ODER ModBusConfig nicht mehr vorhanden - löschen
-                        $vars[$ident]['Keep'] = false;
+                        $vars[$ident] = ['Keep' => false];
                     }
                 }
             }
         }
-        //... und erstellen / löschen / aktualisieren...
-        foreach ($vars as $ident => $values) {
+        //2. Poll-Variablen
+        foreach ($pollIdents as $ident) {
+            $vars[$ident] = ['Keep' => true];
+        }
+        //3. PV-Überschuss-Variablen
+        if ($this->ReadPropertyBoolean('PVsurplus')){
+            $pvSPList = json_decode($this->ReadPropertyString('PVspList'), true);
+            foreach (array_unique(array_column($pvSPList, 'Type')) as $ident) {
+                $vars[$ident] = ['Keep' => true, 'Name' => 'PV surplus ' . substr($ident, 4), 'VarType' => self::VT_Integer];
+            }
+        }
+        //Instanz-Variablen erstellen / löschen / aktualisieren
+        foreach ($vars as $ident => $set) {
             $name = '';
             $varType = 0;
             $profile = '';
-            if ($values['Keep']) {
-                $name = $mbConfig[$ident]['Name'];
-                $varType = $this->GetIPSVarType($mbConfig[$ident]['VarType'], $mbConfig[$ident]['Factor']);
-                $profile = $this->CheckProfileName($mbConfig[$ident]['Profile']);
+            $position = 900;
+            $keep = $set['Keep'];
+            if ($keep) { //Folgende Werte werden durch MaintainVariable() nur bei neuen Variablen angewendet
+                if (array_key_exists($ident, $mbConfig)) {
+                    $name = $mbConfig[$ident]['Name'];
+                    $varType = $this->GetIPSVarType($mbConfig[$ident]['VarType'], $mbConfig[$ident]['Factor']);
+                    $profile = $this->CheckProfileName($mbConfig[$ident]['Profile']);
+                    $position = array_search($mbConfig[$ident]['Group'], $groups) * 20 + 20; //*20, damit User innerhalb der Gruppen-Position auch sortieren kann - +20, damit Events zuoberst sind
+                } else { //Folgende Werte müssen in Spezial-Variablen definiert sein
+                    $name = $set['Name'];
+                    $varType = $set['VarType'];
+                }
             }
-            $this->MaintainVariable($ident, $name, $varType, $profile, $values['Position'], $values['Keep']);
+            $this->MaintainVariable($ident, $name, $varType, $profile, $position, $keep);
         }
-        //... und Idents definitiv speichern
+
+        //Poll-Idents definitiv speichern
         $this->WriteAttributeString('PollIdents', implode(' ', $pollIdents));
 
         //Timer für Polling (de)aktivieren

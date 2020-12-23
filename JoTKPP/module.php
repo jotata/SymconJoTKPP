@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   23.12.2020 16:00:18
+ * @Last Modified:   23.12.2020 20:24:12
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -482,9 +482,21 @@ class JoTKPP extends JoTModBus {
      */
     private function CalculateValue(string $Ident) {
         $value = 0;
-        if ($Ident === 'ConsFromAll'){
+        if ($Ident === 'ConsFromAll'){ //Summe Leistung Hausverbrauch
             $val = $this->RequestReadIdent('ConsFromAC ConsFromBT ConsFromPV');
             $value = $val['ConsFromAC'] + $val['ConsFromBT'] + $val['ConsFromPV'];
+        } elseif ($Ident === 'PVPowerStrTot'){ //Summe Leistung aller PV-Strings (ohne Batterie)
+            $idents = 'PVPowerDC1 PVPowerDC2';
+            if ($this->RequestReadIdent('BTReadyFlag') == 0){ //Falls keine Batterie angeschlossen ist, wird Eingang 3 auch für PV genutzt
+                $idents = "$idents PVPowerDC3";
+            }
+            foreach ($this->RequestReadIdent($idents) as $val){
+                $value = $value + $val;
+            }
+        } elseif ($Ident === 'BTState'){ //Status der Batterie
+            $value = $this->RequestReadIdent('BTPower') <=> 0; //gibt -1 (Discharging), 0 (Idle) oder 1 (Charging) zurück
+        } elseif ($Ident === 'PMGridState'){ //Status Netz
+            $value = $this->RequestReadIdent('PMActivePowerTot') <=> 0; //gibt -1 (FeedIn), 0 (Idle) oder 1 (Purchase) zurück
         }
         $this->SendDebug('CalculateValue', "Ident: $Ident Result: $value", 0);
         return $value;

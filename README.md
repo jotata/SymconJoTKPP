@@ -116,6 +116,7 @@ Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modu
 ### 2. Changelog
 Version 1.5 (ALPHA)
 - PV-Überschuss hinzugefügt
+- FIX: Abfrage-/FW-Update Intervall  können nicht mehr negativ eingegeben werden
 
 Version 1.4
 - Folgende zusätzliche Parameter hinzugefügt: Installed powermeter, Total DC power, Battery ready flag, Battery cross capacity, Battery actual SOC, Battery Firmware MC, Battery Type, Total battery AC/DC (dis)charge, Total energy from PV(1-3).

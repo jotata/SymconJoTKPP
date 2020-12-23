@@ -46,7 +46,12 @@
             "Trigger": "Ausgelöst",
             "Create Event": "Ereignis erstellen",
             "Event was created. Please check/change settings.": "Ereignis wurde erstellt. Bitte Einstellungen prüfen/anpassen.",
-            "Check Event (%s)": "Ereignis (%s) prüfen"
+            "Check Event (%s)": "Ereignis (%s) prüfen",
+            "charging": "Laden",
+            "discharging": "Entladen",
+            "idle": "Leerlauf",
+            "feed in": "Einspeisung",
+            "purchase": "Bezug"
         }
     }
 }

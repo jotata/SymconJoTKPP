@@ -313,14 +313,19 @@
         "Digits": 0,
         "Associations": [
             {
+                "Value": -1,
+                "Name": "feed in",
+                "Icon": "EnergySolar",
+                "Color": -1
+            },{
                 "Value": 0,
-                "Name": "purchase",
-                "Icon": "Plug",
+                "Name": "idle",
+                "Icon": "Power",
                 "Color": -1
             },{
                 "Value": 1,
-                "Name": "feed in",
-                "Icon": "EnergySolar",
+                "Name": "purchase",
+                "Icon": "Plug",
                 "Color": -1
             }
         ]

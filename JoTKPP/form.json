@@ -61,7 +61,8 @@
                     "name": "PollTime",
                     "type": "NumberSpinner",
                     "caption": "PollTime",
-                    "suffix": " Seconds"
+                    "suffix": " Seconds",
+                    "minimum": 0
                 },{
                     "type": "Label",
                     "caption": "          "  
@@ -69,7 +70,8 @@
                     "name": "CheckFWTime",
                     "type": "NumberSpinner",
                     "caption": "Check for FW-Updates",
-                    "suffix": "Hours"
+                    "suffix": "Hours",
+                    "minimum": 0
                 }
             ]
         },{

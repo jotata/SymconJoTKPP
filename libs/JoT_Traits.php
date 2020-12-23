@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            JoT_Traits.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   19.12.2020 21:08:02
+ * @Last Modified:   23.12.2020 20:40:24
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -56,7 +56,7 @@ trait VariableProfile {
         } else {
             $exProfile = IPS_GetVariableProfile($Name);
             if ($exProfile['ProfileType'] != $Profile['ProfileType']) {
-                //Prüfe ob Profil ausserhalb des Modules genutz wird
+                //Prüfe ob Profil ausserhalb des Modules genutzt wird
                 $insts = IPS_GetInstanceListByModuleID(static::MODULEID);
                 $vars = IPS_GetVariableList();
                 foreach ($vars as $vId) {
@@ -87,7 +87,7 @@ trait VariableProfile {
         }
         if (array_key_exists('Associations', $Profile)) {
             foreach ($Profile['Associations'] as $Assoc) {
-                IPS_SetVariableProfileAssociation($Name, $Assoc['Value'], $Assoc['Name'], $Assoc['Icon'], $Assoc['Color']);
+                IPS_SetVariableProfileAssociation($Name, $Assoc['Value'], $this->Translate($Assoc['Name']), $Assoc['Icon'], $Assoc['Color']);
             }
         }
     }

@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   23.12.2020 11:56:05
+ * @Last Modified:   23.12.2020 16:00:18
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -188,6 +188,9 @@ class JoTKPP extends JoTModBus {
             $variable['Group'] = $config['Group'];
             $variable['Ident'] = $ident;
             $variable['Name'] = $config['Name'];
+            if (array_key_exists('Calculation', $config) && $config['Calculation'] === true){
+                $variable['Name'] = '*' . $config['Name'];
+            }
             $variable['cName'] = '';
             $variable['Profile'] = $this->CheckProfileName($config['Profile']); //Damit wird der PREFIX immer davor hinzugefügt
             $variable['cProfile'] = '';
@@ -229,6 +232,7 @@ class JoTKPP extends JoTModBus {
             }
         }
         $form = str_replace('"$DeviceInfoValues"', json_encode($diValues), $form); //Values für 'DeviceInfos' setzen
+        $form = str_replace('$ColumnNameCaption', $this->Translate('Name') . ' (* = ' . $this->Translate('calculated value') . ')', $form); //Caption für Spalte Name in 'IdentList' setzen
         $form = str_replace('"$IdentListValues"', json_encode(array_values($values)), $form); //Values für 'IdentList' setzen
         $form = str_replace('"$PVspListVisible"', $this->ConvertToBoolStr($this->ReadPropertyBoolean('PVsurplus')), $form); //Visible für 'PVspList' setzen
         $form = str_replace('$RequestReadCaption', static::PREFIX . '_RequestRead' . $this->GetBuffer('RequestReadType'), $form); //Caption für 'RequestRead' setzen
@@ -346,9 +350,21 @@ class JoTKPP extends JoTModBus {
         foreach ($mbConfig as $ident => $config) {//Loop durch $mbConfig, damit Werte auch ausgelesen werden können, wenn Instanz noch nicht gespeichert ist. Dadurch werden auch nur gültige ModBus-Configs abgefragt.
             //Wenn $force true ODER aktuelle Variable in Liste der angeforderten/gepollten Idents (strpos mit Leerzeichen, da mehrere Idents ebenfalls mit Leerzeichen getrennt werden).
             if ($force === true || (is_string($force) && strpos(" $force ", " $ident ") !== false)) {
-                $this->SendDebug('RequestRead', "Ident: $ident on Address: " . $config['Address'], 0);
-                $value = $this->ReadModBus($config['Function'], $config['Address'], $config['Quantity'], $config['Factor'], $config['MBType'], $config['VarType']);
-                if (@IPS_GetObjectIDByIdent($ident, $this->InstanceID) !== false) {//Instanz-Variablen sind nur für Werte mit aktivem Polling vorhanden
+                $vID = @$this->GetIDForIdent($ident);
+                if (array_key_exists('Calculation', $config) && $config['Calculation'] === true) { //Wert berechnen
+                    $this->SendDebug('RequestRead', "Ident: $ident gets calculated...", 0);
+                    $value = $this->CalculateValue($ident);
+                } else { //Wert via Cache / ModBus auslesen
+                    if ($vID !== false && (time() - IPS_GetVariable($vID)['VariableUpdated']) <= 1){ //Werte für Instanz-Variablen nicht häufiger als jede Sekunde abfragen
+                        $value = $this->GetValue($ident);
+                        $vID = false; //Wert nicht in Instanz-Variable zurückschreiben, wenn nicht gelesen
+                        $this->SendDebug('RequestRead', "Ident: $ident from Cache: $value", 0);
+                    } else {
+                        $this->SendDebug('RequestRead', "Ident: $ident on Address: " . $config['Address'], 0);
+                        $value = $this->ReadModBus($config['Function'], $config['Address'], $config['Quantity'], $config['Factor'], $config['MBType'], $config['VarType']);
+                    }
+                }
+                if ($vID !== false) {//Instanz-Variablen sind nur für Werte mit aktivem Polling vorhanden
                     $this->SetValue($ident, $value);
                 }
                 $values[$ident] = $value;
@@ -458,6 +474,22 @@ class JoTKPP extends JoTModBus {
         }
     }
 
+    /**
+     * Berechnet den Wert von $Ident
+     * @param string $Ident
+     * @return mixed Berechneter Wert
+     * @access private
+     */
+    private function CalculateValue(string $Ident) {
+        $value = 0;
+        if ($Ident === 'ConsFromAll'){
+            $val = $this->RequestReadIdent('ConsFromAC ConsFromBT ConsFromPV');
+            $value = $val['ConsFromAC'] + $val['ConsFromBT'] + $val['ConsFromPV'];
+        }
+        $this->SendDebug('CalculateValue', "Ident: $Ident Result: $value", 0);
+        return $value;
+    }
+    
     /**
      * Fügt einen Ident zu PollIdents hinzu oder entfernt ihn
      * @param string $Submit json_codiertes Array(boolean Poll, string Ident)

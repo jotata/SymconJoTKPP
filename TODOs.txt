@@ -3,7 +3,7 @@
  * @File:            TODOs.txt
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   22.12.2020 15:56:52
+ * @Last Modified:   23.12.2020 20:33:00
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -11,18 +11,18 @@
  */
 
 
--> Integration "virtueller" PV-Überschuss
+-> Integration von berechneten Werten (werden in ModBusConfig definiert mit Attribut "Calculation = true". Dadurch wird die Berechnungs-Funktion in RequestRead aufgerufen und der Wert berechnet).
+  -> "virtueller" PV-Überschuss
+  x Total Hausverbrauch
+  x Total PV-Power
+  x Status Batterie (Laden / Entladen)
+  x Status Netz (Einspeisun / Bezug)
 - Integration neue ModBus-Spezifikationen Version 1.9
   x Allgemeine Anpassungen
   x Prüfung auf FW-Version und Aktivierung nur möglich wenn diese erfüllt ist
   - ModBus WordSwap automatisch erkennen
   - Kapitel 3.4 "Batterie-Management" lesend
   - Kapitel 3.4 "Batterie-Management" schreibend
-- Integration von berechneten Werten
-  - Total Hausverbrauch
-  - Total PV-Power
-  - Status Baterie (Laden / Entladen)
-  - Status Netz (Einspeisun / Bezug)
 - Integration Tests
   - Eintrag aus ModBusConfig.json entfernt - wird dieser automatisch bereinigt?
   - PollListe leer -> Timer sollte gestoppt werden und kein Fehler auftauchen

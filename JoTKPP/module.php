@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   22.12.2020 18:23:35
+ * @Last Modified:   23.12.2020 11:56:05
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -112,11 +112,13 @@ class JoTKPP extends JoTModBus {
             $vars[$ident] = ['Keep' => true];
         }
         //3. PV-Überschuss-Variablen
-        if ($this->ReadPropertyBoolean('PVsurplus')){
+        $pvSPActive = false;
+        if ($this->ReadPropertyBoolean('PVsurplus')) {
             $pvSPList = json_decode($this->ReadPropertyString('PVspList'), true);
             foreach (array_unique(array_column($pvSPList, 'Type')) as $ident) {
                 $vars[$ident] = ['Keep' => true, 'Name' => 'PV surplus ' . substr($ident, 4), 'VarType' => self::VT_Integer];
             }
+            $pvSPActive = in_array(true, array_column($pvSPList, 'Active')); //Ist mindestens eine PV-Überschuss-Berechnung aktiv?
         }
         //Instanz-Variablen erstellen / löschen / aktualisieren
         foreach ($vars as $ident => $set) {
@@ -124,8 +126,7 @@ class JoTKPP extends JoTModBus {
             $varType = 0;
             $profile = '';
             $position = 900;
-            $keep = $set['Keep'];
-            if ($keep) { //Folgende Werte werden durch MaintainVariable() nur bei neuen Variablen angewendet
+            if ($set['Keep']) { //Folgende Werte werden durch MaintainVariable() nur bei neuen Variablen angewendet
                 if (array_key_exists($ident, $mbConfig)) {
                     $name = $mbConfig[$ident]['Name'];
                     $varType = $this->GetIPSVarType($mbConfig[$ident]['VarType'], $mbConfig[$ident]['Factor']);
@@ -136,15 +137,17 @@ class JoTKPP extends JoTModBus {
                     $varType = $set['VarType'];
                 }
             }
-            $this->MaintainVariable($ident, $name, $varType, $profile, $position, $keep);
+            $this->MaintainVariable($ident, $name, $varType, $profile, $position, $set['Keep']);
         }
 
         //Poll-Idents definitiv speichern
         $this->WriteAttributeString('PollIdents', implode(' ', $pollIdents));
 
         //Timer für Polling (de)aktivieren
-        if ($this->ReadPropertyInteger('PollTime') > 0 && count($pollIdents) > 0) {
+        if ($this->ReadPropertyInteger('PollTime') > 0 && (count($pollIdents) > 0 || $pvSPActive)) { //Poll-Timer mit vorgegebener Zeit
             $this->SetTimerInterval('RequestRead', $this->ReadPropertyInteger('PollTime') * 1000);
+        } elseif ($pvSPActive) { //Poll-Timer für PV-Überschuss, wenn keine Poll-Zeit definiert ist
+            $this->SetTimerInterval('RequestRead', 5000);
         } else {
             $this->SetTimerInterval('RequestRead', 0);
         }

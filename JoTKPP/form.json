@@ -99,7 +99,7 @@
                     "onClick": "IPS_RequestAction($id, 'FormAddIdent', json_encode(array('Ident', $IdentList['Ident'])));",
                     "save": true
                 },{
-                    "caption": "Name",
+                    "caption": "$ColumnNameCaption",
                     "name": "Name",
                     "width": "300px"
                 },{

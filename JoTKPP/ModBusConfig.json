@@ -227,6 +227,15 @@
         "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
+    "ConsFromAll": {
+        "Name": "Home own consumtion from all",
+        "Group": "Consumtion",
+        "Profile": "~Power",
+        "Factor": 0.001,
+        "VarType": "$VT_Float",
+        "Calculation": true,
+        "FWVersion": "1.42"
+    },
     "ConsFromACTot": {
         "Name": "Total home consumtion from grid",
         "Group": "Consumtion",
@@ -635,6 +644,15 @@
         "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
+    "PMGridState": {
+        "Name": "Grid state (powermeter)",
+        "Group": "Powermeter",
+        "Profile": "Grid.State",
+        "Factor": 1,
+        "VarType": "$VT_SignedInteger",
+        "Calculation": true,
+        "FWVersion": "1.42"
+    },
     "BTReadyFlag": {
         "Name": "Battery ready flag",
         "Group": "DeviceInfo",
@@ -741,6 +759,15 @@
         "Factor": 1,
         "VarType": "$VT_Float",
         "MBType": "$MB_BigEndian_WordSwap",
+        "FWVersion": "1.42"
+    },
+    "BTState": {
+        "Name": "Battery state",
+        "Group": "Battery",
+        "Profile": "Battery.State",
+        "Factor": 1,
+        "VarType": "$VT_SignedInteger",
+        "Calculation": true,
         "FWVersion": "1.42"
     },
     "BTCharge": {
@@ -958,6 +985,15 @@
         "VarType": "$VT_UnsignedInteger",
         "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.44"
+    },
+    "PVPowerStrTot": {
+        "Name": "Total DC power from PV strings",
+        "Group": "PV",
+        "Profile": "~Power",
+        "Factor": 0.001,
+        "VarType": "$VT_Float",
+        "Calculation": true,
+        "FWVersion": "1.42"
     },
     "PVEnergyTot": {
         "Name": "Total DC energy from PV",

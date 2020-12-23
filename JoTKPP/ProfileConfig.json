@@ -210,7 +210,7 @@
     },{
         "ProfileName": "Battery.Charge",
         "ProfileType": "$VT_Float",
-        "Icon": "Battery",
+        "Icon": "EnergyStorage",
         "Prefix": "",
         "Suffix": "",
         "MinValue": 0,
@@ -221,27 +221,27 @@
             {
                 "Value": 0,
                 "Name": "Empty (%.0f%%)",
-                "Icon": "Battery",
-                    "Color": "0xff0000"
+                "Icon": "EnergyStorage-0",
+                "Color": "0xff0000"
             },{
                 "Value": 5,
                 "Name": "Empty (%.0f%%)",
-                "Icon": "Battery",
-                    "Color": "0xff0000"
+                "Icon": "EnergyStorage-0",
+                "Color": "0xff0000"
             },{
                 "Value": 9,
                 "Name": "Low (%.0f%%)",
-                "Icon": "Battery",
+                "Icon": "EnergyStorage-0",
                 "Color": "0xff9800"
             },{
                 "Value": 10,
                 "Name": "%.0f%%",
-                "Icon": "Battery",
+                "Icon": "EnergyStorage",
                 "Color": "0x00ff00"
             },{
                 "Value": 99,
                 "Name": "Full (%.0f%%)",
-                "Icon": "Battery",
+                "Icon": "EnergyStorage",
                 "Color": "0x00ff00"
             }
         ]
@@ -270,6 +270,57 @@
                 "Value": 4,
                 "Name": "Li-Io battery BYD / BBOX",
                 "Icon": "EnergyStorage",
+                "Color": -1
+            }
+        ]
+    },{
+        "ProfileName": "Battery.State",
+        "ProfileType": "$VT_Integer",
+        "Icon": "EnegryStorage",
+        "Prefix": "",
+        "Suffix": "",
+        "MinValue": -1,
+        "MaxValue": 1,
+        "StepSize": 1,
+        "Digits": 0,
+        "Associations": [
+            {
+                "Value": -1,
+                "Name": "discharging",
+                "Icon": "Shuffle",
+                "Color": -1
+            },{
+                "Value": 0,
+                "Name": "idle",
+                "Icon": "Sleep",
+                "Color": -1
+            },{
+                "Value": 1,
+                "Name": "charging",
+                "Icon": "Download",
+                "Color": -1
+            }
+        ]
+    },{
+        "ProfileName": "Grid.State",
+        "ProfileType": "$VT_Integer",
+        "Icon": "Plug",
+        "Prefix": "",
+        "Suffix": "",
+        "MinValue": 0,
+        "MaxValue": 1,
+        "StepSize": 1,
+        "Digits": 0,
+        "Associations": [
+            {
+                "Value": 0,
+                "Name": "purchase",
+                "Icon": "Plug",
+                "Color": -1
+            },{
+                "Value": 1,
+                "Name": "feed in",
+                "Icon": "EnergySolar",
                 "Color": -1
             }
         ]

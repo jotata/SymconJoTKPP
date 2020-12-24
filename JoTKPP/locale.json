@@ -51,7 +51,8 @@
             "discharging": "Entladen",
             "idle": "Leerlauf",
             "feed in": "Einspeisung",
-            "purchase": "Bezug"
+            "purchase": "Bezug",
+            "Calculation not possible for Ident '%s'!": "Berechnung für Ident '%s' nicht möglich!"
         }
     }
 }

@@ -1090,5 +1090,32 @@
         "VarType": "$VT_Float",
         "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
+    },
+    "SPFeedin": {
+        "Name": "PV surplus Feed in",
+        "Group": "Surplus",
+        "Profile": "",
+        "Factor": 1,
+        "VarType": "$VT_SignedInteger",
+        "Calculation": true,
+        "FWVersion": "1.42"
+    },
+    "SPCharge": {
+        "Name": "PV surplus Battery charging",
+        "Group": "Surplus",
+        "Profile": "",
+        "Factor": 1,
+        "VarType": "$VT_SignedInteger",
+        "Calculation": true,
+        "FWVersion": "1.42"
+    },
+    "SPReduction": {
+        "Name": "PV surplus Reduction",
+        "Group": "Surplus",
+        "Profile": "",
+        "Factor": 1,
+        "VarType": "$VT_SignedInteger",
+        "Calculation": true,
+        "FWVersion": "1.42"
     }
 }

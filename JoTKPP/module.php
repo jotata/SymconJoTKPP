@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   23.12.2020 20:24:12
+ * @Last Modified:   24.12.2020 10:16:27
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -40,8 +40,7 @@ class JoTKPP extends JoTModBus {
         $this->RegisterPropertyString('ModuleVariables', ''); //wird seit V1.4 nicht mehr benötigt, für Migration zu 'PollIdents' aber noch notwendig
         $this->RegisterPropertyInteger('PollTime', 0);
         $this->RegisterPropertyInteger('CheckFWTime', 0);
-        $this->RegisterPropertyBoolean('PVsurplus', false);
-        $this->RegisterPropertyString('PVspList', '');
+        $this->RegisterPropertyString('SPList', '');
         $this->RegisterTimer('RequestRead', 0, static::PREFIX . '_RequestRead($_IPS["TARGET"]);');
         $this->RegisterTimer('CheckFW', 0, static::PREFIX . '_CheckFirmwareUpdate($_IPS["TARGET"]);');
         $this->RegisterMessage($this->InstanceID, IM_CONNECT); //Instanz verfügbar
@@ -93,61 +92,45 @@ class JoTKPP extends JoTModBus {
         $groups = array_values(array_unique(array_column($mbConfig, 'Group')));
         $vars = [];
 
-        //Instanz-Variablen vorbereiten (Reihenfolge beachten)...
-        //1. Bestehende Instanz-Variablen
+        //Instanz-Variablen vorbereiten (Reihenfolge beachten, damit nicht mehr vorhandene Konfigurationen entfernt werden)...
+        //1. Poll-Variablen
+        foreach ($pollIdents as $ident) {
+            $vars[$ident] = true;
+        }
+        //2. Bestehende Instanz-Variablen
         $children = IPS_GetChildrenIDs($this->InstanceID);
         foreach ($children as $cId) {
             if (IPS_VariableExists($cId)) { //Child ist Variable
                 $ident = IPS_GetObject($cId)['ObjectIdent'];
                 if ($ident !== '') {//Nur Instanz-Variablen verarbeiten
-                    $vars[$ident] = ['Keep' => true];
+                    $vars[$ident] = true;
                     if (array_search($ident, $pollIdents) === false || array_key_exists($ident, $mbConfig) === false) {//Wenn in PollIdents ODER ModBusConfig nicht mehr vorhanden - löschen
-                        $vars[$ident] = ['Keep' => false];
+                        $vars[$ident] = false;
                     }
                 }
             }
         }
-        //2. Poll-Variablen
-        foreach ($pollIdents as $ident) {
-            $vars[$ident] = ['Keep' => true];
-        }
-        //3. PV-Überschuss-Variablen
-        $pvSPActive = false;
-        if ($this->ReadPropertyBoolean('PVsurplus')) {
-            $pvSPList = json_decode($this->ReadPropertyString('PVspList'), true);
-            foreach (array_unique(array_column($pvSPList, 'Type')) as $ident) {
-                $vars[$ident] = ['Keep' => true, 'Name' => 'PV surplus ' . substr($ident, 4), 'VarType' => self::VT_Integer];
-            }
-            $pvSPActive = in_array(true, array_column($pvSPList, 'Active')); //Ist mindestens eine PV-Überschuss-Berechnung aktiv?
-        }
         //Instanz-Variablen erstellen / löschen / aktualisieren
-        foreach ($vars as $ident => $set) {
+        foreach ($vars as $ident => $keep) {
             $name = '';
             $varType = 0;
             $profile = '';
-            $position = 900;
-            if ($set['Keep']) { //Folgende Werte werden durch MaintainVariable() nur bei neuen Variablen angewendet
-                if (array_key_exists($ident, $mbConfig)) {
-                    $name = $mbConfig[$ident]['Name'];
-                    $varType = $this->GetIPSVarType($mbConfig[$ident]['VarType'], $mbConfig[$ident]['Factor']);
-                    $profile = $this->CheckProfileName($mbConfig[$ident]['Profile']);
-                    $position = array_search($mbConfig[$ident]['Group'], $groups) * 20 + 20; //*20, damit User innerhalb der Gruppen-Position auch sortieren kann - +20, damit Events zuoberst sind
-                } else { //Folgende Werte müssen in Spezial-Variablen definiert sein
-                    $name = $set['Name'];
-                    $varType = $set['VarType'];
-                }
+            $position = 0;
+            if ($keep) { //Folgende Werte werden durch MaintainVariable() nur bei neuen Variablen angewendet
+                $name = $mbConfig[$ident]['Name'];
+                $varType = $this->GetIPSVarType($mbConfig[$ident]['VarType'], $mbConfig[$ident]['Factor']);
+                $profile = $this->CheckProfileName($mbConfig[$ident]['Profile']);
+                $position = array_search($mbConfig[$ident]['Group'], $groups) * 20 + 20; //*20, damit User innerhalb der Gruppen-Position auch sortieren kann - +20, damit Events zuoberst sind
             }
-            $this->MaintainVariable($ident, $name, $varType, $profile, $position, $set['Keep']);
+            $this->MaintainVariable($ident, $name, $varType, $profile, $position, $keep);
         }
 
         //Poll-Idents definitiv speichern
         $this->WriteAttributeString('PollIdents', implode(' ', $pollIdents));
 
         //Timer für Polling (de)aktivieren
-        if ($this->ReadPropertyInteger('PollTime') > 0 && (count($pollIdents) > 0 || $pvSPActive)) { //Poll-Timer mit vorgegebener Zeit
+        if ($this->ReadPropertyInteger('PollTime') > 0 && count($pollIdents) > 0) {
             $this->SetTimerInterval('RequestRead', $this->ReadPropertyInteger('PollTime') * 1000);
-        } elseif ($pvSPActive) { //Poll-Timer für PV-Überschuss, wenn keine Poll-Zeit definiert ist
-            $this->SetTimerInterval('RequestRead', 5000);
         } else {
             $this->SetTimerInterval('RequestRead', 0);
         }
@@ -188,7 +171,7 @@ class JoTKPP extends JoTModBus {
             $variable['Group'] = $config['Group'];
             $variable['Ident'] = $ident;
             $variable['Name'] = $config['Name'];
-            if (array_key_exists('Calculation', $config) && $config['Calculation'] === true){
+            if (array_key_exists('Calculation', $config) && $config['Calculation'] === true) {
                 $variable['Name'] = '*' . $config['Name'];
             }
             $variable['cName'] = '';
@@ -234,7 +217,7 @@ class JoTKPP extends JoTModBus {
         $form = str_replace('"$DeviceInfoValues"', json_encode($diValues), $form); //Values für 'DeviceInfos' setzen
         $form = str_replace('$ColumnNameCaption', $this->Translate('Name') . ' (* = ' . $this->Translate('calculated value') . ')', $form); //Caption für Spalte Name in 'IdentList' setzen
         $form = str_replace('"$IdentListValues"', json_encode(array_values($values)), $form); //Values für 'IdentList' setzen
-        $form = str_replace('"$PVspListVisible"', $this->ConvertToBoolStr($this->ReadPropertyBoolean('PVsurplus')), $form); //Visible für 'PVspList' setzen
+        $form = str_replace('"$SPListVisible"', $this->ConvertToBoolStr(strpos(" $pollIdents", ' SP')), $form); //Visible für 'SPList' setzen
         $form = str_replace('$RequestReadCaption', static::PREFIX . '_RequestRead' . $this->GetBuffer('RequestReadType'), $form); //Caption für 'RequestRead' setzen
         $form = str_replace('$RequestReadValue', $this->GetBuffer('RequestReadValue'), $form); //Value für 'RequestRead' setzen
         $form = str_replace('$EventCreated', $this->Translate('Event was created. Please check/change settings.'), $form); //Übersetzungen einfügen
@@ -355,7 +338,7 @@ class JoTKPP extends JoTModBus {
                     $this->SendDebug('RequestRead', "Ident: $ident gets calculated...", 0);
                     $value = $this->CalculateValue($ident);
                 } else { //Wert via Cache / ModBus auslesen
-                    if ($vID !== false && (time() - IPS_GetVariable($vID)['VariableUpdated']) <= 1){ //Werte für Instanz-Variablen nicht häufiger als jede Sekunde abfragen
+                    if ($vID !== false && (time() - IPS_GetVariable($vID)['VariableUpdated']) <= 1) { //Werte für Instanz-Variablen nicht häufiger als jede Sekunde abfragen
                         $value = $this->GetValue($ident);
                         $vID = false; //Wert nicht in Instanz-Variable zurückschreiben, wenn nicht gelesen
                         $this->SendDebug('RequestRead', "Ident: $ident from Cache: $value", 0);
@@ -482,26 +465,26 @@ class JoTKPP extends JoTModBus {
      */
     private function CalculateValue(string $Ident) {
         $value = 0;
-        if ($Ident === 'ConsFromAll'){ //Summe Leistung Hausverbrauch
+        if ($Ident === 'ConsFromAll') { //Summe Leistung Hausverbrauch
             $val = $this->RequestReadIdent('ConsFromAC ConsFromBT ConsFromPV');
             $value = $val['ConsFromAC'] + $val['ConsFromBT'] + $val['ConsFromPV'];
-        } elseif ($Ident === 'PVPowerStrTot'){ //Summe Leistung aller PV-Strings (ohne Batterie)
+        } elseif ($Ident === 'PVPowerStrTot') { //Summe Leistung aller PV-Strings (ohne Batterie)
             $idents = 'PVPowerDC1 PVPowerDC2';
-            if ($this->RequestReadIdent('BTReadyFlag') == 0){ //Falls keine Batterie angeschlossen ist, wird Eingang 3 auch für PV genutzt
+            if ($this->RequestReadIdent('BTReadyFlag') == 0) { //Falls keine Batterie angeschlossen ist, wird Eingang 3 auch für PV genutzt
                 $idents = "$idents PVPowerDC3";
             }
-            foreach ($this->RequestReadIdent($idents) as $val){
+            foreach ($this->RequestReadIdent($idents) as $val) {
                 $value = $value + $val;
             }
-        } elseif ($Ident === 'BTState'){ //Status der Batterie
+        } elseif ($Ident === 'BTState') { //Status der Batterie
             $value = $this->RequestReadIdent('BTPower') <=> 0; //gibt -1 (Discharging), 0 (Idle) oder 1 (Charging) zurück
-        } elseif ($Ident === 'PMGridState'){ //Status Netz
+        } elseif ($Ident === 'PMGridState') { //Status Netz
             $value = $this->RequestReadIdent('PMActivePowerTot') <=> 0; //gibt -1 (FeedIn), 0 (Idle) oder 1 (Purchase) zurück
         }
         $this->SendDebug('CalculateValue', "Ident: $Ident Result: $value", 0);
         return $value;
     }
-    
+
     /**
      * Fügt einen Ident zu PollIdents hinzu oder entfernt ihn
      * @param string $Submit json_codiertes Array(boolean Poll, string Ident)
@@ -519,6 +502,7 @@ class JoTKPP extends JoTModBus {
         } elseif (trim($pollIdents) == '') {//NONE einfügen, wenn gar nichts gewählt ist, damit ApplyChanges() das unterscheiden kann
             $pollIdents = 'NONE';
         }
+        $this->UpdateFormField('SPList', 'visible', boolval(strpos(" $pollIdents", ' SP'))); //Liste 'SPList' ein/ausblenden abhängig von gepollten SP-Idents
         $this->SetBuffer('TempPollIdents', trim($pollIdents));
     }
 

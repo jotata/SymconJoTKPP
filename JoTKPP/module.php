@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   24.12.2020 10:16:27
+ * @Last Modified:   24.12.2020 12:33:49
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -460,11 +460,11 @@ class JoTKPP extends JoTModBus {
     /**
      * Berechnet den Wert von $Ident
      * @param string $Ident
-     * @return mixed Berechneter Wert
+     * @return mixed Berechneter Wert (wenn -1, dann keine Berechnung durchgeführt)
      * @access private
      */
     private function CalculateValue(string $Ident) {
-        $value = 0;
+        $value = -1;
         if ($Ident === 'ConsFromAll') { //Summe Leistung Hausverbrauch
             $val = $this->RequestReadIdent('ConsFromAC ConsFromBT ConsFromPV');
             $value = $val['ConsFromAC'] + $val['ConsFromBT'] + $val['ConsFromPV'];
@@ -477,9 +477,37 @@ class JoTKPP extends JoTModBus {
                 $value = $value + $val;
             }
         } elseif ($Ident === 'BTState') { //Status der Batterie
-            $value = $this->RequestReadIdent('BTPower') <=> 0; //gibt -1 (Discharging), 0 (Idle) oder 1 (Charging) zurück
+            $value = $this->RequestReadIdent('BTPower') <=> 0; //gibt -1 (Charging), 0 (Idle) oder 1 (Discharging) zurück
         } elseif ($Ident === 'PMGridState') { //Status Netz
             $value = $this->RequestReadIdent('PMActivePowerTot') <=> 0; //gibt -1 (FeedIn), 0 (Idle) oder 1 (Purchase) zurück
+        } elseif (substr($Ident, 0, 2) === 'SP'){ //PV-Überschuss
+            //Werte einlesen...
+            $val = 0;
+            if ($Ident === 'SPFeedin') {
+                $val = $this->RequestReadIdent('ACActivePowerTot');
+            } elseif ($Ident === 'SPReduction') {
+                $val = $this->RequestReadIdent('ACLimitEVU PowerClass');
+                $val = $val['PowerClass'] * 1000 * ((100 - $val['ACLimitEVU']) / 100);
+                $val = 0; //Berechnung muss noch fertiggestellt werden
+            } elseif ($Ident === 'SPCharge') {
+                $val = $this->RequestReadIdent('BTPower') * -1; //Umdrehen, da Vergleich immer mit positivem Wert gemacht wird und Charging negativ wäre
+            }
+            //... und mit Konfiguration vergleichen
+            $cValue = $this->GetValue($Ident);
+            $config = json_decode($this->ReadPropertyString('SPList'), true);
+            foreach ($config as $conf) {
+                if ($conf['Ident'] === $Ident && $conf['Active'] === true) {
+                    $value = 0;
+                    if ($val >= $conf['OnValue'] || ($cValue === $conf['Value'] && $val >= ($conf['OnValue'] - abs($conf['OffDiff'])))) { //Wenn Wert überschritten ODER Aktiv und noch innerhalb des Ausschaltbereiches
+                        $value = $conf['Value'];
+                    }
+                }
+            }
+        }
+        if ($value === -1){ 
+            //Tritt insbesondere dann auf, wenn keine Konfigurationen in der SPList vorhanden sind.
+            //Kann aber auch sein, wenn in der ModBusConfig eine Berechnung definiert, aber hier keine Formel dazu vorhanden ist.
+            echo 'INSTANCE: ' . $this->InstanceID . ' ACTION: CalculateValue: ' . sprintf($this->Translate('Calculation not possible for Ident \'%s\'!'), $Ident) . "\r\n";
         }
         $this->SendDebug('CalculateValue', "Ident: $Ident Result: $value", 0);
         return $value;

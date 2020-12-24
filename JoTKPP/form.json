@@ -131,34 +131,29 @@
             ],
             "values": "$IdentListValues"
         },{
-            "name": "PVsurplus",
-            "type": "CheckBox",
-            "caption": "Activate PV surplus",
-            "onChange": "IPS_RequestAction($id, 'FormTogglePVspList', $PVsurplus);"
-        },{
             "type": "List",
-            "name": "PVspList",
-            "caption": "PV surplus",
-            "visible": "$PVspListVisible",
+            "name": "SPList",
+            "caption": "Configuration PV surplus",
+            "visible": "$SPListVisible",
             "add": true,
             "delete": true,
             "rowCount": 6,
             "sort": {
-                "column": "Type",
+                "column": "Ident",
                 "direction": "ascending"
             },
             "columns": [
                 {
-                    "caption": "Type",
-                    "name": "Type",
+                    "caption": "Ident",
+                    "name": "Ident",
                     "width": "150px",
-                    "add": "PVspFeedIn",
+                    "add": "SPFeedin",
                     "edit": {
                         "type": "Select",
                         "options": [
-                            { "caption": "Feed In", "value": "PVspFeedIn" },
-                            { "caption": "Reduction", "value": "PVspReduction" },
-                            { "caption": "Battery loading", "value": "PVspLoading" }
+                            { "caption": "SPFeedin", "value": "SPFeedin" },
+                            { "caption": "SPReduction", "value": "SPReduction" },
+                            { "caption": "SPLoading", "value": "SPLoading" }
                         ]
                     }
                 },{
@@ -214,7 +209,7 @@
             ],
             "values": [
                 {
-                    "Type": "PVspFeedIn", 
+                    "Type": "SPFeedin", 
                     "OnValue": 1000, 
                     "OffDiff": -100, 
                     "Delay": 30, 

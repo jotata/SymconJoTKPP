@@ -153,7 +153,7 @@
                         "options": [
                             { "caption": "SPFeedin", "value": "SPFeedin" },
                             { "caption": "SPReduction", "value": "SPReduction" },
-                            { "caption": "SPLoading", "value": "SPLoading" }
+                            { "caption": "SPCharge", "value": "SPCharge" }
                         ]
                     }
                 },{

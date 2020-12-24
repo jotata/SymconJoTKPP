@@ -286,7 +286,7 @@
         "Associations": [
             {
                 "Value": -1,
-                "Name": "discharging",
+                "Name": "charging",
                 "Icon": "Shuffle",
                 "Color": -1
             },{
@@ -296,7 +296,7 @@
                 "Color": -1
             },{
                 "Value": 1,
-                "Name": "charging",
+                "Name": "discharging",
                 "Icon": "Download",
                 "Color": -1
             }

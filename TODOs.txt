@@ -3,7 +3,7 @@
  * @File:            TODOs.txt
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   23.12.2020 20:33:00
+ * @Last Modified:   26.12.2020 17:24:34
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -13,6 +13,10 @@
 
 -> Integration von berechneten Werten (werden in ModBusConfig definiert mit Attribut "Calculation = true". Dadurch wird die Berechnungs-Funktion in RequestRead aufgerufen und der Wert berechnet).
   -> "virtueller" PV-Überschuss
+    x Verzögerungen einbauen
+    x Test bei mehrstufiger Konfiguration (ev. Prio einbauen)
+    x Test bei Überschneidungen einer mehrstuffigen Konfiguration
+    - Berechnung für SPReduction
   x Total Hausverbrauch
   x Total PV-Power
   x Status Batterie (Laden / Entladen)
@@ -23,6 +27,7 @@
   - ModBus WordSwap automatisch erkennen
   - Kapitel 3.4 "Batterie-Management" lesend
   - Kapitel 3.4 "Batterie-Management" schreibend
+- Zentrale Funktion für Ausgabe von Fehlermeldungen definieren?
 - Integration Tests
   - Eintrag aus ModBusConfig.json entfernt - wird dieser automatisch bereinigt?
   - PollListe leer -> Timer sollte gestoppt werden und kein Fehler auftauchen

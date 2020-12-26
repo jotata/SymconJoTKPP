@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   24.12.2020 12:33:49
+ * @Last Modified:   26.12.2020 17:22:45
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -464,11 +464,16 @@ class JoTKPP extends JoTModBus {
      * @access private
      */
     private function CalculateValue(string $Ident) {
-        $value = -1;
-        if ($Ident === 'ConsFromAll') { //Summe Leistung Hausverbrauch
+        $value = false;
+
+        //Summe Leistung Hausverbrauch
+        if ($Ident === 'ConsFromAll') {
             $val = $this->RequestReadIdent('ConsFromAC ConsFromBT ConsFromPV');
             $value = $val['ConsFromAC'] + $val['ConsFromBT'] + $val['ConsFromPV'];
-        } elseif ($Ident === 'PVPowerStrTot') { //Summe Leistung aller PV-Strings (ohne Batterie)
+        }
+
+        //Summe Leistung aller PV-Strings (ohne Batterie)
+        if ($Ident === 'PVPowerStrTot') {
             $idents = 'PVPowerDC1 PVPowerDC2';
             if ($this->RequestReadIdent('BTReadyFlag') == 0) { //Falls keine Batterie angeschlossen ist, wird Eingang 3 auch für PV genutzt
                 $idents = "$idents PVPowerDC3";
@@ -476,11 +481,20 @@ class JoTKPP extends JoTModBus {
             foreach ($this->RequestReadIdent($idents) as $val) {
                 $value = $value + $val;
             }
-        } elseif ($Ident === 'BTState') { //Status der Batterie
+        }
+
+        //Status der Batterie
+        if ($Ident === 'BTState') {
             $value = $this->RequestReadIdent('BTPower') <=> 0; //gibt -1 (Charging), 0 (Idle) oder 1 (Discharging) zurück
-        } elseif ($Ident === 'PMGridState') { //Status Netz
+        }
+
+        //Status Netz
+        if ($Ident === 'PMGridState') {
             $value = $this->RequestReadIdent('PMActivePowerTot') <=> 0; //gibt -1 (FeedIn), 0 (Idle) oder 1 (Purchase) zurück
-        } elseif (substr($Ident, 0, 2) === 'SP'){ //PV-Überschuss
+        }
+
+        //PV-Überschuss
+        if (substr($Ident, 0, 2) === 'SP') {
             //Werte einlesen...
             $val = 0;
             if ($Ident === 'SPFeedin') {
@@ -492,19 +506,56 @@ class JoTKPP extends JoTModBus {
             } elseif ($Ident === 'SPCharge') {
                 $val = $this->RequestReadIdent('BTPower') * -1; //Umdrehen, da Vergleich immer mit positivem Wert gemacht wird und Charging negativ wäre
             }
-            //... und mit Konfiguration vergleichen
-            $cValue = $this->GetValue($Ident);
+            //mit Konfiguration vergleichen
             $config = json_decode($this->ReadPropertyString('SPList'), true);
-            foreach ($config as $conf) {
+            $buf = json_decode($this->GetBuffer($Ident), true);
+            $temp = [];
+            foreach ($config as $conf) { //Alle States ermitteln
                 if ($conf['Ident'] === $Ident && $conf['Active'] === true) {
-                    $value = 0;
-                    if ($val >= $conf['OnValue'] || ($cValue === $conf['Value'] && $val >= ($conf['OnValue'] - abs($conf['OffDiff'])))) { //Wenn Wert überschritten ODER Aktiv und noch innerhalb des Ausschaltbereiches
-                        $value = $conf['Value'];
+                    $index = $conf['OnValue'] . '-' . $conf['OffValue'] . '-' . $conf['OnDelay'] . '-' . $conf['Value']; //Eindeutigen Index generieren
+                    $temp[$index] = ['State' => 0, 'Count' => 0];
+                    if (is_array($buf) && array_key_exists($index, $buf)) { //Durch diese Zuweisung werden geänderte / deaktivierte Konfigurationen im Buffer automatisch bereinigt
+                        $temp[$index] = ['State' => $buf[$index]['State'], 'Count' => $buf[$index]['Count']];
+                    }
+                    if ($conf['OnValue'] >= $conf['OffValue']) {
+                        if ($val >= $conf['OnValue']) {
+                            if ($temp[$index]['Count']++ >= $conf['OnDelay']) {
+                                $temp[$index]['State'] = $conf['Value'];
+                            }
+                        } elseif ($val < $conf['OnValue'] && $val > $conf['OffValue']) {
+                            $temp[$index]['Count'] = 0;
+                        } elseif ($val < $conf['OnValue'] && $val <= $conf['OffValue']) {
+                            $temp[$index]['Count'] = 0;
+                            $temp[$index]['State'] = 0;
+                        }
+                    } elseif ($conf['OnValue'] < $conf['OffValue']) {
+                        if ($val >= $conf['OnValue'] && $val < $conf['OffValue']) {
+                            if ($temp[$index]['Count']++ >= $conf['OnDelay']) {
+                                $temp[$index]['State'] = $conf['Value'];
+                            }
+                        } elseif ($val < $conf['OnValue'] || $val >= $conf['OffValue']) {
+                            $temp[$index]['Count'] = 0;
+                            $temp[$index]['State'] = 0;
+                        }
+                    }
+                }
+            }
+            $this->SetBuffer($Ident, json_encode($temp));
+            krsort($temp, SORT_STRING); //Sortierung analog OnValue DESC basierend auf generiertem Index
+            $this->SendDebug('CalculateValue', "Ident: $Ident Buffer: " . json_encode($temp), 0);
+            //und $value auf ersten aktiven State setzen
+            if (count($temp) > 0) { //Falls keine Konfiguration aktiv ist, wird $value auch nicht gesetzt
+                $value = 0;
+                foreach ($temp as $tmp) {
+                    if ($tmp['State'] > 0) { //$value erhält den ersten aktiven State
+                        $value = $tmp['State'];
+                        break;
                     }
                 }
             }
         }
-        if ($value === -1){ 
+
+        if ($value === false) {
             //Tritt insbesondere dann auf, wenn keine Konfigurationen in der SPList vorhanden sind.
             //Kann aber auch sein, wenn in der ModBusConfig eine Berechnung definiert, aber hier keine Formel dazu vorhanden ist.
             echo 'INSTANCE: ' . $this->InstanceID . ' ACTION: CalculateValue: ' . sprintf($this->Translate('Calculation not possible for Ident \'%s\'!'), $Ident) . "\r\n";

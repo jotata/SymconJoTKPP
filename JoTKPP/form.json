@@ -167,25 +167,24 @@
                         "suffix": "W"
                     }
                 },{
-                    "caption": "Off Difference",
-                    "name": "OffDiff",
+                    "caption": "Off Value",
+                    "name": "OffValue",
                     "width": "200px",
-                    "add": -100,
+                    "add": 0,
                     "edit": {
                         "type": "NumberSpinner",
-                        "maximum": 0,
+                        "minimum": 1,
                         "suffix": "W"
                     }
                 },{
-                    "caption": "Delay",
-                    "name": "Delay",
+                    "caption": "On Delay",
+                    "name": "OnDelay",
                     "width": "200px",
-                    "add": 30,
+                    "add": 3,
                     "edit": {
                         "type": "NumberSpinner",
                         "minimum": 0,
-                        "suffix": " Seconds",
-                        "align": "right"
+                        "suffix": "x"
                     }
                 },{
                     "caption": "Value",

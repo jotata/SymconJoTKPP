@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   26.12.2020 17:22:45
+ * @Last Modified:   26.12.2020 17:29:43
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -694,14 +694,5 @@ class JoTKPP extends JoTModBus {
             }
         }
         return false;
-    }
-
-    /**
-     * Ändert die Anzeige von PVspList
-     * @param bool $Visible Wert für Anzeige der Liste
-     * @access private
-     */
-    private function FormTogglePVspList(bool $Visible) {
-        $this->UpdateFormField('PVspList', 'visible', $Visible);
     }
 }

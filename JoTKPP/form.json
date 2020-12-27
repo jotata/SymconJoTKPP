@@ -139,8 +139,8 @@
             "delete": true,
             "rowCount": 6,
             "sort": {
-                "column": "Ident",
-                "direction": "ascending"
+                "column": "OnValue",
+                "direction": "descending"
             },
             "columns": [
                 {
@@ -167,23 +167,33 @@
                         "suffix": "W"
                     }
                 },{
-                    "caption": "Off Value",
-                    "name": "OffValue",
+                    "caption": "Off Difference",
+                    "name": "OffDiff",
                     "width": "200px",
-                    "add": 0,
+                    "add": -100,
                     "edit": {
                         "type": "NumberSpinner",
-                        "minimum": 1,
+                        "maximum": 0,
                         "suffix": "W"
                     }
                 },{
-                    "caption": "On Delay",
-                    "name": "OnDelay",
+                    "caption": "On Counter",
+                    "name": "OnCount",
                     "width": "200px",
-                    "add": 3,
+                    "add": 5,
                     "edit": {
                         "type": "NumberSpinner",
-                        "minimum": 0,
+                        "minimum": 1,
+                        "suffix": "x"
+                    }
+                },{
+                    "caption": "Off Counter",
+                    "name": "OffCount",
+                    "width": "200px",
+                    "add": 1,
+                    "edit": {
+                        "type": "NumberSpinner",
+                        "minimum": 1,
                         "suffix": "x"
                     }
                 },{
@@ -211,7 +221,8 @@
                     "Type": "SPFeedin", 
                     "OnValue": 1000, 
                     "OffDiff": -100, 
-                    "Delay": 30, 
+                    "OnCounter": 5,
+                    "OffCounter": 1, 
                     "Value": 1,
                     "deletable": false
                 }

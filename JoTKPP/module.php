@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   26.12.2020 17:29:43
+ * @Last Modified:   27.12.2020 17:32:57
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -512,29 +512,23 @@ class JoTKPP extends JoTModBus {
             $temp = [];
             foreach ($config as $conf) { //Alle States ermitteln
                 if ($conf['Ident'] === $Ident && $conf['Active'] === true) {
-                    $index = $conf['OnValue'] . '-' . $conf['OffValue'] . '-' . $conf['OnDelay'] . '-' . $conf['Value']; //Eindeutigen Index generieren
-                    $temp[$index] = ['State' => 0, 'Count' => 0];
+                    $offValue = $conf['OnValue'] - abs($conf['OffDiff']);
+                    $index = $conf['OnValue'] . ":$offValue:" . $conf['OnCount']  . ':' . $conf['OffCount'] . ':' . $conf['Value']; //Eindeutigen Index generieren
+                    $temp[$index] = ['State' => 0, 'OnCount' => 0, 'OffCount' => 0];
                     if (is_array($buf) && array_key_exists($index, $buf)) { //Durch diese Zuweisung werden geänderte / deaktivierte Konfigurationen im Buffer automatisch bereinigt
-                        $temp[$index] = ['State' => $buf[$index]['State'], 'Count' => $buf[$index]['Count']];
+                        $temp[$index] = ['State' => $buf[$index]['State'], 'OnCount' => $buf[$index]['OnCount'], 'OffCount' => $buf[$index]['OffCount']];
                     }
-                    if ($conf['OnValue'] >= $conf['OffValue']) {
-                        if ($val >= $conf['OnValue']) {
-                            if ($temp[$index]['Count']++ >= $conf['OnDelay']) {
-                                $temp[$index]['State'] = $conf['Value'];
-                            }
-                        } elseif ($val < $conf['OnValue'] && $val > $conf['OffValue']) {
-                            $temp[$index]['Count'] = 0;
-                        } elseif ($val < $conf['OnValue'] && $val <= $conf['OffValue']) {
-                            $temp[$index]['Count'] = 0;
-                            $temp[$index]['State'] = 0;
+                    if ($val >= $conf['OnValue']) {
+                        $temp[$index]['OffCount'] = 0;
+                        if (++$temp[$index]['OnCount'] >= $conf['OnCount']) {
+                            $temp[$index]['State'] = $conf['Value'];
                         }
-                    } elseif ($conf['OnValue'] < $conf['OffValue']) {
-                        if ($val >= $conf['OnValue'] && $val < $conf['OffValue']) {
-                            if ($temp[$index]['Count']++ >= $conf['OnDelay']) {
-                                $temp[$index]['State'] = $conf['Value'];
-                            }
-                        } elseif ($val < $conf['OnValue'] || $val >= $conf['OffValue']) {
-                            $temp[$index]['Count'] = 0;
+                    } elseif ($val < $conf['OnValue'] && $val > $offValue) {
+                        $temp[$index]['OnCount'] = 0;
+                        $temp[$index]['OffCount'] = 0;
+                    } elseif ($val <= $offValue) {
+                        $temp[$index]['OnCount'] = 0;
+                        if (++$temp[$index]['OffCount'] >= $conf['OffCount']) {
                             $temp[$index]['State'] = 0;
                         }
                     }

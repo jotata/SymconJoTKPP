@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   27.12.2020 17:32:57
+ * @Last Modified:   28.12.2020 16:18:27
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -500,9 +500,15 @@ class JoTKPP extends JoTModBus {
             if ($Ident === 'SPFeedin') {
                 $val = $this->RequestReadIdent('ACActivePowerTot');
             } elseif ($Ident === 'SPReduction') {
-                $val = $this->RequestReadIdent('ACLimitEVU PowerClass');
-                $val = $val['PowerClass'] * 1000 * ((100 - $val['ACLimitEVU']) / 100);
-                $val = 0; //Berechnung muss noch fertiggestellt werden
+                $val = $this->RequestReadIdent('PowerClass ACActivePowerTot InverterState');
+                if ($val['InverterState'] === 7) { //=Throttled - Wechselrichter drosselt Leistung
+                    //Berechnung ist theoretisch, da unbekannt ist, wie viel Energie die PV-Seite im Moment liefern könnte.
+                    //Daher wird die max. möglich Leistung des WR herangezogen.
+                    //Falls PV-Seite kleiner dimensioniert oder nicht genügend Sonnen-Einstrahlung vorhanden ist, kann ev. nicht so viel mehr verbraucht werden
+                    $val = $val['PowerClass'] * 1000 - $val['ACActivePowerTot']; //max. mögliche WR-Leistung - aktuell produzierte WR-Leistung
+                } else { //Wechselrichter kann alle Energie einspeisen oder befindet sich in einem anderen Zustand
+                    $val = 0;
+                }
             } elseif ($Ident === 'SPCharge') {
                 $val = $this->RequestReadIdent('BTPower') * -1; //Umdrehen, da Vergleich immer mit positivem Wert gemacht wird und Charging negativ wäre
             }
@@ -513,7 +519,7 @@ class JoTKPP extends JoTModBus {
             foreach ($config as $conf) { //Alle States ermitteln
                 if ($conf['Ident'] === $Ident && $conf['Active'] === true) {
                     $offValue = $conf['OnValue'] - abs($conf['OffDiff']);
-                    $index = $conf['OnValue'] . ":$offValue:" . $conf['OnCount']  . ':' . $conf['OffCount'] . ':' . $conf['Value']; //Eindeutigen Index generieren
+                    $index = $conf['OnValue'] . ":$offValue:" . $conf['OnCount'] . ':' . $conf['OffCount'] . ':' . $conf['Value']; //Eindeutigen Index generieren
                     $temp[$index] = ['State' => 0, 'OnCount' => 0, 'OffCount' => 0];
                     if (is_array($buf) && array_key_exists($index, $buf)) { //Durch diese Zuweisung werden geänderte / deaktivierte Konfigurationen im Buffer automatisch bereinigt
                         $temp[$index] = ['State' => $buf[$index]['State'], 'OnCount' => $buf[$index]['OnCount'], 'OffCount' => $buf[$index]['OffCount']];

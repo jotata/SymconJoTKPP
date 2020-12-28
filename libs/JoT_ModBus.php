@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            JoT_ModBus.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   19.12.2020 21:07:06
+ * @Last Modified:   28.12.2020 20:04:02
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -26,10 +26,12 @@ class JoTModBus extends IPSModule {
     protected const VT_SignedInteger = VARIABLETYPE_INTEGER;
     protected const VT_Float = VARIABLETYPE_FLOAT;
     protected const VT_String = VARIABLETYPE_STRING;
-    protected const MB_BigEndian = 0; //ABCD=>ABCD
-    protected const MB_BigEndian_WordSwap = 1; //ABCD=>CDAB
-    protected const MB_LittleEndian = 2; //ABCD=>BADC
-    protected const MB_LittleEndian_WordSwap = 3; //ABCD=>DCBA
+    protected const MB_BigEndian = 0; //ABCDEFGH => ABCDEFGH
+    protected const MB_BigEndian_ByteSwap = 1; //ABCD => BADC oder ABCDEFGH => BADCFEHG
+    protected const MB_BigEndian_WordSwap = 2; //ABCD => CDAB oder ABCDEFGH => CDABGHEF
+    protected const MB_LittleEndian = 3; //ABCD => DCBA oder ABCDEFGH => HGFEDCBA
+    protected const MB_LittleEndian_ByteSwap = 4; //ABCD => CDAB oder ABCDEFGH => GHEFCDAB
+    protected const MB_LittleEndian_WordSwap = 5; //ABCD => BADC oder ABCDEFG => FEHGBADC
     protected const FC_Read_Coil = 1;
     protected const FC_Read_DiscreteInput = 2;
     protected const FC_Read_HoldingRegisters = 3;
@@ -147,15 +149,22 @@ class JoTModBus extends IPSModule {
      */
     protected function SwapValue(string $Value, int $MBType) {
         switch ($MBType) {
-            case self::MB_BigEndian://ABCD => ABCD
+            case self::MB_BigEndian: //ABCDEFGH => ABCDEFGH
                 break;
-            case self::MB_BigEndian_WordSwap://ABCD => CDAB
+            case self::MB_BigEndian_ByteSwap: //ABCD => BADC oder ABCDEFGH => BADCFEHG
+                $Value = $this->ByteSwap($Value);
+                break;
+            case self::MB_BigEndian_WordSwap: //ABCD => CDAB oder ABCDEFGH => CDABGHEF
                 $Value = $this->WordSwap($Value);
                 break;
-            case self::MB_LittleEndian://ABCD => BADC
+            case self::MB_LittleEndian: //ABCD => DCBA oder ABCDEFGH => HGFEDCBA
                 $Value = $this->LittleEndian($Value);
                 break;
-            case self::MB_LittleEndian_WordSwap://ABCD => DCBA
+            case self::MB_LittleEndian_ByteSwap: //ABCD => CDAB oder ABCDEFGH => GHEFCDAB
+                $Value = $this->LittleEndian($Value);
+                $Value = $this->ByteSwap($Value);
+                break;
+            case self::MB_LittleEndian_WordSwap: //ABCD => BADC oder ABCDEFG => FEHGBADC
                 $Value = $this->LittleEndian($Value);
                 $Value = $this->WordSwap($Value);
                 break;
@@ -193,6 +202,25 @@ class JoTModBus extends IPSModule {
     }
 
     /**
+     * Vertauscht immer zwei Zeichen (8 Bit-Blöcke) in $Value (=>ByteSwap)
+     * @param string $Value Original-Wert
+     * @return string $Value mit vertauschten Zeichen
+     * @access private
+     */
+    private function ByteSwap(string $Value) {
+        $Chars = str_split($Value, 1);
+        if (count($Chars) > 1) {
+            $Value = '';
+            $x = 0;
+            while (($x + 1) < count($Chars)) {
+                $Value = $Value . $Chars[$x + 1] . $Chars[$x];
+                $x = $x + 2;
+            }
+        }
+        return $Value;
+    }
+
+    /**
      * Vertauscht immer zwei Wörter (16 Bit-Blöcke) in $Value (=>WordSwap)
      * @param string $Value Original-Wert
      * @return string $Value mit vertauschten Wörtern
@@ -212,22 +240,13 @@ class JoTModBus extends IPSModule {
     }
 
     /**
-     * Vertauscht immer zwei Zeichen (8 Bit-Blöcke) in $Value (=>LittleEndian)
+     * Kehrt $Value komplett um / rückwärts lesend (=>LittleEndian)
      * @param string $Value Original-Wert
-     * @return string $Value mit vertauschten Zeichen
+     * @return string $Value mit umgekerter Zeichenfolge
      * @access private
      */
     private function LittleEndian(string $Value) {
-        $Chars = str_split($Value, 1);
-        if (count($Chars) > 1) {
-            $Value = '';
-            $x = 0;
-            while (($x + 1) < count($Chars)) {
-                $Value = $Value . $Chars[$x + 1] . $Chars[$x];
-                $x = $x + 2;
-            }
-        }
-        return $Value;
+        return strrev($Value);
     }
 
     /**

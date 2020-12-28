@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   28.12.2020 16:18:27
+ * @Last Modified:   28.12.2020 20:07:53
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -36,6 +36,7 @@ class JoTKPP extends JoTModBus {
         parent::Create();
         $this->ConfigProfiles(__DIR__ . '/ProfileConfig.json', ['$VT_Float' => self::VT_Float, '$VT_Integer' => self::VT_Integer]);
         $this->RegisterAttributeString('PollIdents', '');
+        $this->RegisterAttributeInteger('MBType', self::MB_LittleEndian_ByteSwap);
         $this->RegisterPropertyString('PollIdents', ''); //wird seit V1.4RC2 nicht mehr benötigt, für Migration zu aber noch notwendig
         $this->RegisterPropertyString('ModuleVariables', ''); //wird seit V1.4 nicht mehr benötigt, für Migration zu 'PollIdents' aber noch notwendig
         $this->RegisterPropertyInteger('PollTime', 0);
@@ -291,6 +292,7 @@ class JoTKPP extends JoTModBus {
             $this->SendDebug('Instance ready', '', 0);
             $this->RegisterMessage($this->InstanceID, FM_CONNECT); //Gateway wurde geändert
             $this->RegisterMessage(IPS_GetInstance($this->InstanceID)['ConnectionID'], IM_CHANGESETTINGS); //Gateway-Einstellungen wurden geändert
+            $this->SetModBusType();
         } elseif ($MessageID == FM_CONNECT) {//Gateway wurde geändert
             $this->SendDebug('Gateway changed', 'Gateway #' . IPS_GetInstance($this->InstanceID)['ConnectionID'], 0);
             $this->RegisterOnceTimer('GetDeviceInfo', 'IPS_RequestAction($_IPS["TARGET"], "GetDeviceInfo", "");');
@@ -300,6 +302,7 @@ class JoTKPP extends JoTModBus {
             $this->RegisterMessage(IPS_GetInstance($this->InstanceID)['ConnectionID'], IM_CHANGESETTINGS);
         } elseif ($MessageID == IM_CHANGESETTINGS) {//Einstellungen im Gateway wurde geändert
             $this->SendDebug('Gateway settings changed', 'Gateway #' . IPS_GetInstance($this->InstanceID)['ConnectionID'], 0);
+            $this->SetModBusType();
             $this->RegisterOnceTimer('GetDeviceInfo', 'IPS_RequestAction($_IPS["TARGET"], "GetDeviceInfo", "");');
         }
     }
@@ -329,6 +332,7 @@ class JoTKPP extends JoTModBus {
         }
 
         //ModBus-Abfrage durchführen
+        $mbType = $this->ReadAttributeInteger('MBType');
         $values = [];
         foreach ($mbConfig as $ident => $config) {//Loop durch $mbConfig, damit Werte auch ausgelesen werden können, wenn Instanz noch nicht gespeichert ist. Dadurch werden auch nur gültige ModBus-Configs abgefragt.
             //Wenn $force true ODER aktuelle Variable in Liste der angeforderten/gepollten Idents (strpos mit Leerzeichen, da mehrere Idents ebenfalls mit Leerzeichen getrennt werden).
@@ -344,7 +348,11 @@ class JoTKPP extends JoTModBus {
                         $this->SendDebug('RequestRead', "Ident: $ident from Cache: $value", 0);
                     } else {
                         $this->SendDebug('RequestRead', "Ident: $ident on Address: " . $config['Address'], 0);
-                        $value = $this->ReadModBus($config['Function'], $config['Address'], $config['Quantity'], $config['Factor'], $config['MBType'], $config['VarType']);
+                        if ($config['VarType'] === self::VT_String) { //Strings werden vom WR immer als BigEndian zurück gegeben, egal welcher Modus aktiviert ist (Bug in FW?)
+                            $value = $this->ReadModBus($config['Function'], $config['Address'], $config['Quantity'], $config['Factor'], self::MB_BigEndian, $config['VarType']);
+                        } else {
+                            $value = $this->ReadModBus($config['Function'], $config['Address'], $config['Quantity'], $config['Factor'], $mbType, $config['VarType']);
+                        }
                     }
                 }
                 if ($vID !== false) {//Instanz-Variablen sind nur für Werte mit aktivem Polling vorhanden
@@ -455,6 +463,19 @@ class JoTKPP extends JoTModBus {
             $this->LogMessage($error, KL_WARNING);
             return '';
         }
+    }
+
+    /**
+     * Liest die Property 'SwapWords' aus dem ModBus-Gateway aus
+     * und setzt damit den korrekten Wert für das Attribut 'MBType'.
+     * @access private
+     */
+    private function SetModBusType() {
+        $mbType = self::MB_LittleEndian_ByteSwap;
+        if (IPS_GetProperty(IPS_GetInstance($this->InstanceID)['ConnectionID'], 'SwapWords') === false) {
+            $mbType = self::MB_BigEndian;
+        }
+        $this->WriteAttributeInteger('MBType', $mbType);
     }
 
     /**

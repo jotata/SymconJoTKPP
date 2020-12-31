@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   28.12.2020 20:07:53
+ * @Last Modified:   31.12.2020 15:52:57
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -342,20 +342,21 @@ class JoTKPP extends JoTModBus {
                     $this->SendDebug('RequestRead', "Ident: $ident gets calculated...", 0);
                     $value = $this->CalculateValue($ident);
                 } else { //Wert via Cache / ModBus auslesen
-                    if ($vID !== false && (time() - IPS_GetVariable($vID)['VariableUpdated']) <= 1) { //Werte für Instanz-Variablen nicht häufiger als jede Sekunde abfragen
-                        $value = $this->GetValue($ident);
-                        $vID = false; //Wert nicht in Instanz-Variable zurückschreiben, wenn nicht gelesen
-                        $this->SendDebug('RequestRead', "Ident: $ident from Cache: $value", 0);
-                    } else {
+                    $value = $this->GetFromCache($ident);
+                    if ($value === false) { //Im Cache nicht vorhanden oder abgelaufen
                         $this->SendDebug('RequestRead', "Ident: $ident on Address: " . $config['Address'], 0);
                         if ($config['VarType'] === self::VT_String) { //Strings werden vom WR immer als BigEndian zurück gegeben, egal welcher Modus aktiviert ist (Bug in FW?)
                             $value = $this->ReadModBus($config['Function'], $config['Address'], $config['Quantity'], $config['Factor'], self::MB_BigEndian, $config['VarType']);
                         } else {
                             $value = $this->ReadModBus($config['Function'], $config['Address'], $config['Quantity'], $config['Factor'], $mbType, $config['VarType']);
                         }
+                        $this->SetToCache($ident, $value);
+                    } else { //Wert aus Cache gelesen
+                        $vID = false; //Wert nicht in Instanz-Variable zurückschreiben
+                        $this->SendDebug('RequestRead', "Ident: $ident from Cache: $value", 0);
                     }
                 }
-                if ($vID !== false) {//Instanz-Variablen sind nur für Werte mit aktivem Polling vorhanden
+                if ($vID !== false) { //Instanz-Variablen sind nur für Werte mit aktivem Polling vorhanden
                     $this->SetValue($ident, $value);
                 }
                 $values[$ident] = $value;
@@ -463,6 +464,43 @@ class JoTKPP extends JoTModBus {
             $this->LogMessage($error, KL_WARNING);
             return '';
         }
+    }
+
+    /**
+     * Gibt Wert von $Ident aus dem Cache zurück, wenn vorhanden und noch gültig
+     * @param string $Ident (optional) Wenn leer werden alle noch gültigen Idents zurückgegeben
+     * @return mixed false, wenn $Ident nicht vorhanden oder abgelaufen, Wert aus Cache oder Array mit allen Werten und deren Timestamp
+     * @access private
+     */
+    private function GetFromCache(string $Ident = '') {
+        $buffer = json_decode($this->GetBuffer('Cache'), true);
+        $ts = time();
+        if (is_array($buffer) && array_key_exists($Ident, $buffer) && ($ts - $buffer[$Ident]['Timestamp'] <= 1)) { //$Ident max. seit 1 Sekunde im Cache vorhanden
+            return $buffer[$Ident]['Value'];
+        } elseif ($Ident !== '') { //$Ident im Cache nicht vorhanden oder abgelaufen
+            return false;
+        } elseif (is_array($buffer)) { //Alle noch gültigen Einträge aus dem Cache zurückgeben
+            $cache = [];
+            foreach ($buffer as $id => $data) {
+                if ($ts - $data['Timestamp'] <= 1) { //Nur gültig wenn nicht älter als 1 Sekunde
+                    $cache[$id] = $data;
+                }
+            }
+            return $cache;
+        }
+        return [];
+    }
+
+    /**
+     * Schreibt $Value für $Ident in den Cache und entfernt alle abgelaufenen Idents aus dem Cache
+     * @param string $Ident
+     * @param mixed $Value
+     * @access private
+     */
+    private function SetToCache(string $Ident, $Value) {
+        $cache = $this->GetFromCache(); //Holt alle noch gültigen Werte aus dem Cache
+        $cache[$Ident] = ['Value' => $Value, 'Timestamp' => time()];
+        $this->SetBuffer('Cache', json_encode($cache));
     }
 
     /**

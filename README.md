@@ -72,7 +72,12 @@ Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modu
    2. Im Schnellfilter "Kostal" eingeben
    3. Das Gerät "Kostal PLENTICORE plus" auswählen
    4. Name & Ort anpassen (optional)
-   5. Falls noch keine ModBus Gateway Instanz vorhanden ist, wid eine solche erstellt. Diese entsprechend konfigurieren.
+   5. Falls noch keine ModBus Gateway Instanz vorhanden ist, wird eine solche erstellt. Diese entsprechend konfigurieren:
+      a. Modus: Modbus TCP
+      b. Geräte-ID: 71 (kann auf dem Wechselrichter in den Modbus-Einstellungen nachgeschaut werden)
+      c. Swap LSW/MSW for 32Bit/64Bit values (kann auf dem Wechselrichter in den Modbus-Einstellungen nachgeschaut werden):
+         Off = big-endian (ABCD) Sunspec
+         On = little-endian (CDAB) Standard Modbus
  
   ### 2. Konfiguration der Instanz
    - Abfrage-Intervall: Definiert die Zeit, in welcher die Werte via ModBus abgefragt werden sollen. Es werden nur die Werte abgefragt, bei welchen "Aktiv" angehakt ist.
@@ -82,6 +87,13 @@ Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modu
    - Profil: Standard-Profil des Modules.
    - Eigenes Profil: Ihr könnt der Instanz-Variable ein eigenes Profil zuweisen (z.B. für Batterie-Ladezustand). Dieses wird dann hier angezeigt.
    - Aktiv: Wenn der Haken gesetzt ist, wird einen entsprechende Instanz-Variable erstellt. VORSICHT: Wird der Haken entfernt und die Konfiguration gespeichert, so wird die entsprechende Instanz-Variable gelöscht.
+   - Konfiguration PV-Überschuss (nur sichtbar, wenn min. eine Geräte-Eigenschaft aus der Gruppe 'Surplus' aktiviert ist):
+     - Für jeden der Surplus-Idents können beliebig viele Konfigurationen erstellt werden. Diese werden nach Ein-Wert absteigend (Höchster zuerst) für die Berechnung genutzt. Wenn also mehrere BEdingungen erfüllt sind, wird die variable immer auf den Wert des höchsten aktiven Ein-Wertes geschaltet.
+     - Ein-Wert: Ist der Überschuss grösser / gleich dieser Wert, wird der Ein-Zähler um eins erhöht. Geht der Überschuss unter diesen Wert, wird der Ein-Zähler auf 0 zurück gesetzt.
+     - Aus-Differenz: Wenn der Überschuss für diese Konfiguration einmal aktiviert ist, wird der Aus-Zähler um eins erhöht, wenn der Überschuss auf diese Differenz unter den Ein-Wert oder tiefer sinkt.
+     - Ein/Aus-Zähler: Bei jeder Abfrage wird der interne Zähler um eins erhöht, wenn die Ein/Aus-Bedingung erfüllt ist. Ist der interne Zähler grösser / gleich dem hier angegebenen Wert, wird die Variable auf den Wert (bzw. eim Aus-Zähler auf 0) geschaltet.
+     - Wert: Der Ident wird auf diesen Wert geschaltet, wenn die Bedingungen dieser Konfiguration erfüllt sind und diese Konfiguration dijenige mit dem höchsten aktiven Ein-Wert ist.
+     - Aktiv: Nur aktivierte Konfigurationen werden für die Berechnung berücksichtigt.
    - Zusätzliche Abfragen erstellen:
      - Gewünsche Gruppen ODER Idents anklicken -> diese werden unten aufgelistet und können von hier direkt kopiert werden um ein Ereignis anzupassen oder in einer Modulfunktion abzufragen.
      - Einen Namen für das Ereignis eingeben (optional)
@@ -114,12 +126,14 @@ Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modu
 | JoTKPP | Device | Kostal     | PIKO IQ         | JoTKPP | {E64278F5-1942-5343-E226-8673886E2D05} |
 
 ### 2. Changelog
-Version 1.5 (ALPHA)
+Version 1.5 (BETA)
 - PV-Überschuss hinzugefügt
 - Berechnung von "Home own consumtion from all" hinzugefügt
 - Berechnung von "Total power from PV strings" hinzugefügt
 - Status für Batterie / Netz hinzugefügt
+- ModBus-Bytereihenfolge des WR kann nun im ModBus-Gateway von IPS umgestellt werden (IPS 'Swap LSW/MSW...' AN = 'little-endian (CDAB)...' auf dem Wechselrichter).
 - Wenn Variablen-Werte weniger als eine Sekunde alt sind, werde diese nicht erneut vom Wechselrichter abgefragt, sondern direkt vom "Cache" zurückgegeben.
+- Scale Factors hinzugefügt
 - FIX: Abfrage-/FW-Update Intervall  können nicht mehr negativ eingegeben werden.
 
 Version 1.4

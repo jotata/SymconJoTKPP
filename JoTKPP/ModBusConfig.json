@@ -8,7 +8,6 @@
         "Quantity": 16,
         "Factor": 0,
         "VarType": "$VT_String",
-        "MBType": "$MB_BigEndian",
         "FWVersion": "1.42"
     },
     "ProductName": {
@@ -20,7 +19,6 @@
         "Quantity": 32,
         "Factor": 0,
         "VarType": "$VT_String",
-        "MBType": "$MB_BigEndian",
         "FWVersion": "1.42"
     },
     "PowerClass": {
@@ -32,7 +30,6 @@
         "Quantity": 32,
         "Factor": 0,
         "VarType": "$VT_String",
-        "MBType": "$MB_BigEndian",
         "FWVersion": "1.42"
     },
     "ArticleNumber": {
@@ -44,7 +41,6 @@
         "Quantity": 8,
         "Factor": 0,
         "VarType": "$VT_String",
-        "MBType": "$MB_BigEndian",
         "FWVersion": "1.42"
     },
     "SerialNr": {
@@ -56,7 +52,6 @@
         "Quantity": 8,
         "Factor": 0,
         "VarType": "$VT_String",
-        "MBType": "$MB_BigEndian",
         "FWVersion": "1.42"
     },
     "NetworkName": {
@@ -68,7 +63,6 @@
         "Quantity": 32,
         "Factor": 0,
         "VarType": "$VT_String",
-        "MBType": "$MB_BigEndian",
         "FWVersion": "1.42"
     },
     "TotalDCPower": {
@@ -80,7 +74,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian",
         "FWVersion": "1.42"
     },
     "SensorType": {
@@ -92,7 +85,6 @@
         "Quantity": 1,
         "Factor": 0,
         "VarType": "$VT_UnsignedInteger",
-        "MBType": "$MB_BigEndian",
         "FWVersion": "1.44"
     },
     "NumberACPhases": {
@@ -104,7 +96,6 @@
         "Quantity": 1,
         "Factor": 1,
         "VarType": "$VT_UnsignedInteger",
-        "MBType": "$MB_BigEndian",
         "FWVersion": "1.42"
     },
     "NumberPVStrings": {
@@ -116,7 +107,6 @@
         "Quantity": 1,
         "Factor": 1,
         "VarType": "$VT_UnsignedInteger",
-        "MBType": "$MB_BigEndian",
         "FWVersion": "1.42"
     },
     "HardwareVersion": {
@@ -128,7 +118,6 @@
         "Quantity": 1,
         "Factor": 1,
         "VarType": "$VT_UnsignedInteger",
-        "MBType": "$MB_BigEndian",
         "FWVersion": "1.42"
     },
     "SoftwareVersionMC": {
@@ -140,7 +129,6 @@
         "Quantity": 8,
         "Factor": 0,
         "VarType": "$VT_String",
-        "MBType": "$MB_BigEndian",
         "FWVersion": "1.42"
     },
     "SoftwareVersionIOC": {
@@ -152,7 +140,6 @@
         "Quantity": 8,
         "Factor": 0,
         "VarType": "$VT_String",
-        "MBType": "$MB_BigEndian",
         "FWVersion": "1.42"
     },
     "InverterState": {
@@ -164,7 +151,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_UnsignedInteger",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "EnergyManagerState": {
@@ -176,7 +162,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_UnsignedInteger",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "FuseState": {
@@ -188,7 +173,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "ConsFromAC": {
@@ -200,7 +184,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "ConsFromBT": {
@@ -212,7 +195,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "ConsFromPV": {
@@ -224,7 +206,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "ConsFromAll": {
@@ -245,7 +226,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "ConsFromBTTot": {
@@ -257,7 +237,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "ConsFromPVTot": {
@@ -269,7 +248,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "ConsTot": {
@@ -281,7 +259,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "ConsRate": {
@@ -293,7 +270,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "ACLimitEVU": {
@@ -305,7 +281,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "ACFrequency": {
@@ -317,7 +292,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "ACCurrentP1": {
@@ -329,7 +303,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "ACActivePowerP1": {
@@ -341,7 +314,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "ACVoltageP1": {
@@ -353,7 +325,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "ACCurrentP2": {
@@ -365,7 +336,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "ACActivePowerP2": {
@@ -377,7 +347,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "ACVoltageP2": {
@@ -389,7 +358,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "ACCurrentP3": {
@@ -401,7 +369,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "ACActivePowerP3": {
@@ -413,7 +380,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "ACVoltageP3": {
@@ -425,7 +391,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "ACActivePowerTot": {
@@ -437,7 +402,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "ACReactivePowerTot": {
@@ -449,7 +413,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "ACApparentPowerTot": {
@@ -461,7 +424,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "ACInverterPower": {
@@ -473,7 +435,6 @@
         "Quantity": 1,
         "Factor": 0.001,
         "VarType": "$VT_SignedInteger",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "PMCosPhi": {
@@ -485,7 +446,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "PMFrequency": {
@@ -497,7 +457,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "PMCurrentP1": {
@@ -509,7 +468,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "PMActivePowerP1": {
@@ -521,7 +479,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "PMVoltageP1": {
@@ -533,7 +490,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "PMCurrentP2": {
@@ -545,7 +501,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "PMActivePowerP2": {
@@ -557,7 +512,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "PMVoltageP2": {
@@ -569,7 +523,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "PMCurrentP3": {
@@ -581,7 +534,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "PMActivePowerP3": {
@@ -593,7 +545,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "PMVoltageP3": {
@@ -605,7 +556,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "PMActivePowerTot": {
@@ -617,7 +567,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "PMReactivePowerTot": {
@@ -629,7 +578,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "PMApparentPowerTot": {
@@ -641,7 +589,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "PMGridState": {
@@ -662,7 +609,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "BTManufacturer": {
@@ -674,7 +620,6 @@
         "Quantity": 8,
         "Factor": 0,
         "VarType": "$VT_String",
-        "MBType": "$MB_BigEndian",
         "FWVersion": "1.42"
     },
     "BTType": {
@@ -686,7 +631,6 @@
         "Quantity": 1,
         "Factor": 0,
         "VarType": "$VT_UnsignedInteger",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "BTFirmwareMC": {
@@ -698,7 +642,6 @@
         "Quantity": 2,
         "Factor": 0,
         "VarType": "$VT_UnsignedInteger",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "BTCrossCapacity": {
@@ -710,7 +653,6 @@
         "Quantity": 2,
         "Factor": 0,
         "VarType": "$VT_UnsignedInteger",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "BTActualSOC": {
@@ -722,7 +664,6 @@
         "Quantity": 1,
         "Factor": 0,
         "VarType": "$VT_UnsignedInteger",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "BTCurrent": {
@@ -734,7 +675,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "BTPower": {
@@ -746,7 +686,6 @@
         "Quantity": 1,
         "Factor": 0.001,
         "VarType": "$VT_SignedInteger",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "BTVoltage": {
@@ -758,7 +697,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "BTState": {
@@ -779,7 +717,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "BTTemperature": {
@@ -791,7 +728,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "BTCycles": {
@@ -803,7 +739,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "BTcEnergyDCTot": {
@@ -815,7 +750,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_UnsignedInteger",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.44"
     },
     "BTdEnergyDCTot": {
@@ -827,7 +761,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_UnsignedInteger",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.44"
     },
     "BTcEnergyACTot": {
@@ -839,7 +772,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_UnsignedInteger",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.44"
     },
     "BTcEnergyGridTot": {
@@ -851,7 +783,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_UnsignedInteger",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.44"
     },
     "BTdEnergyGridTot": {
@@ -863,7 +794,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_UnsignedInteger",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.44"
     },
     "PVCurrentDC1": {
@@ -875,7 +805,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "PVPowerDC1": {
@@ -887,7 +816,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "PVVoltageDC1": {
@@ -899,7 +827,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "PVCurrentDC2": {
@@ -911,7 +838,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "PVPowerDC2": {
@@ -923,7 +849,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "PVVoltageDC2": {
@@ -935,7 +860,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "PVCurrentDC3": {
@@ -947,7 +871,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "PVPowerDC3": {
@@ -959,7 +882,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "PVVoltageDC3": {
@@ -971,7 +893,6 @@
         "Quantity": 2,
         "Factor": 1,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "PVPowerTot": {
@@ -983,7 +904,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_UnsignedInteger",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.44"
     },
     "PVPowerStrTot": {
@@ -1004,7 +924,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_UnsignedInteger",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.44"
     },
     "PVEnergyDC1": {
@@ -1016,7 +935,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_UnsignedInteger",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.44"
     },
     "PVEnergyDC2": {
@@ -1028,7 +946,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_UnsignedInteger",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.44"
     },
     "PVEnergyDC3": {
@@ -1040,7 +957,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_UnsignedInteger",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.44"
     },
     "YieldDaily": {
@@ -1052,7 +968,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "YieldMonthly": {
@@ -1064,7 +979,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "YieldYearly": {
@@ -1076,7 +990,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "YieldTot": {
@@ -1088,7 +1001,6 @@
         "Quantity": 2,
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "MBType": "$MB_BigEndian_WordSwap",
         "FWVersion": "1.42"
     },
     "SPFeedin": {

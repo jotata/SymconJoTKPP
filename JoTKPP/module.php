@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   31.12.2020 15:52:57
+ * @Last Modified:   31.12.2020 16:04:32
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -557,19 +557,19 @@ class JoTKPP extends JoTModBus {
             //Werte einlesen...
             $val = 0;
             if ($Ident === 'SPFeedin') {
-                $val = $this->RequestReadIdent('ACActivePowerTot');
+                $val = $this->RequestReadIdent('ACActivePowerTot') * 1000; //Vergleich erfolgt in W
             } elseif ($Ident === 'SPReduction') {
                 $val = $this->RequestReadIdent('PowerClass ACActivePowerTot InverterState');
                 if ($val['InverterState'] === 7) { //=Throttled - Wechselrichter drosselt Leistung
                     //Berechnung ist theoretisch, da unbekannt ist, wie viel Energie die PV-Seite im Moment liefern könnte.
                     //Daher wird die max. möglich Leistung des WR herangezogen.
                     //Falls PV-Seite kleiner dimensioniert oder nicht genügend Sonnen-Einstrahlung vorhanden ist, kann ev. nicht so viel mehr verbraucht werden
-                    $val = $val['PowerClass'] * 1000 - $val['ACActivePowerTot']; //max. mögliche WR-Leistung - aktuell produzierte WR-Leistung
+                    $val = ($val['PowerClass'] * 1000) - ($val['ACActivePowerTot'] * 1000); //max. mögliche WR-Leistung - aktuell produzierte WR-Leistung in W
                 } else { //Wechselrichter kann alle Energie einspeisen oder befindet sich in einem anderen Zustand
                     $val = 0;
                 }
             } elseif ($Ident === 'SPCharge') {
-                $val = $this->RequestReadIdent('BTPower') * -1; //Umdrehen, da Vergleich immer mit positivem Wert gemacht wird und Charging negativ wäre
+                $val = $this->RequestReadIdent('BTPower') * -1 * 1000; //Umdrehen und in W umrechnen, da Vergleich immer mit positivem Wert in W gemacht wird und Charging negativ in kW wäre
             }
             //mit Konfiguration vergleichen
             $config = json_decode($this->ReadPropertyString('SPList'), true);

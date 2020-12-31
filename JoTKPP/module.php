@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   31.12.2020 16:04:32
+ * @Last Modified:   31.12.2020 17:25:18
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -348,7 +348,11 @@ class JoTKPP extends JoTModBus {
                         if ($config['VarType'] === self::VT_String) { //Strings werden vom WR immer als BigEndian zurück gegeben, egal welcher Modus aktiviert ist (Bug in FW?)
                             $value = $this->ReadModBus($config['Function'], $config['Address'], $config['Quantity'], $config['Factor'], self::MB_BigEndian, $config['VarType']);
                         } else {
-                            $value = $this->ReadModBus($config['Function'], $config['Address'], $config['Quantity'], $config['Factor'], $mbType, $config['VarType']);
+                            $factor = $config['Factor'];
+                            if (array_key_exists('ScaleIdent', $config) && $config['ScaleIdent'] !== '') { //Skalierungs-Faktor mit Factor kombinieren
+                                $factor = $config['Factor'] * pow(10, $this->RequestReadIdent($config['ScaleIdent']));
+                            }
+                            $value = $this->ReadModBus($config['Function'], $config['Address'], $config['Quantity'], $factor, $mbType, $config['VarType']);
                         }
                         $this->SetToCache($ident, $value);
                     } else { //Wert aus Cache gelesen

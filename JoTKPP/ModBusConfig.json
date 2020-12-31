@@ -903,6 +903,7 @@
         "Address": 1066,
         "Quantity": 2,
         "Factor": 0.001,
+        "ScaleIdent": "SFPower",
         "VarType": "$VT_UnsignedInteger",
         "FWVersion": "1.44"
     },
@@ -1029,5 +1030,38 @@
         "VarType": "$VT_SignedInteger",
         "Calculation": true,
         "FWVersion": "1.42"
+    },
+    "SFPower": {
+        "Name": "Power Scale Factor",
+        "Group": "ScaleFactor",
+        "Profile": "",
+        "Function": "$FC_Read_HoldingRegisters",
+        "Address": 576,
+        "Quantity": 1,
+        "Factor": 1,
+        "VarType": "$VT_SignedInteger",
+        "FWVersion": "1.44"
+    },
+    "SFEnergy": {
+        "Name": "Energy Scale Factor",
+        "Group": "ScaleFactor",
+        "Profile": "",
+        "Function": "$FC_Read_HoldingRegisters",
+        "Address": 579,
+        "Quantity": 1,
+        "Factor": 1,
+        "VarType": "$VT_SignedInteger",
+        "FWVersion": "1.44"
+    },
+    "SFPeakGen": {
+        "Name": "Inverter Peak Generation Power Scale Factor",
+        "Group": "ScaleFactor",
+        "Profile": "",
+        "Function": "$FC_Read_HoldingRegisters",
+        "Address": 532,
+        "Quantity": 1,
+        "Factor": 1,
+        "VarType": "$VT_SignedInteger",
+        "FWVersion": "1.44"
     }
 }

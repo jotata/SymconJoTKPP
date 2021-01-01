@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            JoT_Traits.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   23.12.2020 20:40:24
+ * @Last Modified:   01.01.2021 18:15:50
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -210,12 +210,41 @@ trait Translation {
         }
         return $value;
     }
-    private function ConvertToBoolStr($value, bool $invert = false) {
-        if (($value == true && $invert === false) || ($value == false && $invert === true)) {
+
+    /**
+     * Übersetzt einen Wert in einen lesbaren Boolean-String (false / true)
+     * @param mixed $Value - Wert zur Umwandlung in Boolean-String
+     * @param bool $Invert - Soll Boolean-Wert invertiert werden?
+     * @return string true oder false
+     * @access private
+     */
+    private function ConvertToBoolStr($Value, bool $Invert = false) {
+        if (($Value == true && $Invert === false) || ($Value == false && $Invert === true)) {
             return 'true';
         } else {
             return 'false';
         }
+    }
+
+    /**
+     * Übersetzt $Msg und fügt davor die InstanzID sowie die aufrufende Function hinzu
+     * Gibt das Ganze mit echo aus, so dass es bei ausgeführten Scripts direkt angezeigt sonst im Log erscheint
+     * @param string $Msg - Nachricht in Englisch (ist sprintf-kompatibel)
+     * @param mixed (optional) ... $Args - Zusätzliche Parameter für sprintf können als weitere Argumente angegeben werden
+     * @return string den Übersetzen String wie er per echo ausgegeben wurde (z.B. für Debug)
+     * @access private
+     */
+    private function ThrowMessage(string $Msg) {
+        $args = func_get_args();
+        if (count($args) > 1){
+            $args[0] = $this->Translate($Msg);
+            $Msg = call_user_func_array('sprintf', $args);
+        } else {
+            $Msg = $this->Translate($Msg);
+        }
+        $fMsg = 'INSTANCE: ' . $this->InstanceID . ' ACTION: ' . debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'] . ": $Msg";
+        echo "$fMsg\r\n";
+        return $fMsg;
     }
 }
 

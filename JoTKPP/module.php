@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   01.01.2021 16:57:36
+ * @Last Modified:   01.01.2021 18:47:16
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -325,9 +325,8 @@ class JoTKPP extends JoTModBus {
         if (is_string($force)) {
             $unknown = array_diff(explode(' ', $force), array_keys($mbConfig));
             if (count($unknown) > 0) {
-                $msg = $this->Translate('Unknown Ident(s)') . ': ' . implode(', ', $unknown);
+                $msg = $this->ThrowMessage('Unknown Ident(s): %s', implode(', ', $unknown));
                 $this->SendDebug('RequestRead', $msg, 0);
-                echo 'INSTANCE: ' . $this->InstanceID . " ACTION: RequestRead: $msg\r\n";
             }
         }
 
@@ -335,8 +334,10 @@ class JoTKPP extends JoTModBus {
         $mbType = $this->ReadAttributeInteger('MBType');
         $values = [];
         foreach ($mbConfig as $ident => $config) {//Loop durch $mbConfig, damit Werte auch ausgelesen werden können, wenn Instanz noch nicht gespeichert ist. Dadurch werden auch nur gültige ModBus-Configs abgefragt.
-            //Wenn $force true ODER aktuelle Variable in Liste der angeforderten/gepollten Idents (strpos mit Leerzeichen, da mehrere Idents ebenfalls mit Leerzeichen getrennt werden).
-            if ($force === true || (is_string($force) && strpos(" $force ", " $ident ") !== false)) {
+            //Wenn Berechneter Wert ODER Read-Access UND $force true ODER aktuelle Variable in Liste der angeforderten/gepollten Idents
+            //(strpos mit Leerzeichen, da mehrere Idents ebenfalls mit Leerzeichen getrennt werden.)
+            //if ($force === true || (is_string($force) && strpos(" $force ", " $ident ") !== false)) {
+            if (($config['Address'] === 0 || array_key_exists('RFunction', $config)) && ($force === true || (is_string($force) && strpos(" $force ", " $ident ") !== false))) {
                 $vID = @$this->GetIDForIdent($ident);
                 if ($config['Address'] === 0) { //Wert berechnen
                     $this->SendDebug('RequestRead', "Ident: $ident gets calculated...", 0);
@@ -346,13 +347,13 @@ class JoTKPP extends JoTModBus {
                     if ($value === false) { //Im Cache nicht vorhanden oder abgelaufen
                         $this->SendDebug('RequestRead', "Ident: $ident on Address: " . $config['Address'], 0);
                         if ($config['VarType'] === self::VT_String) { //Strings werden vom WR immer als BigEndian zurück gegeben, egal welcher Modus aktiviert ist (Bug in FW?)
-                            $value = $this->ReadModBus($config['Function'], $config['Address'], $config['Quantity'], $config['Factor'], self::MB_BigEndian, $config['VarType']);
+                            $value = $this->ReadModBus($config['RFunction'], $config['Address'], $config['Quantity'], $config['Factor'], self::MB_BigEndian, $config['VarType']);
                         } else {
                             $factor = $config['Factor'];
                             if (array_key_exists('ScaleIdent', $config) && $config['ScaleIdent'] !== '') { //Skalierungs-Faktor mit Factor kombinieren
                                 $factor = $config['Factor'] * pow(10, $this->RequestReadIdent($config['ScaleIdent']));
                             }
-                            $value = $this->ReadModBus($config['Function'], $config['Address'], $config['Quantity'], $factor, $mbType, $config['VarType']);
+                            $value = $this->ReadModBus($config['RFunction'], $config['Address'], $config['Quantity'], $factor, $mbType, $config['VarType']);
                         }
                         $this->SetToCache($ident, $value);
                     } else { //Wert aus Cache gelesen
@@ -364,13 +365,15 @@ class JoTKPP extends JoTModBus {
                 if (($config['VarType'] !== self::VT_String && is_nan($value)) || ($config['VarType'] === self::VT_Float && is_infinite($value))) {
                     $msg = 'ModBus-Result is wrong. Please file a bug in forum (https://www.symcon.de/forum/threads/41720-Modul-JoTKPP-Solar-Wechselrichter-Kostal-PLENTICORE-plus-PIKO-IQ) with following information:';
                     $msg .= ' Version: ' . IPS_GetLibrary('{89441F1C-532D-3F34-FF79-07A3B38FDD86}')['Version'] . " | Ident: $ident | Value: $value | isNAN: " . $this->ConvertToBoolStr(is_nan($value)) . ' | isINF: ' . $this->ConvertToBoolStr(is_infinite($value));
-                    echo 'INSTANCE: ' . $this->InstanceID . " ACTION: RequestRead: $msg\r\n";
+                    $this->ThrowMessage($msg);
                     $vID = false;
                 }
                 if ($vID !== false) { //Instanz-Variablen sind nur für Werte mit aktivem Polling vorhanden
                     $this->SetValue($ident, $value);
                 }
                 $values[$ident] = $value;
+            } elseif (is_string($force) && strpos(" $force ", " $ident ") !== false) { //Kein Read-Access (nur wenn Ident explizit angefordert wurde)
+                $this->ThrowMessage('No Read-Access for Ident \'%s\'!', $ident);
             }
         }
         switch (count($values)) {
@@ -404,7 +407,7 @@ class JoTKPP extends JoTModBus {
     public function RequestReadIdent(string $Ident) {
         $Ident = trim($Ident);
         if ($Ident == '') {
-            echo 'INSTANCE: ' . $this->InstanceID . ' ACTION: RequestReadIdent: ' . $this->Translate('Ident(s) can not be empty!') . "\r\n";
+            $this->ThrowMessage('Ident(s) can not be empty!');
             return null;
         }
         return $this->RequestRead($Ident);
@@ -419,7 +422,7 @@ class JoTKPP extends JoTModBus {
      */
     public function RequestReadGroup(string $Group) {
         if (trim($Group) == '') {
-            echo 'INSTANCE: ' . $this->InstanceID . ' ACTION: RequestReadGroup: ' . $this->Translate('Group(s) can not be empty!') . "\r\n";
+            $this->ThrowMessage('Group(s) can not be empty!');
             return null;
         }
         $idents = '';
@@ -431,7 +434,7 @@ class JoTKPP extends JoTModBus {
         }
         $idents = trim($idents);
         if ($idents == '') {
-            echo 'INSTANCE: ' . $this->InstanceID . ' ACTION: RequestReadGroup: ' . sprintf($this->Translate("No idents found for group(s) '%s'!"), $Group) . "\r\n";
+            $this->ThrowMessage('No idents found for group(s) \'%s\'!', $Group);
             return null;
         }
         return $this->RequestRead($idents);
@@ -628,7 +631,7 @@ class JoTKPP extends JoTModBus {
         if ($value === false) {
             //Tritt insbesondere dann auf, wenn keine Konfigurationen in der SPList vorhanden sind.
             //Kann aber auch sein, wenn in der ModBusConfig eine Berechnung definiert, aber hier keine Formel dazu vorhanden ist.
-            echo 'INSTANCE: ' . $this->InstanceID . ' ACTION: CalculateValue: ' . sprintf($this->Translate('Calculation not possible for Ident \'%s\'!'), $Ident) . "\r\n";
+            $this->ThrowMessage('Calculation not possible for Ident \'%s\'!', $Ident);
         }
         $this->SendDebug('CalculateValue', "Ident: $Ident Result: $value", 0);
         return $value;

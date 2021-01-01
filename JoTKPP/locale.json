@@ -32,7 +32,7 @@
             "Ident(s) can not be empty!": "Ident(s) darf nicht leer sein!",
             "Group(s) can not be empty!": "Gruppe(n) darf nicht leer sein!",
             "No idents found for group(s) '%s'!": "Keine Idents gefunden für Gruppe(n) '%s'!",
-            "Unknown Ident(s)": "Unbekannte(r) Ident(s)",
+            "Unknown Ident(s): %s": "Unbekannte(r) Ident(s): %s",
             "Check for FW-update": "Suche nach FW-Update",
             "Current FW-Version online": "Aktuelle FW-Version online",
             "New FW-Version available online (%s)": "Neue FW-Version verfügbar (%s)",
@@ -53,7 +53,9 @@
             "idle": "Leerlauf",
             "feed in": "Einspeisung",
             "purchase": "Bezug",
-            "Calculation not possible for Ident '%s'!": "Berechnung für Ident '%s' nicht möglich!"
+            "Calculation not possible for Ident '%s'!": "Berechnung für Ident '%s' nicht möglich!",
+            "No Read-Access for Ident '%s'!": "Kein Lese-Zugriff für Ident '%s'!",
+            "No Write-Access for Ident '%s'!": "Kein Schreib-Zugriff für Ident '%s'!"
         }
     }
 }

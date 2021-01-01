@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   31.12.2020 17:25:18
+ * @Last Modified:   01.01.2021 15:14:23
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -218,7 +218,7 @@ class JoTKPP extends JoTModBus {
         $form = str_replace('"$DeviceInfoValues"', json_encode($diValues), $form); //Values für 'DeviceInfos' setzen
         $form = str_replace('$ColumnNameCaption', $this->Translate('Name') . ' (* = ' . $this->Translate('calculated value') . ')', $form); //Caption für Spalte Name in 'IdentList' setzen
         $form = str_replace('"$IdentListValues"', json_encode(array_values($values)), $form); //Values für 'IdentList' setzen
-        $form = str_replace('"$SPListVisible"', $this->ConvertToBoolStr(strpos(" $pollIdents", ' SP')), $form); //Visible für 'SPList' setzen
+        $form = str_replace('"$SPListVisible"', $this->ConvertToBoolStr(strpos("  $pollIdents", ' SP')), $form); //Visible für 'SPList' setzen (strpos mit 2 Leerzeichen, damit SP auch als erster Ident erkannt wird)
         $form = str_replace('$RequestReadCaption', static::PREFIX . '_RequestRead' . $this->GetBuffer('RequestReadType'), $form); //Caption für 'RequestRead' setzen
         $form = str_replace('$RequestReadValue', $this->GetBuffer('RequestReadValue'), $form); //Value für 'RequestRead' setzen
         $form = str_replace('$EventCreated', $this->Translate('Event was created. Please check/change settings.'), $form); //Übersetzungen einfügen

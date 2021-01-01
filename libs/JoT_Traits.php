@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            JoT_Traits.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   01.01.2021 18:15:50
+ * @Last Modified:   01.01.2021 19:09:10
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -242,7 +242,9 @@ trait Translation {
         } else {
             $Msg = $this->Translate($Msg);
         }
-        $fMsg = 'INSTANCE: ' . $this->InstanceID . ' ACTION: ' . debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'] . ": $Msg";
+        $func = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'];
+        $fMsg = 'INSTANCE: ' . $this->InstanceID . " ACTION: $func: $Msg";
+        $this->SendDebug($func, $Msg, 0);
         echo "$fMsg\r\n";
         return $fMsg;
     }

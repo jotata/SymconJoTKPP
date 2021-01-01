@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   01.01.2021 15:14:23
+ * @Last Modified:   01.01.2021 16:09:16
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -359,6 +359,13 @@ class JoTKPP extends JoTModBus {
                         $vID = false; //Wert nicht in Instanz-Variable zurückschreiben
                         $this->SendDebug('RequestRead', "Ident: $ident from Cache: $value", 0);
                     }
+                }
+                //Zur Analyse von Forum-Beitrag https://www.symcon.de/forum/threads/41720-Modul-JoTKPP-Solar-Wechselrichter-Kostal-PLENTICORE-plus-PIKO-IQ?p=445149#post445149
+                if (($config['VarType'] !== self::VT_String && is_nan($value)) || ($config['VarType'] === self::VT_Float && is_infinite($value))) {
+                    $msg = 'ModBus-Result is wrong. Please file a bug in forum (https://www.symcon.de/forum/threads/41720-Modul-JoTKPP-Solar-Wechselrichter-Kostal-PLENTICORE-plus-PIKO-IQ) with following information:';
+                    $msg .= ' Version: ' . IPS_GetLibrary('{89441F1C-532D-3F34-FF79-07A3B38FDD86}')['Version'] . " | Ident: $ident | Value: $value | isNAN: " . $this->ConvertToBoolStr(is_nan($value)) . ' | isINF: ' . $this->ConvertToBoolStr(is_infinite($value));
+                    echo 'INSTANCE: ' . $this->InstanceID . " ACTION: RequestRead: $msg\r\n";
+                    $vID = false;
                 }
                 if ($vID !== false) { //Instanz-Variablen sind nur für Werte mit aktivem Polling vorhanden
                     $this->SetValue($ident, $value);

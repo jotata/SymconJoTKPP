@@ -214,7 +214,7 @@
         "Profile": "~Power",
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "Calculation": true,
+        "Address": 0,
         "FWVersion": "1.42"
     },
     "ConsFromACTot": {
@@ -597,7 +597,7 @@
         "Profile": "Grid.State",
         "Factor": 1,
         "VarType": "$VT_SignedInteger",
-        "Calculation": true,
+        "Address": 0,
         "FWVersion": "1.42"
     },
     "BTReadyFlag": {
@@ -705,7 +705,7 @@
         "Profile": "Battery.State",
         "Factor": 1,
         "VarType": "$VT_SignedInteger",
-        "Calculation": true,
+        "Address": 0,
         "FWVersion": "1.42"
     },
     "BTCharge": {
@@ -913,7 +913,7 @@
         "Profile": "~Power",
         "Factor": 0.001,
         "VarType": "$VT_Float",
-        "Calculation": true,
+        "Address": 0,
         "FWVersion": "1.42"
     },
     "PVEnergyTot": {
@@ -1010,7 +1010,7 @@
         "Profile": "",
         "Factor": 1,
         "VarType": "$VT_SignedInteger",
-        "Calculation": true,
+        "Address": 0,
         "FWVersion": "1.42"
     },
     "SPCharge": {
@@ -1019,7 +1019,7 @@
         "Profile": "",
         "Factor": 1,
         "VarType": "$VT_SignedInteger",
-        "Calculation": true,
+        "Address": 0,
         "FWVersion": "1.42"
     },
     "SPReduction": {
@@ -1028,7 +1028,7 @@
         "Profile": "",
         "Factor": 1,
         "VarType": "$VT_SignedInteger",
-        "Calculation": true,
+        "Address": 0,
         "FWVersion": "1.42"
     },
     "SFPower": {

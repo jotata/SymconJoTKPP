@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   01.01.2021 16:09:16
+ * @Last Modified:   01.01.2021 16:57:36
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -172,7 +172,7 @@ class JoTKPP extends JoTModBus {
             $variable['Group'] = $config['Group'];
             $variable['Ident'] = $ident;
             $variable['Name'] = $config['Name'];
-            if (array_key_exists('Calculation', $config) && $config['Calculation'] === true) {
+            if ($config['Address'] === 0) { //Berechnete Werte
                 $variable['Name'] = '*' . $config['Name'];
             }
             $variable['cName'] = '';
@@ -338,7 +338,7 @@ class JoTKPP extends JoTModBus {
             //Wenn $force true ODER aktuelle Variable in Liste der angeforderten/gepollten Idents (strpos mit Leerzeichen, da mehrere Idents ebenfalls mit Leerzeichen getrennt werden).
             if ($force === true || (is_string($force) && strpos(" $force ", " $ident ") !== false)) {
                 $vID = @$this->GetIDForIdent($ident);
-                if (array_key_exists('Calculation', $config) && $config['Calculation'] === true) { //Wert berechnen
+                if ($config['Address'] === 0) { //Wert berechnen
                     $this->SendDebug('RequestRead', "Ident: $ident gets calculated...", 0);
                     $value = $this->CalculateValue($ident);
                 } else { //Wert via Cache / ModBus auslesen

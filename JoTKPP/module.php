@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   02.01.2021 10:05:33
+ * @Last Modified:   02.01.2021 10:25:00
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -367,7 +367,7 @@ class JoTKPP extends JoTModBus {
                     $this->ThrowMessage($msg);
                     $vID = false;
                 }
-                if ($vID !== false && is_null($value) !== false) { //Instanz-Variablen sind nur für Werte mit aktivem Polling vorhanden
+                if ($vID !== false && is_null($value) === false) { //Instanz-Variablen sind nur für Werte mit aktivem Polling vorhanden
                     $this->SetValue($ident, $value);
                 }
                 $values[$ident] = $value;

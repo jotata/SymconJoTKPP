@@ -3,7 +3,7 @@
  * @File:            TODOs.txt
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   31.12.2020 17:29:00
+ * @Last Modified:   02.01.2021 10:12:05
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -11,16 +11,16 @@
  */
 
 
--> Integration von berechneten Werten (werden in ModBusConfig definiert mit Attribut "Calculation = true". Dadurch wird die Berechnungs-Funktion in RequestRead aufgerufen und der Wert berechnet).
-  x "virtueller" PV-Überschuss
-    x Verzögerungen einbauen
-    x Test bei mehrstufiger Konfiguration (ev. Prio einbauen)
-    x Test bei Überschneidungen einer mehrstuffigen Konfiguration
-    x Berechnung für SPReduction
-  x Total Hausverbrauch
-  x Total PV-Power
-  x Status Batterie (Laden / Entladen)
-  x Status Netz (Einspeisun / Bezug)
+- BUG: Forum https://www.symcon.de/forum/threads/41720-Modul-JoTKPP-Solar-Wechselrichter-Kostal-PLENTICORE-plus-PIKO-IQ?p=445149#post445149 analysieren
+  -> Funktion für Logging von fehlerhaften Werten eingebaut -> Warte auf weiteres Feedback
+
+FEATURES & FIXES
+x Umstellung für Berechnete Werte mit Address = 0
+x Umstellung auf RFunction & WFunction
+x Zentrale Funktion für Ausgabe von Fehlermeldungen definieren
+- Anzeige Access (RFunction / WFunction) im Formular
+- Bestätigung für Nutzung von WFunction in Formular
+- Traits & ModBus als separate Libraries einbinden
 - Integration neue ModBus-Spezifikationen Version 1.9
   x Allgemeine Anpassungen
   x Prüfung auf FW-Version und Aktivierung nur möglich wenn diese erfüllt ist
@@ -28,7 +28,6 @@
   x Werte mit Scale-Factoren
   - Kapitel 3.4 "Batterie-Management" lesend
   - Kapitel 3.4 "Batterie-Management" schreibend
-- Zentrale Funktion für Ausgabe von Fehlermeldungen definieren?
 - Integration Tests
   - Eintrag aus ModBusConfig.json entfernt - wird dieser automatisch bereinigt?
   - PollListe leer -> Timer sollte gestoppt werden und kein Fehler auftauchen

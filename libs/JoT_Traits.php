@@ -236,7 +236,7 @@ trait Translation {
      */
     private function ThrowMessage(string $Msg) {
         $args = func_get_args();
-        if (count($args) > 1){
+        if (count($args) > 1) {
             $args[0] = $this->Translate($Msg);
             $Msg = call_user_func_array('sprintf', $args);
         } else {

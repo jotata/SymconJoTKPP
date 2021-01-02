@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   01.01.2021 18:47:16
+ * @Last Modified:   02.01.2021 10:05:33
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -325,8 +325,7 @@ class JoTKPP extends JoTModBus {
         if (is_string($force)) {
             $unknown = array_diff(explode(' ', $force), array_keys($mbConfig));
             if (count($unknown) > 0) {
-                $msg = $this->ThrowMessage('Unknown Ident(s): %s', implode(', ', $unknown));
-                $this->SendDebug('RequestRead', $msg, 0);
+                $this->ThrowMessage('Unknown Ident(s): %s', implode(', ', $unknown));
             }
         }
 
@@ -344,7 +343,7 @@ class JoTKPP extends JoTModBus {
                     $value = $this->CalculateValue($ident);
                 } else { //Wert via Cache / ModBus auslesen
                     $value = $this->GetFromCache($ident);
-                    if ($value === false) { //Im Cache nicht vorhanden oder abgelaufen
+                    if (is_null($value)) { //Im Cache nicht vorhanden oder abgelaufen
                         $this->SendDebug('RequestRead', "Ident: $ident on Address: " . $config['Address'], 0);
                         if ($config['VarType'] === self::VT_String) { //Strings werden vom WR immer als BigEndian zurück gegeben, egal welcher Modus aktiviert ist (Bug in FW?)
                             $value = $this->ReadModBus($config['RFunction'], $config['Address'], $config['Quantity'], $config['Factor'], self::MB_BigEndian, $config['VarType']);
@@ -362,17 +361,17 @@ class JoTKPP extends JoTModBus {
                     }
                 }
                 //Zur Analyse von Forum-Beitrag https://www.symcon.de/forum/threads/41720-Modul-JoTKPP-Solar-Wechselrichter-Kostal-PLENTICORE-plus-PIKO-IQ?p=445149#post445149
-                if (($config['VarType'] !== self::VT_String && is_nan($value)) || ($config['VarType'] === self::VT_Float && is_infinite($value))) {
+                if (is_float($value) && (is_nan($value) || is_infinite($value))) {
                     $msg = 'ModBus-Result is wrong. Please file a bug in forum (https://www.symcon.de/forum/threads/41720-Modul-JoTKPP-Solar-Wechselrichter-Kostal-PLENTICORE-plus-PIKO-IQ) with following information:';
                     $msg .= ' Version: ' . IPS_GetLibrary('{89441F1C-532D-3F34-FF79-07A3B38FDD86}')['Version'] . " | Ident: $ident | Value: $value | isNAN: " . $this->ConvertToBoolStr(is_nan($value)) . ' | isINF: ' . $this->ConvertToBoolStr(is_infinite($value));
                     $this->ThrowMessage($msg);
                     $vID = false;
                 }
-                if ($vID !== false) { //Instanz-Variablen sind nur für Werte mit aktivem Polling vorhanden
+                if ($vID !== false && is_null($value) !== false) { //Instanz-Variablen sind nur für Werte mit aktivem Polling vorhanden
                     $this->SetValue($ident, $value);
                 }
                 $values[$ident] = $value;
-            } elseif (is_string($force) && strpos(" $force ", " $ident ") !== false) { //Kein Read-Access (nur wenn Ident explizit angefordert wurde)
+            } elseif (is_string(@func_get_arg(0)) && strpos(" $force ", " $ident ") !== false) { //Kein Read-Access (nur wenn Ident explizit angefordert wurde)
                 $this->ThrowMessage('No Read-Access for Ident \'%s\'!', $ident);
             }
         }
@@ -428,7 +427,7 @@ class JoTKPP extends JoTModBus {
         $idents = '';
         $mbConfig = $this->GetModBusConfig();
         foreach ($mbConfig as $ident => $config) {
-            if (strpos($Group, $config['Group']) !== false) {
+            if (strpos($Group, $config['Group']) !== false && array_key_exists('RFunction', $config)) { //Nur Idents mit Read-Zugriff
                 $idents = "$idents $ident";
             }
         }
@@ -483,7 +482,7 @@ class JoTKPP extends JoTModBus {
     /**
      * Gibt Wert von $Ident aus dem Cache zurück, wenn vorhanden und noch gültig
      * @param string $Ident (optional) Wenn leer werden alle noch gültigen Idents zurückgegeben
-     * @return mixed false, wenn $Ident nicht vorhanden oder abgelaufen, Wert aus Cache oder Array mit allen Werten und deren Timestamp
+     * @return mixed null, wenn $Ident nicht vorhanden oder abgelaufen, Wert aus Cache oder Array mit allen noch gültigen Werten und deren Timestamp
      * @access private
      */
     private function GetFromCache(string $Ident = '') {
@@ -492,7 +491,7 @@ class JoTKPP extends JoTModBus {
         if (is_array($buffer) && array_key_exists($Ident, $buffer) && ($ts - $buffer[$Ident]['Timestamp'] <= 1)) { //$Ident max. seit 1 Sekunde im Cache vorhanden
             return $buffer[$Ident]['Value'];
         } elseif ($Ident !== '') { //$Ident im Cache nicht vorhanden oder abgelaufen
-            return false;
+            return null;
         } elseif (is_array($buffer)) { //Alle noch gültigen Einträge aus dem Cache zurückgeben
             $cache = [];
             foreach ($buffer as $id => $data) {
@@ -537,7 +536,7 @@ class JoTKPP extends JoTModBus {
      * @access private
      */
     private function CalculateValue(string $Ident) {
-        $value = false;
+        $value = null;
 
         //Summe Leistung Hausverbrauch
         if ($Ident === 'ConsFromAll') {
@@ -628,7 +627,7 @@ class JoTKPP extends JoTModBus {
             }
         }
 
-        if ($value === false) {
+        if (is_null($value)) {
             //Tritt insbesondere dann auf, wenn keine Konfigurationen in der SPList vorhanden sind.
             //Kann aber auch sein, wenn in der ModBusConfig eine Berechnung definiert, aber hier keine Formel dazu vorhanden ist.
             $this->ThrowMessage('Calculation not possible for Ident \'%s\'!', $Ident);
@@ -718,13 +717,13 @@ class JoTKPP extends JoTModBus {
         $config = $this->GetBuffer('ModBusConfig');
         if ($config == '') {//erstes Laden aus File & Ersetzen der ModBus-Konstanten
             $config = $this->GetJSONwithVariables(__DIR__ . '/ModBusConfig.json', [
-                '$FC_Read_HoldingRegisters' => self::FC_Read_HoldingRegisters,
-                '$VT_String'                => self::VT_String,
-                '$VT_UnsignedInteger'       => self::VT_UnsignedInteger,
-                '$VT_Float'                 => self::VT_Float,
-                '$VT_SignedInteger'         => self::VT_SignedInteger,
-                '$MB_BigEndian_WordSwap'    => self::MB_BigEndian_WordSwap,
-                '$MB_BigEndian'             => self::MB_BigEndian
+                '$FC_Read_HoldingRegisters'       => self::FC_Read_HoldingRegisters,
+                '$FC_Write_SingleHoldingRegister' => self::FC_Write_SingleHoldingRegister,
+                '$VT_String'                      => self::VT_String,
+                '$VT_UnsignedInteger'             => self::VT_UnsignedInteger,
+                '$VT_Float'                       => self::VT_Float,
+                '$VT_SignedInteger'               => self::VT_SignedInteger,
+                '$VT_Boolean'                     => self::VT_Boolean
             ]);
             $this->SetBuffer('ModBusConfig', $config);
             //Bei Modul-Updates kann es sein, dass Einträge in der ModBusConfig umbenannt oder ganz gelöscht werden.

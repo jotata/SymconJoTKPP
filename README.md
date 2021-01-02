@@ -111,7 +111,7 @@ Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modu
   - JoTKPP_RequestReadIdent(string $Ident): Liest alle Werte, deren Ident angegeben wird (mehrere Idents werden durch ein Leerzeichen getrennt).*
   - JoTKPP_RequestReadGroup(string $Gruppe): Liest alle Werte, deren Gruppe angegeben wird (mehrere Gruppen werden durch ein Leerzeichen getrennt).*
   - JoTKPP_CheckFirmwareUpdate(): Holt den Namen der aktuellsten FW-Datei bei Kostal, speichert diese in einer Instanz-Variable und gibt sie als String zurück.
-  - JoTKPP_GetDeviceInfo(): Gibt die wichtigsten Geräte-Informationen als Array zurück.
+  - JoTKPP_GetDeviceInfo(): Gibt die wichtigsten Geräte-Informationen als Array zurück.*
 
   *) Die Werte werden auch gelesen, wenn der Haken "Aktiv" nicht gesetzt ist. Sie werden dann jedoch nur als Array zurückgegeben und nicht in eine Instanz-Variable geschrieben.
   
@@ -134,7 +134,9 @@ Version 1.5 (BETA)
 - ModBus-Bytereihenfolge des WR kann nun im ModBus-Gateway von IPS umgestellt werden (IPS 'Swap LSW/MSW...' AN = 'little-endian (CDAB)...' auf dem Wechselrichter).
 - Wenn Variablen-Werte weniger als eine Sekunde alt sind, werde diese nicht erneut vom Wechselrichter abgefragt, sondern direkt vom "Cache" zurückgegeben.
 - Scale Factors hinzugefügt
-- FIX: Abfrage-/FW-Update Intervall  können nicht mehr negativ eingegeben werden.
+- Vorbereitungen für ModBus-Write (Batterie-Management)
+- FIX: Abfrage-/FW-Update Intervall können nicht mehr negativ eingegeben werden.
+- FIX: Fehler bei Rückgabe von NAN/INF-Werten
 
 Version 1.4
 - Folgende zusätzliche Parameter hinzugefügt: Installed powermeter, Total DC power, Battery ready flag, Battery cross capacity, Battery actual SOC, Battery Firmware MC, Battery Type, Total battery AC/DC (dis)charge, Total energy from PV(1-3).

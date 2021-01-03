@@ -9,6 +9,7 @@
             "PollTime": "Abfrage-Intervall",
             "Hours": "Stunden",
             "Check for FW-Updates": "Nach FW-Updates suchen",
+            "Enable Write-Mode (WARNING: The author rejects any liability for damage that might arise from using this function.)": "Aktiviere Schreib-Modus (WARNUNG: Der Autor lehnt jegliche Haftung für Schäden ab, welche durch die Benutzung dieser Funktion entstehen könnten.)",
             "Device Parameters": "Geräte-Eigenschaften",
             "calculated value": "berechneter Wert",
             "Group": "Gruppe",

@@ -115,6 +115,11 @@
                     "name": "cProfile",
                     "width": "200px"
                 },{
+                    "caption": "Access",
+                    "name": "Access",
+                    "width": "60px",
+                    "align": "center"
+                },{
                     "caption": "FW",
                     "name": "FWVersion",
                     "width": "60px"

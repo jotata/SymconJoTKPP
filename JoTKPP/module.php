@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   04.01.2021 15:07:10
+ * @Last Modified:   04.01.2021 20:48:07
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -569,7 +569,7 @@ class JoTKPP extends JoTModBus {
         }
 
         //Status Netz
-        if ($Ident === 'PMGridState') {
+        if ($Ident === 'GridState') {
             $value = $this->RequestReadIdent('PMActivePowerTot') <=> 0; //gibt -1 (FeedIn), 0 (Idle) oder 1 (Purchase) zurück
         }
 
@@ -735,22 +735,50 @@ class JoTKPP extends JoTModBus {
                 '$VT_SignedInteger'                  => self::VT_SignedInteger,
                 '$VT_Boolean'                        => self::VT_Boolean
             ]);
-            $this->SetBuffer('ModBusConfig', $config);
+            $config = json_decode($config, true, 4);
+            if (json_last_error() !== JSON_ERROR_NONE) {//Fehler darf nur beim Entwickler auftreten (nach Anpassung der JSON-Daten). Wird daher direkt als echo ohne Übersetzung ausgegeben.
+                echo 'GetModBusConfig - Error in JSON (' . json_last_error_msg() . '). Please check ReplaceMap / Variables and File-Content of ' . __DIR__ . '/ModBusConfig.json';
+                exit;
+            }
+            $aConfig = [];
+            foreach ($config as $c) { //sichertellen, dass die notwendigen Infos mit korrektem Datentypen vorhanden sind, egal mit welcher Konvertierung das JSON erstellt wurde
+                $aConfig[$c['Ident']] = [
+                    'Address'   => intval($c['Address']),
+                    'Group'     => strval($c['Group']),
+                    'Name'      => strval($c['Name']),
+                    'Profile'   => '',
+                    'VarType'   => intval($c['VarType']),
+                    'Factor'    => floatval(0),
+                    'FWVersion' => floatval($c['FWVersion'])
+                ];
+                if (array_key_exists('Profile', $c)) {
+                    $aConfig[$c['Ident']]['Profile'] = strval($c['Profile']);
+                }
+                if (intval($c['Address']) > 0) { //Folgende Werte sind bei Berechnungen (0) nicht nötig
+                    if (array_key_exists('ScaleIdent', $c) && strval($c['ScaleIdent']) !== '') {
+                        $aConfig[$c['Ident']]['ScaleIdent'] = strval($c['ScaleIdent']);
+                    }
+                    if (array_key_exists('Factor', $c)) {
+                        $aConfig[$c['Ident']]['Factor'] = floatval($c['Factor']);
+                    }
+                    $aConfig[$c['Ident']]['Quantity'] = intval($c['Quantity']);
+                    if (array_key_exists('RFunction', $c) && intval($c['RFunction']) !== 0) {
+                        $aConfig[$c['Ident']]['RFunction'] = intval($c['RFunction']);
+                    }
+                    if (array_key_exists('WFunction', $c) && intval($c['WFunction']) !== 0) {
+                        $aConfig[$c['Ident']]['WFunction'] = intval($c['WFunction']);
+                    }
+                }
+            }
+            $this->SetBuffer('ModBusConfig', json_encode($aConfig));
             //Bei Modul-Updates kann es sein, dass Einträge in der ModBusConfig umbenannt oder ganz gelöscht werden.
             //Die dadurch ungültig gewordenen Idents müssen aus der Property 'PollIdents' entfernt werden, damit es nicht zu Fehlern kommt.
             $pollIdents = $this->ReadAttributeString('PollIdents');
-            $knownIdents = implode(' ', array_intersect(explode(' ', $pollIdents), array_keys(json_decode($config, true, 3)))); //am Ende bleiben nur die Idents aus $pollIdents übrig, welche auch in $config vorhaden sind
-            if (json_last_error() == JSON_ERROR_NONE && $knownIdents !== $pollIdents) {//Property nur aktualisieren, wenn keine Fehler in der ModBusConfig.json vorhanden sind, da sonst Property 'beschädigt' würde
-                $this->WriteAttributeString('PollIdents', $knownIdents); //Schreibe bereinigte Werte für 'PollIdents' zurück
-            }
+            $knownIdents = implode(' ', array_intersect(explode(' ', $pollIdents), array_keys($aConfig))); //am Ende bleiben nur die Idents aus $pollIdents übrig, welche auch in $config vorhaden sind
+            $this->WriteAttributeString('PollIdents', $knownIdents); //Schreibe bereinigte Werte für 'PollIdents' zurück
+            return $aConfig;
         }
-        //JSON in Array umwandeln
-        $aConfig = json_decode($config, true, 4);
-        if (json_last_error() !== JSON_ERROR_NONE) {//Fehler darf nur beim Entwickler auftreten (nach Anpassung der JSON-Daten). Wird daher direkt als echo ohne Übersetzung ausgegeben.
-            echo 'GetModBusConfig - Error in JSON (' . json_last_error_msg() . '). Please check ReplaceMap / Variables and File-Content of ' . __DIR__ . '/ModBusConfig.json';
-            exit;
-        }
-        return $aConfig;
+        return json_decode($config, true, 4);
     }
 
     /**

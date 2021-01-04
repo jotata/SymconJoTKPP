@@ -3,7 +3,7 @@
  * @File:            TODOs.txt
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   02.01.2021 10:12:05
+ * @Last Modified:   04.01.2021 16:33:04
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -18,15 +18,17 @@ FEATURES & FIXES
 x Umstellung für Berechnete Werte mit Address = 0
 x Umstellung auf RFunction & WFunction
 x Zentrale Funktion für Ausgabe von Fehlermeldungen definieren
-- Anzeige Access (RFunction / WFunction) im Formular
-- Bestätigung für Nutzung von WFunction in Formular
+x Anzeige Access (RFunction / WFunction) im Formular
+(-) Bestätigung für Nutzung von WFunction in Formular
 - Traits & ModBus als separate Libraries einbinden
 - Integration neue ModBus-Spezifikationen Version 1.9
   x Allgemeine Anpassungen
   x Prüfung auf FW-Version und Aktivierung nur möglich wenn diese erfüllt ist
   x ModBus WordSwap auf WR berücksichtigen
   x Werte mit Scale-Factoren
-  - Kapitel 3.4 "Batterie-Management" lesend
+  x Kapitel 3.3 "Power-Management" lesend
+  x Kapitel 3.4 "Batterie-Management" lesend
+  - Kapitel 3.3 "Power-Management" schreibend
   - Kapitel 3.4 "Batterie-Management" schreibend
 - Integration Tests
   - Eintrag aus ModBusConfig.json entfernt - wird dieser automatisch bereinigt?

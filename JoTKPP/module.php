@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   03.01.2021 18:27:19
+ * @Last Modified:   04.01.2021 15:07:10
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -725,13 +725,15 @@ class JoTKPP extends JoTModBus {
         $config = $this->GetBuffer('ModBusConfig');
         if ($config == '') {//erstes Laden aus File & Ersetzen der ModBus-Konstanten
             $config = $this->GetJSONwithVariables(__DIR__ . '/ModBusConfig.json', [
-                '$FC_Read_HoldingRegisters'       => self::FC_Read_HoldingRegisters,
-                '$FC_Write_SingleHoldingRegister' => self::FC_Write_SingleHoldingRegister,
-                '$VT_String'                      => self::VT_String,
-                '$VT_UnsignedInteger'             => self::VT_UnsignedInteger,
-                '$VT_Float'                       => self::VT_Float,
-                '$VT_SignedInteger'               => self::VT_SignedInteger,
-                '$VT_Boolean'                     => self::VT_Boolean
+                '$FC_Read_HoldingRegisters'          => self::FC_Read_HoldingRegisters,
+                '$FC_Write_SingleHoldingRegister'    => self::FC_Write_SingleHoldingRegister,
+                '$FC_Write_MultipleHoldingRegisters' => self::FC_Write_MultipleHoldingRegisters,
+                '$VT_String'                         => self::VT_String,
+                '$VT_UnsignedInteger'                => self::VT_UnsignedInteger,
+                '$VT_Float'                          => self::VT_Float,
+                '$VT_Real'                           => self::VT_Real,
+                '$VT_SignedInteger'                  => self::VT_SignedInteger,
+                '$VT_Boolean'                        => self::VT_Boolean
             ]);
             $this->SetBuffer('ModBusConfig', $config);
             //Bei Modul-Updates kann es sein, dass Einträge in der ModBusConfig umbenannt oder ganz gelöscht werden.

@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            JoT_ModBus.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   31.12.2020 16:46:00
+ * @Last Modified:   04.01.2021 15:02:40
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -25,6 +25,7 @@ class JoTModBus extends IPSModule {
     protected const VT_UnsignedInteger = 10;
     protected const VT_SignedInteger = VARIABLETYPE_INTEGER;
     protected const VT_Float = VARIABLETYPE_FLOAT;
+    protected const VT_Real = VARIABLETYPE_FLOAT;
     protected const VT_String = VARIABLETYPE_STRING;
     protected const MB_BigEndian = 0; //ABCDEFGH => ABCDEFGH
     protected const MB_BigEndian_ByteSwap = 1; //ABCD => BADC oder ABCDEFGH => BADCFEHG
@@ -32,14 +33,14 @@ class JoTModBus extends IPSModule {
     protected const MB_LittleEndian = 3; //ABCD => DCBA oder ABCDEFGH => HGFEDCBA
     protected const MB_LittleEndian_ByteSwap = 4; //ABCD => CDAB oder ABCDEFGH => GHEFCDAB
     protected const MB_LittleEndian_WordSwap = 5; //ABCD => BADC oder ABCDEFG => FEHGBADC
-    protected const FC_Read_Coil = 1;
-    protected const FC_Read_DiscreteInput = 2;
-    protected const FC_Read_HoldingRegisters = 3;
-    protected const FC_Read_InputRegisters = 4;
-    protected const FC_Write_SingleCoil = 5;
-    protected const FC_Write_SingleHoldingRegister = 6;
-    protected const FC_Write_MultipleCoils = 15;
-    protected const FC_Write_MultipleHoldingRegisters = 16;
+    protected const FC_Read_Coil = 1; //HEX 0x01
+    protected const FC_Read_DiscreteInput = 2; //HEX 0x02
+    protected const FC_Read_HoldingRegisters = 3; //HEX 0x03
+    protected const FC_Read_InputRegisters = 4; //HEX 0x04
+    protected const FC_Write_SingleCoil = 5; //HEX 0x05
+    protected const FC_Write_SingleHoldingRegister = 6; //HEX 0x06
+    protected const FC_Write_MultipleCoils = 15; //HEX 0x0F
+    protected const FC_Write_MultipleHoldingRegisters = 16; //HEX 0x10
     protected const STATUS_Ok_InstanceActive = 102;
     protected const STATUS_Error_RequestTimeout = 408;
     protected const STATUS_Error_PreconditionRequired = 428;

@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   04.01.2021 20:48:07
+ * @Last Modified:   05.01.2021 20:21:39
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -737,38 +737,20 @@ class JoTKPP extends JoTModBus {
             ]);
             $config = json_decode($config, true, 4);
             if (json_last_error() !== JSON_ERROR_NONE) {//Fehler darf nur beim Entwickler auftreten (nach Anpassung der JSON-Daten). Wird daher direkt als echo ohne Übersetzung ausgegeben.
-                echo 'GetModBusConfig - Error in JSON (' . json_last_error_msg() . '). Please check ReplaceMap / Variables and File-Content of ' . __DIR__ . '/ModBusConfig.json';
+                echo 'GetModBusConfig - Error in JSON (' . json_last_error_msg() . '). Please check ReplaceMap / Variables and File-Content of ' . __DIR__ . '/ModBusConfig.json and run PHPUnit-Test \'testModBusConfig\'';
                 exit;
             }
             $aConfig = [];
-            foreach ($config as $c) { //sichertellen, dass die notwendigen Infos mit korrektem Datentypen vorhanden sind, egal mit welcher Konvertierung das JSON erstellt wurde
-                $aConfig[$c['Ident']] = [
-                    'Address'   => intval($c['Address']),
-                    'Group'     => strval($c['Group']),
-                    'Name'      => strval($c['Name']),
-                    'Profile'   => '',
-                    'VarType'   => intval($c['VarType']),
-                    'Factor'    => floatval(0),
-                    'FWVersion' => floatval($c['FWVersion'])
-                ];
-                if (array_key_exists('Profile', $c)) {
-                    $aConfig[$c['Ident']]['Profile'] = strval($c['Profile']);
+            foreach ($config as $c) { //Idents und notwendige Parameter einlesen
+                $aConfig[$c['Ident']] = $c;
+                unset($aConfig['Ident']);
+                if (!array_key_exists('Profile', $c)){
+                    $aConfig[$c['Ident']]['Profile'] = '';
                 }
-                if (intval($c['Address']) > 0) { //Folgende Werte sind bei Berechnungen (0) nicht nötig
-                    if (array_key_exists('ScaleIdent', $c) && strval($c['ScaleIdent']) !== '') {
-                        $aConfig[$c['Ident']]['ScaleIdent'] = strval($c['ScaleIdent']);
-                    }
-                    if (array_key_exists('Factor', $c)) {
-                        $aConfig[$c['Ident']]['Factor'] = floatval($c['Factor']);
-                    }
-                    $aConfig[$c['Ident']]['Quantity'] = intval($c['Quantity']);
-                    if (array_key_exists('RFunction', $c) && intval($c['RFunction']) !== 0) {
-                        $aConfig[$c['Ident']]['RFunction'] = intval($c['RFunction']);
-                    }
-                    if (array_key_exists('WFunction', $c) && intval($c['WFunction']) !== 0) {
-                        $aConfig[$c['Ident']]['WFunction'] = intval($c['WFunction']);
-                    }
+                if (!array_key_exists('Factor', $c)){
+                    $aConfig[$c['Ident']]['Factor'] = 0;
                 }
+                //Weitere Tests sind nicht nötig, da die ModBusConfig.json mittels PHPUnit-Tests kontrolliert wird und die Daten somit stimmen sollten.
             }
             $this->SetBuffer('ModBusConfig', json_encode($aConfig));
             //Bei Modul-Updates kann es sein, dass Einträge in der ModBusConfig umbenannt oder ganz gelöscht werden.

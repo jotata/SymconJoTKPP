@@ -744,10 +744,10 @@ class JoTKPP extends JoTModBus {
             foreach ($config as $c) { //Idents und notwendige Parameter einlesen
                 $aConfig[$c['Ident']] = $c;
                 unset($aConfig['Ident']);
-                if (!array_key_exists('Profile', $c)){
+                if (!array_key_exists('Profile', $c)) {
                     $aConfig[$c['Ident']]['Profile'] = '';
                 }
-                if (!array_key_exists('Factor', $c)){
+                if (!array_key_exists('Factor', $c)) {
                     $aConfig[$c['Ident']]['Factor'] = 0;
                 }
                 //Weitere Tests sind nicht nötig, da die ModBusConfig.json mittels PHPUnit-Tests kontrolliert wird und die Daten somit stimmen sollten.

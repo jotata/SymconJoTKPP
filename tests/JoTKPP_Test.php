@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            JoTKPP_Test.php
  * @Create Date:     28.11.2020 17:41:30
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   05.01.2021 20:02:22
+ * @Last Modified:   05.01.2021 20:46:18
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -54,9 +54,12 @@ class JoTKPP_Test extends TestCase {
         $RFunction = ['$FC_Read_HoldingRegisters'];
         $WFunction = ['$FC_Write_SingleHoldingRegister', '$FC_Write_MultipleHoldingRegisters'];
 
+        //Check JSON Syntax Errors
         $json = file_get_contents($file);
         $config = json_decode($json, true, 4);
-        $this->assertEquals(json_last_error(), JSON_ERROR_NONE, 'Error (' . json_last_error_msg() . ') in ' . $file); //Check JSON Syntax-Errors
+        $this->assertEquals(json_last_error(), JSON_ERROR_NONE, 'Error (' . json_last_error_msg() . ') in ' . $file);
+
+        //Check definitions
         if (json_last_error() === JSON_ERROR_NONE) {
             $this->assertGreaterThanOrEqual(1, count($config), "$file does not contain definitions.");
             foreach ($config as $c) {
@@ -93,6 +96,17 @@ class JoTKPP_Test extends TestCase {
                 } else {
                     $this->assertArrayHasKey('Address', $c, 'Definition does not contain \'Address\'.');
                 }
+            }
+
+            //Check duplicates
+            $dubChecks = ['Address', 'Ident', 'Name'];
+            foreach ($dubChecks as $index) {
+                $col = array_column($config, $index);
+                $dup = array_unique(array_diff_assoc($col, array_unique($col)));
+                if ($index === 'Address' && array_search(0, $dup) !== false) {
+                    unset($dup[array_search(0, $dup)]); //Address = 0 ist für berechnete Werte und darf mehrmals vorkommen
+                }
+                $this->assertCount(0, $dup, "Found duplicated '$index': " . implode(', ', $dup));
             }
         }
     }

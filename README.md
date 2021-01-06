@@ -126,7 +126,7 @@ Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modu
 | JoTKPP | Device | Kostal     | PIKO IQ         | JoTKPP | {E64278F5-1942-5343-E226-8673886E2D05} |
 
 ### 2. Changelog
-Version 1.6 (BETA)
+Version 1.6
 - Restliche noch fehlende Geräte-Parmeter gemäss KOSTAL-Spezifikation 1.9 hinzugefügt (lesend).
 - Zugriffs-Art wird nun in Konfigurationsform angezeigt.
 - FIX: Total-Parameter (charge/discharge energy, energy from PV, AC to grid) werden nun korrekt ausgelesen.

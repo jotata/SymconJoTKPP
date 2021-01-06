@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   06.01.2021 16:42:42
+ * @Last Modified:   06.01.2021 17:09:28
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -323,6 +323,7 @@ class JoTKPP extends JoTModBus {
      * @return array mit den angeforderten Werten, NULL bei Fehler oder Wert wenn nur ein Wert.
      */
     public function RequestRead() {
+        $ms = microtime(true);
         $mbConfig = $this->GetModBusConfig();
         $idents = $this->ReadAttributeString('PollIdents');
         if (func_num_args() == 1) {//Intergation auf diese Art, da sonst in __generated.inc.php ein falscher Eintrag mit PREFIX_Function erstellt wird
@@ -393,6 +394,7 @@ class JoTKPP extends JoTModBus {
         if (isset($noaccess) > 0){
             $this->ThrowMessage('No Read-Access for Ident(s): %s', implode(', ', $noaccess));
         }
+        $this->SendDebug('RequestRead', sprintf('Picked out %u idents in %f seconds.', count($values), microtime(true) - $ms), 0);
         switch (count($values)) {
             case 0:
                 return null;

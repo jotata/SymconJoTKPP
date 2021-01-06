@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   05.01.2021 20:21:39
+ * @Last Modified:   06.01.2021 16:42:42
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -323,65 +323,75 @@ class JoTKPP extends JoTModBus {
      * @return array mit den angeforderten Werten, NULL bei Fehler oder Wert wenn nur ein Wert.
      */
     public function RequestRead() {
-        $force = $this->ReadAttributeString('PollIdents'); //$force = true wird über die Funktion RequestReadAll aktiviert oder String mit Ident über die Funktion RequestReadIdent/Group
-        if (func_num_args() == 1) {//Intergation auf diese Art, da sonst in __generated.inc.php ein falscher Eintrag mit der PREFIX_Funktion erstellt wird
-            $force = func_get_arg(0);
-        }
         $mbConfig = $this->GetModBusConfig();
-
-        //Prüfe auf ungültige Idents
-        if (is_string($force)) {
-            $unknown = array_diff(explode(' ', $force), array_keys($mbConfig));
-            if (count($unknown) > 0) {
-                $this->ThrowMessage('Unknown Ident(s): %s', implode(', ', $unknown));
-            }
+        $idents = $this->ReadAttributeString('PollIdents');
+        if (func_num_args() == 1) {//Intergation auf diese Art, da sonst in __generated.inc.php ein falscher Eintrag mit PREFIX_Function erstellt wird
+            $idents = func_get_arg(0); //true wird über die Funktion RequestReadAll / String mit Idents wird über die Funktion RequestReadIdent/Group aktiviert
+        }
+        if ($idents === true) { //Aufruf von RequestReadAll
+            $idents = array_keys($mbConfig);
+        } elseif (strlen($idents) > 0) {
+            $idents = explode(' ', trim($idents));
+        } else { //keine Idents angegeben
+            return null;
         }
 
         //ModBus-Abfrage durchführen
         $mbType = $this->ReadAttributeInteger('MBType');
         $values = [];
-        foreach ($mbConfig as $ident => $config) {//Loop durch $mbConfig, damit Werte auch ausgelesen werden können, wenn Instanz noch nicht gespeichert ist. Dadurch werden auch nur gültige ModBus-Configs abgefragt.
-            //Wenn Berechneter Wert ODER Read-Access UND $force true ODER aktuelle Variable in Liste der angeforderten/gepollten Idents
-            //(strpos mit Leerzeichen, da mehrere Idents ebenfalls mit Leerzeichen getrennt werden.)
-            //if ($force === true || (is_string($force) && strpos(" $force ", " $ident ") !== false)) {
-            if (($config['Address'] === 0 || array_key_exists('RFunction', $config)) && ($force === true || (is_string($force) && strpos(" $force ", " $ident ") !== false))) {
-                $vID = @$this->GetIDForIdent($ident);
-                if ($config['Address'] === 0) { //Wert berechnen
-                    $this->SendDebug('RequestRead', "Ident: $ident gets calculated...", 0);
-                    $value = $this->CalculateValue($ident);
-                } else { //Wert via Cache / ModBus auslesen
-                    $value = $this->GetFromCache($ident);
-                    if (is_null($value)) { //Im Cache nicht vorhanden oder abgelaufen
-                        $this->SendDebug('RequestRead', "Ident: $ident on Address: " . $config['Address'], 0);
-                        if ($config['VarType'] === self::VT_String) { //Strings werden vom WR immer als BigEndian zurück gegeben, egal welcher Modus aktiviert ist (Bug in FW?)
-                            $value = $this->ReadModBus($config['RFunction'], $config['Address'], $config['Quantity'], $config['Factor'], self::MB_BigEndian, $config['VarType']);
-                        } else {
-                            $factor = $config['Factor'];
-                            if (array_key_exists('ScaleIdent', $config) && $config['ScaleIdent'] !== '') { //Skalierungs-Faktor mit Factor kombinieren
-                                $factor = $config['Factor'] * pow(10, $this->RequestReadIdent($config['ScaleIdent']));
-                            }
-                            $value = $this->ReadModBus($config['RFunction'], $config['Address'], $config['Quantity'], $factor, $mbType, $config['VarType']);
-                        }
-                        $this->SetToCache($ident, $value);
-                    } else { //Wert aus Cache gelesen
-                        $vID = false; //Wert nicht in Instanz-Variable zurückschreiben
-                        $this->SendDebug('RequestRead', "Ident: $ident from Cache: $value", 0);
-                    }
-                }
-                //Zur Analyse von Forum-Beitrag https://www.symcon.de/forum/threads/41720-Modul-JoTKPP-Solar-Wechselrichter-Kostal-PLENTICORE-plus-PIKO-IQ?p=445149#post445149
-                if (is_float($value) && (is_nan($value) || is_infinite($value))) {
-                    $msg = 'ModBus-Result is wrong. Please file a bug in forum (https://www.symcon.de/forum/threads/41720-Modul-JoTKPP-Solar-Wechselrichter-Kostal-PLENTICORE-plus-PIKO-IQ) with following information:';
-                    $msg .= ' Version: ' . IPS_GetLibrary('{89441F1C-532D-3F34-FF79-07A3B38FDD86}')['Version'] . " | Ident: $ident | Value: $value | isNAN: " . $this->ConvertToBoolStr(is_nan($value)) . ' | isINF: ' . $this->ConvertToBoolStr(is_infinite($value));
-                    $this->ThrowMessage($msg);
-                    $vID = false;
-                }
-                if ($vID !== false && is_null($value) === false) { //Instanz-Variablen sind nur für Werte mit aktivem Polling vorhanden
-                    $this->SetValue($ident, $value);
-                }
-                $values[$ident] = $value;
-            } elseif (is_string(@func_get_arg(0)) && strpos(" $force ", " $ident ") !== false) { //Kein Read-Access (nur wenn Ident explizit angefordert wurde)
-                $this->ThrowMessage('No Read-Access for Ident \'%s\'!', $ident);
+        foreach ($idents as $ident) {
+            if (array_key_exists($ident, $mbConfig) === false) { //Unbekannter Ident
+                $unknown[] = $ident;
+                continue; 
             }
+            $config = $mbConfig[$ident];
+            $vID = @$this->GetIDForIdent($ident);
+            if ($config['Address'] === 0) { //Wert berechnen
+                $this->SendDebug('RequestRead', "Ident: $ident gets calculated...", 0);
+                $value = $this->CalculateValue($ident);
+            } elseif (array_key_exists('RFunction', $config)) { //Wert via Cache / ModBus auslesen
+                $value = $this->GetFromCache($ident);
+                if (is_null($value)) { //Im Cache nicht vorhanden oder abgelaufen
+                    $this->SendDebug('RequestRead', "Ident: $ident on Address: " . $config['Address'], 0);
+                    if ($config['VarType'] === self::VT_String) { //Strings werden vom WR immer als BigEndian zurück gegeben, egal welcher Modus aktiviert ist (Bug in FW?)
+                        $value = $this->ReadModBus($config['RFunction'], $config['Address'], $config['Quantity'], $config['Factor'], self::MB_BigEndian, $config['VarType']);
+                    } else { //andere Datentypen
+                        $factor = $config['Factor'];
+                        if (array_key_exists('ScaleIdent', $config) && $config['ScaleIdent'] !== '') { //Skalierungs-Faktor mit Factor kombinieren
+                            $factor = $config['Factor'] * pow(10, $this->RequestReadIdent($config['ScaleIdent']));
+                        }
+                        $value = $this->ReadModBus($config['RFunction'], $config['Address'], $config['Quantity'], $factor, $mbType, $config['VarType']);
+                    }
+                    $this->SetToCache($ident, $value);
+                } else { //Wert aus Cache gelesen
+                    $vID = false; //Wert nicht in Instanz-Variable zurückschreiben
+                    $this->SendDebug('RequestRead', "Ident: $ident from Cache: $value", 0);
+                }
+            } else { //Kein Read-Access
+                if (is_string(@func_get_arg(0))) { // Warnung nur wenn Ident explizit angefordert wurde
+                    $noaccess[] = $ident;
+                }
+                continue;
+            }
+             
+            //Zur Analyse von Forum-Beitrag https://www.symcon.de/forum/threads/41720-Modul-JoTKPP-Solar-Wechselrichter-Kostal-PLENTICORE-plus-PIKO-IQ?p=445149#post445149
+            if (is_float($value) && (is_nan($value) || is_infinite($value))) {
+                $msg = 'ModBus-Result is wrong. Please file a bug in forum (https://www.symcon.de/forum/threads/41720-Modul-JoTKPP-Solar-Wechselrichter-Kostal-PLENTICORE-plus-PIKO-IQ) with following information:';
+                $msg .= ' Version: ' . IPS_GetLibrary('{89441F1C-532D-3F34-FF79-07A3B38FDD86}')['Version'] . " | Ident: $ident | Value: $value | isNAN: " . $this->ConvertToBoolStr(is_nan($value)) . ' | isINF: ' . $this->ConvertToBoolStr(is_infinite($value));
+                $this->ThrowMessage($msg);
+                $vID = false;
+            } //Ende Analyse
+
+            if ($vID !== false && is_null($value) === false) { //Instanz-Variablen sind nur für Werte mit aktivem Polling vorhanden
+                 $this->SetValue($ident, $value);
+            }
+            $values[$ident] = $value;
+        }
+        if (isset($unknown) > 0){
+            $this->ThrowMessage('Unknown Ident(s): %s', implode(', ', $unknown));
+        }
+        if (isset($noaccess) > 0){
+            $this->ThrowMessage('No Read-Access for Ident(s): %s', implode(', ', $noaccess));
         }
         switch (count($values)) {
             case 0:

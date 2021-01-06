@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            JoT_ModBus.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   04.01.2021 15:02:40
+ * @Last Modified:   05.01.2021 12:05:54
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -176,7 +176,7 @@ class JoTModBus extends IPSModule {
     /**
      * Ermittelt den korrekten Variablen-Typ für eine Instanz-Variable basierend auf ModBus-DatenTyp & -Faktor
      * @param int $VarType ist der ModBus-DatenTyp
-     * @param $Factor ist der ModBus-Faktor
+     * @param mixed $Factor ist der ModBus-Faktor
      * @return int IPS Variablen-Type
      * @access protected
      */

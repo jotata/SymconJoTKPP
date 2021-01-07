@@ -77,8 +77,7 @@
         },{
             "type": "CheckBox",
             "name": "WriteMode",
-            "caption": "Wird ab V2.0 aktiviert - Enable Write-Mode (WARNING: The author rejects any liability for damage that might arise from using this function.)",
-            "visible": false
+            "caption": "Enable Write-Mode (WARNING: The author rejects any liability for damage that might arise from using this function.)"
         },{
             "type": "Tree",
             "name": "IdentList",

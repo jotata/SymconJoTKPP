@@ -343,7 +343,7 @@ class JoTKPP extends JoTModBus {
         foreach ($idents as $ident) {
             if (array_key_exists($ident, $mbConfig) === false) { //Unbekannter Ident
                 $unknown[] = $ident;
-                continue; 
+                continue;
             }
             $config = $mbConfig[$ident];
             $vID = @$this->GetIDForIdent($ident);
@@ -374,7 +374,7 @@ class JoTKPP extends JoTModBus {
                 }
                 continue;
             }
-             
+
             //Zur Analyse von Forum-Beitrag https://www.symcon.de/forum/threads/41720-Modul-JoTKPP-Solar-Wechselrichter-Kostal-PLENTICORE-plus-PIKO-IQ?p=445149#post445149
             if (is_float($value) && (is_nan($value) || is_infinite($value))) {
                 $msg = 'ModBus-Result is wrong. Please file a bug in forum (https://www.symcon.de/forum/threads/41720-Modul-JoTKPP-Solar-Wechselrichter-Kostal-PLENTICORE-plus-PIKO-IQ) with following information:';
@@ -384,14 +384,14 @@ class JoTKPP extends JoTModBus {
             } //Ende Analyse
 
             if ($vID !== false && is_null($value) === false) { //Instanz-Variablen sind nur für Werte mit aktivem Polling vorhanden
-                 $this->SetValue($ident, $value);
+                $this->SetValue($ident, $value);
             }
             $values[$ident] = $value;
         }
-        if (isset($unknown) > 0){
+        if (isset($unknown) > 0) {
             $this->ThrowMessage('Unknown Ident(s): %s', implode(', ', $unknown));
         }
-        if (isset($noaccess) > 0){
+        if (isset($noaccess) > 0) {
             $this->ThrowMessage('No Read-Access for Ident(s): %s', implode(', ', $noaccess));
         }
         $this->SendDebug('RequestRead', sprintf('Picked out %u idents in %f seconds.', count($values), microtime(true) - $ms), 0);

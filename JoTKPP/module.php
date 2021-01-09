@@ -458,43 +458,6 @@ class JoTKPP extends JoTModBus {
         return $this->RequestRead($idents);
     }
 
-     /**
-     * Schreibt den gewünschten Wert auf das Gerät.
-     * @param string $Ident des zu schreibenden Wertes
-     * @param mixed $Value zu schreibender Wert
-     * @access private
-     * @return boolean true bei Erfolg oder false bei Fehler
-     */
-    private function WriteValue(string $Ident, $Value) {
-        $ms = microtime(true);
-        $mbConfig = $this->GetModBusConfig();
-
-        if (array_key_exists($Ident, $mbConfig) === false) { //Ident existiert nicht in ModBusConfig
-            $this->ThrowMessage('Unknown Ident(s): %s', $Ident);
-            return false;
-        }
-        
-        $config = $mbConfig[$Ident];
-        if (array_key_exists('WFunction', $config) === false){ //Kein Schreib-Zugriff für Ident
-            $this->ThrowMessage('No Write-Access for Ident(s): %s', $Ident);
-            return false;
-        }
-
-        //Wert auf Gerät schreiben
-        $this->SendDebug('WriteValue', "Ident: $Ident on Address: " . $config['Address'] . ' Type: ' . gettype($Value) . " Value: $Value", 0);
-        $mbType = $this->ReadAttributeInteger('MBType');
-        $factor = $config['Factor'];
-        if (array_key_exists('ScaleIdent', $config) && $config['ScaleIdent'] !== '') { //Skalierungs-Faktor mit Factor kombinieren
-            $factor = $config['Factor'] * pow(10, $this->RequestReadIdent($config['ScaleIdent']));
-        }
-        $result = $this->WriteModBus($Value, $config['WFunction'], $config['Address'], $config['Quantity'], $factor, $mbType, $config['VarType']);
-
-        if ($result === true) {
-            $this->SendDebug('WriteValue', sprintf('Wrote ident \'%s\' in %f seconds.', $Ident, microtime(true) - $ms), 0);
-        }
-        return $result;
-    }
-
     /**
      * IPS-Instanz Funktion PREFIX_WriteValueInteger.
      * Schreibt Boolean-Wert auf das Gerät.
@@ -557,6 +520,43 @@ class JoTKPP extends JoTModBus {
             $this->LogMessage($error, KL_WARNING);
             return '';
         }
+    }
+
+    /**
+     * Schreibt den gewünschten Wert auf das Gerät.
+     * @param string $Ident des zu schreibenden Wertes
+     * @param mixed $Value zu schreibender Wert
+     * @access private
+     * @return boolean true bei Erfolg oder false bei Fehler
+     */
+    private function WriteValue(string $Ident, $Value) {
+        $ms = microtime(true);
+        $mbConfig = $this->GetModBusConfig();
+
+        if (array_key_exists($Ident, $mbConfig) === false) { //Ident existiert nicht in ModBusConfig
+            $this->ThrowMessage('Unknown Ident(s): %s', $Ident);
+            return false;
+        }
+
+        $config = $mbConfig[$Ident];
+        if (array_key_exists('WFunction', $config) === false) { //Kein Schreib-Zugriff für Ident
+            $this->ThrowMessage('No Write-Access for Ident(s): %s', $Ident);
+            return false;
+        }
+
+        //Wert auf Gerät schreiben
+        $this->SendDebug('WriteValue', "Ident: $Ident on Address: " . $config['Address'] . ' Type: ' . gettype($Value) . " Value: $Value", 0);
+        $mbType = $this->ReadAttributeInteger('MBType');
+        $factor = $config['Factor'];
+        if (array_key_exists('ScaleIdent', $config) && $config['ScaleIdent'] !== '') { //Skalierungs-Faktor mit Factor kombinieren
+            $factor = $config['Factor'] * pow(10, $this->RequestReadIdent($config['ScaleIdent']));
+        }
+        $result = $this->WriteModBus($Value, $config['WFunction'], $config['Address'], $config['Quantity'], $factor, $mbType, $config['VarType']);
+
+        if ($result === true) {
+            $this->SendDebug('WriteValue', sprintf('Wrote ident \'%s\' in %f seconds.', $Ident, microtime(true) - $ms), 0);
+        }
+        return $result;
     }
 
     /**

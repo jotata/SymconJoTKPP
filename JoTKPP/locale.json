@@ -57,7 +57,8 @@
             "purchase": "Bezug",
             "Calculation not possible for Ident '%s'!": "Berechnung für Ident '%s' nicht möglich!",
             "No Read-Access for Ident(s): %s": "Kein Lese-Zugriff für Ident(s): %s",
-            "No Write-Access for Ident(s): %s": "Kein Schreib-Zugriff für Ident(s): %s!"
+            "No Write-Access for Ident(s): %s": "Kein Schreib-Zugriff für Ident(s): %s",
+            "WriteMode is disabled in instance configuration.": "Schreib-Modus ist in der Instanz-Konfiguration deaktiviert."
         }
     }
 }

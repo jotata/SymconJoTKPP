@@ -3,7 +3,7 @@
  * @File:            TODOs.txt
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   07.01.2021 14:59:35
+ * @Last Modified:   09.01.2021 10:26:04
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -13,6 +13,10 @@
 
 - BUG: Forum https://www.symcon.de/forum/threads/41720-Modul-JoTKPP-Solar-Wechselrichter-Kostal-PLENTICORE-plus-PIKO-IQ?p=445149#post445149 analysieren
   -> Funktion für Logging von fehlerhaften Werten eingebaut -> Warte auf weiteres Feedback
+- BUG: Ident 'EMState' liefert falschen Wert
+  - Wert wird vom WR als BigEndian zurück gegeben (RAW: 00 00 00 08 -> Swap: 00 08 00 00)
+  - InverterState (gleiche Config wie EMState) wird korrekt zurückgegeben (RAW: 00 06 00 00 -> Swap: 00 00 00 06)
+  -> ist also ein FW-Bug vom WR -> versuche manuellen MBType einzubauen um solche Werte temporär zu korrigieren
 
 FEATURES & FIXES
 x Umstellung für Berechnete Werte mit Address = 0
@@ -21,6 +25,8 @@ x Zentrale Funktion für Ausgabe von Fehlermeldungen definieren
 x Anzeige Access (RFunction / WFunction) im Formular
 x Bestätigung für Nutzung von WFunction in Formular
 x Traits & ModBus als separate Libraries einbinden
+-> WriteModBus integrieren
+  - SwapFunktionen anpassen
 -> Integration neue ModBus-Spezifikationen Version 1.9
   x Allgemeine Anpassungen
   x Prüfung auf FW-Version und Aktivierung nur möglich wenn diese erfüllt ist

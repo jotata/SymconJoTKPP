@@ -67,7 +67,6 @@
       "VarType": "$VT_Boolean",
       "Quantity": 1,
       "RFunction": "$FC_Read_HoldingRegisters",
-      "WFunction": "$FC_Write_SingleHoldingRegister",
       "FWVersion": 1.44
     },
     {
@@ -78,7 +77,6 @@
       "VarType": "$VT_UnsignedInteger",
       "Quantity": 1,
       "RFunction": "$FC_Read_HoldingRegisters",
-      "WFunction": "$FC_Write_SingleHoldingRegister",
       "FWVersion": 1.44
     },
     {
@@ -89,7 +87,6 @@
       "VarType": "$VT_UnsignedInteger",
       "Quantity": 1,
       "RFunction": "$FC_Read_HoldingRegisters",
-      "WFunction": "$FC_Write_SingleHoldingRegister",
       "FWVersion": 1.44
     },
     {

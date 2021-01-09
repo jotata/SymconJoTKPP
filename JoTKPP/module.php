@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   06.01.2021 17:09:28
+ * @Last Modified:   09.01.2021 21:13:48
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -41,7 +41,6 @@ class JoTKPP extends JoTModBus {
         $this->RegisterPropertyString('ModuleVariables', ''); //wird seit V1.4 nicht mehr benötigt, für Migration zu 'PollIdents' aber noch notwendig
         $this->RegisterPropertyInteger('PollTime', 0);
         $this->RegisterPropertyInteger('CheckFWTime', 0);
-        $this->RegisterPropertyBoolean('WriteMode', false);
         $this->RegisterPropertyString('SPList', '');
         $this->RegisterTimer('RequestRead', 0, static::PREFIX . '_RequestRead($_IPS["TARGET"]);');
         $this->RegisterTimer('CheckFW', 0, static::PREFIX . '_CheckFirmwareUpdate($_IPS["TARGET"]);');
@@ -459,6 +458,67 @@ class JoTKPP extends JoTModBus {
         return $this->RequestRead($idents);
     }
 
+     /**
+     * Schreibt den gewünschten Wert auf das Gerät.
+     * @param string $Ident des zu schreibenden Wertes
+     * @param mixed $Value zu schreibender Wert
+     * @access private
+     * @return boolean true bei Erfolg oder false bei Fehler
+     */
+    private function WriteValue(string $Ident, $Value) {
+        $ms = microtime(true);
+        $mbConfig = $this->GetModBusConfig();
+
+        if (array_key_exists($Ident, $mbConfig) === false) { //Ident existiert nicht in ModBusConfig
+            $this->ThrowMessage('Unknown Ident(s): %s', $Ident);
+            return false;
+        }
+        
+        $config = $mbConfig[$Ident];
+        if (array_key_exists('WFunction', $config) === false){ //Kein Schreib-Zugriff für Ident
+            $this->ThrowMessage('No Write-Access for Ident(s): %s', $Ident);
+            return false;
+        }
+
+        //Wert auf Gerät schreiben
+        $this->SendDebug('WriteValue', "Ident: $Ident on Address: " . $config['Address'] . ' Type: ' . gettype($Value) . " Value: $Value", 0);
+        $mbType = $this->ReadAttributeInteger('MBType');
+        $factor = $config['Factor'];
+        if (array_key_exists('ScaleIdent', $config) && $config['ScaleIdent'] !== '') { //Skalierungs-Faktor mit Factor kombinieren
+            $factor = $config['Factor'] * pow(10, $this->RequestReadIdent($config['ScaleIdent']));
+        }
+        $result = $this->WriteModBus($Value, $config['WFunction'], $config['Address'], $config['Quantity'], $factor, $mbType, $config['VarType']);
+
+        if ($result === true) {
+            $this->SendDebug('WriteValue', sprintf('Wrote ident \'%s\' in %f seconds.', $Ident, microtime(true) - $ms), 0);
+        }
+        return $result;
+    }
+
+    /**
+     * IPS-Instanz Funktion PREFIX_WriteValueInteger.
+     * Schreibt Boolean-Wert auf das Gerät.
+     * @param string $Ident des zu schreibenden Wertes
+     * @param int $Value zu schreibender Wert
+     * @access public
+     * @return boolean true bei Erfolg oder false bei Fehler
+     */
+    public function WriteValueInteger(string $Ident, int $Value) {
+        return $this->WriteValue($Ident, $Value);
+    }
+
+    /**
+     * IPS-Instanz Funktion PREFIX_WriteValueFloat.
+     * Schreibt Boolean-Wert auf das Gerät.
+     * @param string $Ident des zu schreibenden Wertes
+     * @param float $Value zu schreibender Wert
+     * @access public
+     * @return boolean true bei Erfolg oder false bei Fehler
+     */
+    public function WriteValueFloat(string $Ident, float $Value) {
+        return $this->WriteValue($Ident, $Value);
+    }
+
     /**
      * IPS-Instanz Funktion PREFIX_CheckFirmwareUpdate.
      * Kontrolliert die aktuelle Firmware-Version online.
@@ -760,7 +820,7 @@ class JoTKPP extends JoTModBus {
                     $aConfig[$c['Ident']]['Profile'] = '';
                 }
                 if (!array_key_exists('Factor', $c)) {
-                    $aConfig[$c['Ident']]['Factor'] = 0;
+                    $aConfig[$c['Ident']]['Factor'] = 1;
                 }
                 //Weitere Tests sind nicht nötig, da die ModBusConfig.json mittels PHPUnit-Tests kontrolliert wird und die Daten somit stimmen sollten.
             }

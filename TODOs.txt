@@ -3,7 +3,7 @@
  * @File:            TODOs.txt
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   09.01.2021 10:26:04
+ * @Last Modified:   11.01.2021 21:56:42
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -26,7 +26,8 @@ x Anzeige Access (RFunction / WFunction) im Formular
 x Bestätigung für Nutzung von WFunction in Formular
 x Traits & ModBus als separate Libraries einbinden
 -> WriteModBus integrieren
-  - SwapFunktionen anpassen
+  x Swap-Funktionen anpassen
+  -> Funktion ConvertMBtoPHP überarbeiten
 -> Integration neue ModBus-Spezifikationen Version 1.9
   x Allgemeine Anpassungen
   x Prüfung auf FW-Version und Aktivierung nur möglich wenn diese erfüllt ist
@@ -37,6 +38,7 @@ x Traits & ModBus als separate Libraries einbinden
   - Kapitel 3.3 "Power-Management" schreibend
   - Kapitel 3.4 "Batterie-Management" schreibend
 x Optimierung RequestRead - Loop verlassen, sobald alle angefordeten Idents ausgelesen sind
+- Umbau JoT_ModBus.php - WriteModBus, sobald Problem mit UTF-8 Konvertierung im IPS-Datenfluss behoben ist (ab IPS 5.6?) - https://www.symcon.de/forum/threads/41294-Modbus-TCP-BOOL-Wert-senden?p=447472#post447472
 - Integration Tests
   x Kontrolle der Definitionen in ModBusConfig.json
   - Eintrag aus ModBusConfig.json entfernt - wird dieser automatisch bereinigt?

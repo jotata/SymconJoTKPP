@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   09.01.2021 21:13:48
+ * @Last Modified:   12.01.2021 19:58:31
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -124,6 +124,7 @@ class JoTKPP extends JoTModBus {
                 $position = array_search($mbConfig[$ident]['Group'], $groups) * 20 + 20; //*20, damit User innerhalb der Gruppen-Position auch sortieren kann - +20, damit Events zuoberst sind
             }
             $this->MaintainVariable($ident, $name, $varType, $profile, $position, $keep);
+            $this->MaintainAction($ident, array_key_exists('WFunction', $mbConfig[$ident])); //Gültigkeit der WFunction wird bereits mit ModulTests überprüft
         }
 
         //Poll-Idents definitiv speichern
@@ -459,30 +460,6 @@ class JoTKPP extends JoTModBus {
     }
 
     /**
-     * IPS-Instanz Funktion PREFIX_WriteValueInteger.
-     * Schreibt Boolean-Wert auf das Gerät.
-     * @param string $Ident des zu schreibenden Wertes
-     * @param int $Value zu schreibender Wert
-     * @access public
-     * @return boolean true bei Erfolg oder false bei Fehler
-     */
-    public function WriteValueInteger(string $Ident, int $Value) {
-        return $this->WriteValue($Ident, $Value);
-    }
-
-    /**
-     * IPS-Instanz Funktion PREFIX_WriteValueFloat.
-     * Schreibt Boolean-Wert auf das Gerät.
-     * @param string $Ident des zu schreibenden Wertes
-     * @param float $Value zu schreibender Wert
-     * @access public
-     * @return boolean true bei Erfolg oder false bei Fehler
-     */
-    public function WriteValueFloat(string $Ident, float $Value) {
-        return $this->WriteValue($Ident, $Value);
-    }
-
-    /**
      * IPS-Instanz Funktion PREFIX_CheckFirmwareUpdate.
      * Kontrolliert die aktuelle Firmware-Version online.
      * @access public
@@ -523,13 +500,14 @@ class JoTKPP extends JoTModBus {
     }
 
     /**
-     * Schreibt den gewünschten Wert auf das Gerät.
-     * @param string $Ident des zu schreibenden Wertes
+     * Wird von IPS-Instanz Funktion PREFIX_RequestAction aufgerufen
+     * und schreibt den Wert der Variable auf den Wechselrichter zurück
+     * @param string $Ident der Variable
      * @param mixed $Value zu schreibender Wert
-     * @access private
      * @return boolean true bei Erfolg oder false bei Fehler
+     * @access private
      */
-    private function WriteValue(string $Ident, $Value) {
+    private function RequestVariableAction(string $Ident, $Value) {
         $ms = microtime(true);
         $mbConfig = $this->GetModBusConfig();
 
@@ -555,6 +533,10 @@ class JoTKPP extends JoTModBus {
 
         if ($result === true) {
             $this->SendDebug('WriteValue', sprintf('Wrote ident \'%s\' in %f seconds.', $Ident, microtime(true) - $ms), 0);
+            $vID = $this->GetIDForIdent($Ident);
+            if ($vID !== false) { //für einen Ident exisitert nicht zwingend eine Status-Variable
+                $this->SetValue($Ident, $Value);
+            }
         }
         return $result;
     }

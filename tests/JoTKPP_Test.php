@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            JoTKPP_Test.php
  * @Create Date:     28.11.2020 17:41:30
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   05.01.2021 20:46:18
+ * @Last Modified:   15.01.2021 14:18:10
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -51,6 +51,7 @@ class JoTKPP_Test extends TestCase {
     public function testModBusConfig() {
         $file = __DIR__ . '/../JoTKPP/ModBusConfig.json';
         $VarType = ['$VT_String', '$VT_UnsignedInteger', '$VT_SignedInteger', '$VT_Float', '$VT_Real', '$VT_Boolean'];
+        $MBType = ['$MB_BigEndian'];
         $RFunction = ['$FC_Read_HoldingRegisters'];
         $WFunction = ['$FC_Write_SingleHoldingRegister', '$FC_Write_MultipleHoldingRegisters'];
 
@@ -80,6 +81,9 @@ class JoTKPP_Test extends TestCase {
                         }
                         if (array_key_exists('Factor', $c)) { //optional
                             $this->assertContains(gettype($c['Factor']), ['integer', 'float', 'double'], $a . 'Wrong definition of \'Factor\'. Allowed types: Int, Float');
+                        }
+                        if (array_key_exists('MBType', $c)) { //optional
+                            $this->assertContains($c['MBType'], $MBType, $a . 'Wrong definition of \'MBType\'. Allowed: ' . implode(', ', $MBType));
                         }
                         $this->assertIsInt($c['Quantity'], $a . 'Wrong definition of \'Quantity\'.');
                         $func = false;

@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   12.01.2021 19:58:31
+ * @Last Modified:   15.01.2021 14:32:29
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -338,7 +338,6 @@ class JoTKPP extends JoTModBus {
         }
 
         //ModBus-Abfrage durchführen
-        $mbType = $this->ReadAttributeInteger('MBType');
         $values = [];
         foreach ($idents as $ident) {
             if (array_key_exists($ident, $mbConfig) === false) { //Unbekannter Ident
@@ -354,15 +353,15 @@ class JoTKPP extends JoTModBus {
                 $value = $this->GetFromCache($ident);
                 if (is_null($value)) { //Im Cache nicht vorhanden oder abgelaufen
                     $this->SendDebug('RequestRead', "Ident: $ident on Address: " . $config['Address'], 0);
-                    if ($config['VarType'] === self::VT_String) { //Strings werden vom WR immer als BigEndian zurück gegeben, egal welcher Modus aktiviert ist (Bug in FW?)
-                        $value = $this->ReadModBus($config['RFunction'], $config['Address'], $config['Quantity'], $config['Factor'], self::MB_BigEndian, $config['VarType']);
-                    } else { //andere Datentypen
-                        $factor = $config['Factor'];
-                        if (array_key_exists('ScaleIdent', $config) && $config['ScaleIdent'] !== '') { //Skalierungs-Faktor mit Factor kombinieren
-                            $factor = $config['Factor'] * pow(10, $this->RequestReadIdent($config['ScaleIdent']));
-                        }
-                        $value = $this->ReadModBus($config['RFunction'], $config['Address'], $config['Quantity'], $factor, $mbType, $config['VarType']);
+                    $mbType = $this->ReadAttributeInteger('MBType');
+                    if (array_key_exists('MBType', $config)) { //Einige Werte werden nicht gemäss der Standard-Einstellung des Gerätes zurückgegeben (Bugs in Geräte-FW). Dies wird hiermit korrigiert.
+                        $mbType = $config['MBType'];
                     }
+                    $factor = $config['Factor'];
+                    if (array_key_exists('ScaleIdent', $config) && $config['ScaleIdent'] !== '') { //Skalierungs-Faktor mit Factor kombinieren
+                        $factor = $config['Factor'] * pow(10, $this->RequestReadIdent($config['ScaleIdent']));
+                    }
+                    $value = $this->ReadModBus($config['RFunction'], $config['Address'], $config['Quantity'], $factor, $mbType, $config['VarType']);
                     $this->SetToCache($ident, $value);
                 } else { //Wert aus Cache gelesen
                     $vID = false; //Wert nicht in Instanz-Variable zurückschreiben
@@ -525,6 +524,9 @@ class JoTKPP extends JoTModBus {
         //Wert auf Gerät schreiben
         $this->SendDebug('WriteValue', "Ident: $Ident on Address: " . $config['Address'] . ' Type: ' . gettype($Value) . " Value: $Value", 0);
         $mbType = $this->ReadAttributeInteger('MBType');
+        if (array_key_exists('MBType', $config)) { //Einige Werte werden nicht gemäss der Standard-Einstellung des Gerätes zurückgegeben (Bugs in Geräte-FW). Dies wird hiermit korrigiert.
+            $mbType = $config['MBType'];
+        }
         $factor = $config['Factor'];
         if (array_key_exists('ScaleIdent', $config) && $config['ScaleIdent'] !== '') { //Skalierungs-Faktor mit Factor kombinieren
             $factor = $config['Factor'] * pow(10, $this->RequestReadIdent($config['ScaleIdent']));
@@ -787,7 +789,8 @@ class JoTKPP extends JoTModBus {
                 '$VT_Float'                          => self::VT_Float,
                 '$VT_Real'                           => self::VT_Real,
                 '$VT_SignedInteger'                  => self::VT_SignedInteger,
-                '$VT_Boolean'                        => self::VT_Boolean
+                '$VT_Boolean'                        => self::VT_Boolean,
+                '$MB_BigEndian'                      => self::MB_BigEndian
             ]);
             $config = json_decode($config, true, 4);
             if (json_last_error() !== JSON_ERROR_NONE) {//Fehler darf nur beim Entwickler auftreten (nach Anpassung der JSON-Daten). Wird daher direkt als echo ohne Übersetzung ausgegeben.

@@ -95,6 +95,7 @@
       "Ident": "ArticleNr",
       "Name": "Inverter Article Number",
       "VarType": "$VT_String",
+      "MBType": "$MB_BigEndian",
       "Quantity": 8,
       "RFunction": "$FC_Read_HoldingRegisters",
       "FWVersion": 1.42
@@ -105,6 +106,7 @@
       "Ident": "SerialNr",
       "Name": "Inverter Serial Number (legacy)",
       "VarType": "$VT_String",
+      "MBType": "$MB_BigEndian",
       "Quantity": 8,
       "RFunction": "$FC_Read_HoldingRegisters",
       "FWVersion": 1.42
@@ -155,6 +157,7 @@
       "Ident": "SoftwareVersionMC",
       "Name": "Software-Version Maincontroller (MC)",
       "VarType": "$VT_String",
+      "MBType": "$MB_BigEndian",
       "Quantity": 8,
       "RFunction": "$FC_Read_HoldingRegisters",
       "FWVersion": 1.42
@@ -165,6 +168,7 @@
       "Ident": "SoftwareVersionIOC",
       "Name": "Software-Version IO-Controller (IOC)",
       "VarType": "$VT_String",
+      "MBType": "$MB_BigEndian",
       "Quantity": 8,
       "RFunction": "$FC_Read_HoldingRegisters",
       "FWVersion": 1.42
@@ -206,9 +210,10 @@
       "Address": 104,
       "Group": "SystemState",
       "Ident": "EMState",
-      "Name": "Energy Manager state",
+      "Name": "Battery Energy Manager state",
       "Profile": "Status.KostalEM",
       "VarType": "$VT_UnsignedInteger",
+      "MBType": "$MB_BigEndian",
       "Quantity": 2,
       "RFunction": "$FC_Read_HoldingRegisters",
       "FWVersion": 1.42
@@ -971,6 +976,7 @@
       "Ident": "NetworkName",
       "Name": "Inverter network name",
       "VarType": "$VT_String",
+      "MBType": "$MB_BigEndian",
       "Quantity": 32,
       "RFunction": "$FC_Read_HoldingRegisters",
       "FWVersion": 1.42
@@ -1001,6 +1007,7 @@
       "Ident": "NetworkIP",
       "Name": "IP-address",
       "VarType": "$VT_String",
+      "MBType": "$MB_BigEndian",
       "Quantity": 8,
       "RFunction": "$FC_Read_HoldingRegisters",
       "FWVersion": 1.42
@@ -1011,6 +1018,7 @@
       "Ident": "NetworkMask",
       "Name": "IP-subnetmask",
       "VarType": "$VT_String",
+      "MBType": "$MB_BigEndian",
       "Quantity": 8,
       "RFunction": "$FC_Read_HoldingRegisters",
       "FWVersion": 1.42
@@ -1021,6 +1029,7 @@
       "Ident": "NetworkGW",
       "Name": "IP-gateway",
       "VarType": "$VT_String",
+      "MBType": "$MB_BigEndian",
       "Quantity": 8,
       "RFunction": "$FC_Read_HoldingRegisters",
       "FWVersion": 1.42
@@ -1041,6 +1050,7 @@
       "Ident": "NetworkDNS1",
       "Name": "IP-DNS1",
       "VarType": "$VT_String",
+      "MBType": "$MB_BigEndian",
       "Quantity": 8,
       "RFunction": "$FC_Read_HoldingRegisters",
       "FWVersion": 1.42
@@ -1051,6 +1061,7 @@
       "Ident": "NetworkDNS2",
       "Name": "IP-DNS2",
       "VarType": "$VT_String",
+      "MBType": "$MB_BigEndian",
       "Quantity": 8,
       "RFunction": "$FC_Read_HoldingRegisters",
       "FWVersion": 1.42
@@ -1093,6 +1104,7 @@
       "Ident": "BTManufacturer",
       "Name": "Battery Manufacturer",
       "VarType": "$VT_String",
+      "MBType": "$MB_BigEndian",
       "Quantity": 8,
       "RFunction": "$FC_Read_HoldingRegisters",
       "FWVersion": 1.42
@@ -1169,6 +1181,7 @@
       "Ident": "Manufacturer",
       "Name": "Inverter Manufacturer",
       "VarType": "$VT_String",
+      "MBType": "$MB_BigEndian",
       "Quantity": 16,
       "RFunction": "$FC_Read_HoldingRegisters",
       "FWVersion": 1.42
@@ -1179,6 +1192,7 @@
       "Ident": "SerialNr1",
       "Name": "Inverter Serial Number",
       "VarType": "$VT_String",
+      "MBType": "$MB_BigEndian",
       "Quantity": 16,
       "RFunction": "$FC_Read_HoldingRegisters",
       "FWVersion": 1.42
@@ -1289,6 +1303,7 @@
       "Ident": "ProductName",
       "Name": "Productname",
       "VarType": "$VT_String",
+      "MBType": "$MB_BigEndian",
       "Quantity": 32,
       "RFunction": "$FC_Read_HoldingRegisters",
       "FWVersion": 1.42
@@ -1299,6 +1314,7 @@
       "Ident": "PowerClass",
       "Name": "Power class",
       "VarType": "$VT_String",
+      "MBType": "$MB_BigEndian",
       "Quantity": 32,
       "RFunction": "$FC_Read_HoldingRegisters",
       "FWVersion": 1.42

@@ -52,6 +52,13 @@
                             }
                         ]
                     }
+                },{
+                    "type": "Label",
+                    "caption": "Read/Write"  
+                },{
+                    "type": "Image",
+                    "name": "StatusLED",
+                    "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUAQMAAAC3R49OAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAADUExURcPDw9YpAkQAAAAJcEhZcwAAFiQAABYkAZsVxhQAAAANSURBVBjTY6AqYGAAAABQAAGwhtz8AAAAAElFTkSuQmCC"
                 }
             ]
         },{
@@ -64,8 +71,10 @@
                     "suffix": " Seconds",
                     "minimum": 0
                 },{
-                    "type": "Label",
-                    "caption": "          "  
+                    "type": "Button",
+                    "name": "ReadNow",
+                    "caption": "Read Now",
+                    "onClick": "IPS_RequestAction($id, 'RequestRead', '');"
                 },{
                     "type": "NumberSpinner",
                     "name": "CheckFWTime",

@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   15.01.2021 14:32:29
+ * @Last Modified:   15.01.2021 18:33:32
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -26,6 +26,9 @@ class JoTKPP extends JoTModBus {
     protected const PREFIX = 'JoTKPP';
     protected const MODULEID = '{E64278F5-1942-5343-E226-8673886E2D05}';
     protected const STATUS_Error_WrongDevice = 416;
+    protected const LED_Off = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUAQMAAAC3R49OAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAADUExURcPDw9YpAkQAAAAJcEhZcwAAFiQAABYkAZsVxhQAAAANSURBVBjTY6AqYGAAAABQAAGwhtz8AAAAAElFTkSuQmCC";
+    protected const LED_Read = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAFiUAABYlAUlSJPAAAAA3SURBVDhPpcexDQAwCMAw/n+a7p6IKnnxzH7wiU984hOf+MQnPvGJT3ziE5/4xCc+8YlP/N3OA6M/joCROxOnAAAAAElFTkSuQmCC";
+    protected const LED_Write = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAFiUAABYlAUlSJPAAAAAiSURBVDhPY/zPQD5ggtJkgVHNJIJRzSSCUc0kgiGpmYEBACKcASfOmBk0AAAAAElFTkSuQmCC";
 
     /**
      * Interne Funktion des SDK.
@@ -325,19 +328,20 @@ class JoTKPP extends JoTModBus {
     public function RequestRead() {
         $ms = microtime(true);
         $mbConfig = $this->GetModBusConfig();
-        $idents = $this->ReadAttributeString('PollIdents');
+        $idents = '';
         if (func_num_args() == 1) {//Intergation auf diese Art, da sonst in __generated.inc.php ein falscher Eintrag mit PREFIX_Function erstellt wird
             $idents = func_get_arg(0); //true wird über die Funktion RequestReadAll / String mit Idents wird über die Funktion RequestReadIdent/Group aktiviert
         }
         if ($idents === true) { //Aufruf von RequestReadAll
             $idents = array_keys($mbConfig);
-        } elseif (strlen($idents) > 0) {
+        } elseif (strlen(trim($idents)) > 0) {
             $idents = explode(' ', trim($idents));
         } else { //keine Idents angegeben
-            return null;
+            $idents = explode(' ', $this->ReadAttributeString('PollIdents'));
         }
 
         //ModBus-Abfrage durchführen
+        $this->UpdateFormField('StatusLED', 'image', self::LED_Read);
         $values = [];
         foreach ($idents as $ident) {
             if (array_key_exists($ident, $mbConfig) === false) { //Unbekannter Ident
@@ -368,7 +372,7 @@ class JoTKPP extends JoTModBus {
                     $this->SendDebug('RequestRead', "Ident: $ident from Cache: $value", 0);
                 }
             } else { //Kein Read-Access
-                if (is_string(@func_get_arg(0))) { // Warnung nur wenn Ident explizit angefordert wurde
+                if (is_string(@func_get_arg(0)) && @func_get_arg(0) !== '') { //Warnung nur wenn Ident explizit angefordert wurde
                     $noaccess[] = $ident;
                 }
                 continue;
@@ -393,6 +397,7 @@ class JoTKPP extends JoTModBus {
         if (isset($noaccess) > 0) {
             $this->ThrowMessage('No Read-Access for Ident(s): %s', implode(', ', $noaccess));
         }
+        $this->UpdateFormField('StatusLED', 'image', self::LED_Off);
         $this->SendDebug('RequestRead', sprintf('Picked out %u idents in %f seconds.', count($values), microtime(true) - $ms), 0);
         switch (count($values)) {
             case 0:
@@ -522,6 +527,7 @@ class JoTKPP extends JoTModBus {
         }
 
         //Wert auf Gerät schreiben
+        $this->UpdateFormField('StatusLED', 'image', self::LED_Write);
         $this->SendDebug('WriteValue', "Ident: $Ident on Address: " . $config['Address'] . ' Type: ' . gettype($Value) . " Value: $Value", 0);
         $mbType = $this->ReadAttributeInteger('MBType');
         if (array_key_exists('MBType', $config)) { //Einige Werte werden nicht gemäss der Standard-Einstellung des Gerätes zurückgegeben (Bugs in Geräte-FW). Dies wird hiermit korrigiert.
@@ -540,6 +546,7 @@ class JoTKPP extends JoTModBus {
                 $this->SetValue($Ident, $Value);
             }
         }
+        $this->UpdateFormField('StatusLED', 'image', self::LED_Off);
         return $result;
     }
 

@@ -6,7 +6,7 @@
 
 # SymconJoTKPP
 Erweiterung zur Abfrage der Werte eines Kostal Wechselrichters via ModBus in IP-Symcon.
-<p align="center"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9M6W4KM34HWMA&source=url" target="_blank"><img src="https://www.paypalobjects.com/de_DE/CH/i/btn/btn_donateCC_LG.gif" border="0" /></a></p>
+<p style="align:right; width:150px; float:right;"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9M6W4KM34HWMA&source=url" target="_blank"><img src="https://www.paypalobjects.com/de_DE/CH/i/btn/btn_donateCC_LG.gif" border="0" /></a></p>
 
 ## Dokumentation
 **Inhaltsverzeichnis**
@@ -122,11 +122,12 @@ Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modu
   ### 4. Batterie-Management
   Ab FW-Version 1.46 auf dem Wechselrichter und Modul-Version 2.0 ist es möglich, das Batterie-Management und die AC-Leistung des Wechselrichters via ModBus zu steuern.
   Voraussetzung dafür ist, dass der Installateur auf dem Wechselrichter das externe Batterie-Management unter 'Servicemenu -> Batterieeinstellungen -> Batteriesteuerung' aktiviert.
-  Dieser Modus kann nicht mit dem normalen Anlagen-Benutzer aktiviert werden. 
+  Dieser Modus kann nicht mit dem normalen Anlagen-Benutzer aktiviert werden.
+
   Details zum Batterie-Management sind unter [Schnittstellen Protokolle bei den Downloads für den Wechselrichter auf der Kostal-Webseite](https://www.kostal-solar-electric.com/de-de/download/download#accordionContent7) zu finden.
   Beim Schreiben ist zu berücksichtigen, dass die Werte gemäss den Einheiten der Instanz-Variablen von IPS (also in kW anstatt W) angegeben werden müssen. Das Modul rechnet die Werte selbständig in W um, bevor diese an den Wechselrichter gesendet werden.
 
-  ACHTUNG: Der Author lehnt jegliche Haftung für Schäden an den betroffenen Geräten (Wechselrichter, Batterie, PV-Anlage, usw.) durch die Nutzung dieser Funktion ab!
+  **ACHTUNG: Der Autor lehnt jegliche Haftung für Schäden an den betroffenen Geräten (Wechselrichter, Batterie, PV-Anlage, usw.) ab, welche durch die Nutzung dieser Funktion entstehen!**
 
   ### 5. Fehlersuche
   Die Debug-Funktion der Instanz liefert detaillierte Informationen über die Konvertierung der Werte und vom ModBus zurückgegebenen Fehler.

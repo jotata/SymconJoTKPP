@@ -115,7 +115,7 @@
         "Associations": [
             {
                 "Value": 0,
-                "Name": "Idle",
+                "Name": "Normal",
                 "Icon": "Ok",
                 "Color": -1
             },{

@@ -6,6 +6,7 @@
 
 # SymconJoTKPP
 Erweiterung zur Abfrage der Werte eines Kostal Wechselrichters via ModBus in IP-Symcon.
+<p align="center"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9M6W4KM34HWMA&source=url" target="_blank"><img src="https://www.paypalobjects.com/de_DE/CH/i/btn/btn_donateCC_LG.gif" border="0" /></a></p>
 
 ## Dokumentation
 **Inhaltsverzeichnis**
@@ -17,7 +18,8 @@ Erweiterung zur Abfrage der Werte eines Kostal Wechselrichters via ModBus in IP-
     1. [Erstellen einer neuen Instanz](#1-erstellen-einer-neuen-instanz)
     2. [Konfiguration der Instanz](#2-konfiguration-der-instanz)
     3. [Modul-Funktionen](#3-modul-funktionen)
-    4. [Fehlersuche](#4-fehlersuche)
+    4. [Batterie-Management](#4-batterie-management)
+    5. [Fehlersuche](#5-fehlersuche)
 6. [Anhang](#6-anhang)  
     1. [Modul-Informationen](#1-modul-informationen)
     2. [Changelog](#2-changelog)
@@ -81,6 +83,7 @@ Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modu
  
   ### 2. Konfiguration der Instanz
    - Abfrage-Intervall: Definiert die Zeit, in welcher die Werte via ModBus abgefragt werden sollen. Es werden nur die Werte abgefragt, bei welchen "Aktiv" angehakt ist.
+   - Jetzt lesen: Liest im Hintergrund alle aktiven Idents aus und schreibt die Werte in die Instanz-Variablen.
    - Gruppe / Ident: Diese Bezeichnung kann zur Abfrage einer Gruppe von Werten oder einzelner Werte mit der entsprechenden [RequestRead-Methode](#3-modul-funktionen) verwendet werden.
    - Name: Die Bezeichnung der Instanz-Variable gemäss Kostal Spezifikation.
    - Eigener Name: Wenn euch die Bezeichnung der Instanz-Variabeln nicht gefällt, könnt ihr den Namen direkt in der Variable anpassen. Der neue Name wird dann in dieser Spalte angezeigt.
@@ -112,11 +115,21 @@ Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modu
   - JoTKPP_RequestReadGroup(string $Gruppe): Liest alle Werte, deren Gruppe angegeben wird (mehrere Gruppen werden durch ein Leerzeichen getrennt).*
   - JoTKPP_CheckFirmwareUpdate(): Holt den Namen der aktuellsten FW-Datei bei Kostal, speichert diese in einer Instanz-Variable und gibt sie als String zurück.
   - JoTKPP_GetDeviceInfo(): Gibt die wichtigsten Geräte-Informationen als Array zurück.*
+  - IPS_RequestAction(int $InstanzID, string $Ident, mixed $Value): Damit können die Idents, welche mit Zugriff RW oder W markiert sind geschrieben werden.
 
   *) Die Werte werden auch gelesen, wenn der Haken "Aktiv" nicht gesetzt ist. Sie werden dann jedoch nur als Array zurückgegeben und nicht in eine Instanz-Variable geschrieben.
   
-  ### 4. Fehlersuche
-  Die Debug-Funktion der Instanz liefert recht detaillierte Informationen über die Konvertierung der Werte und vom ModBus zurückgegebenen Fehler.
+  ### 4. Batterie-Management
+  Ab FW-Version 1.46 auf dem Wechselrichter und Modul-Version 2.0 ist es möglich, das Batterie-Management und die AC-Leistung des Wechselrichters via ModBus zu steuern.
+  Voraussetzung dafür ist, dass der Installateur auf dem Wechselrichter das externe Batterie-Management unter 'Servicemenu -> Batterieeinstellungen -> Batteriesteuerung' aktiviert.
+  Dieser Modus kann nicht mit dem normalen Anlagen-Benutzer aktiviert werden. 
+  Details zum Batterie-Management sind unter [Schnittstellen Protokolle bei den Downloads für den Wechselrichter auf der Kostal-Webseite](https://www.kostal-solar-electric.com/de-de/download/download#accordionContent7) zu finden.
+  Beim Schreiben ist zu berücksichtigen, dass die Werte gemäss den Einheiten der Instanz-Variablen von IPS (also in kW anstatt W) angegeben werden müssen. Das Modul rechnet die Werte selbständig in W um, bevor diese an den Wechselrichter gesendet werden.
+
+  ACHTUNG: Der Author lehnt jegliche Haftung für Schäden an den betroffenen Geräten (Wechselrichter, Batterie, PV-Anlage, usw.) durch die Nutzung dieser Funktion ab!
+
+  ### 5. Fehlersuche
+  Die Debug-Funktion der Instanz liefert detaillierte Informationen über die Konvertierung der Werte und vom ModBus zurückgegebenen Fehler.
 
 ## 6. Anhang
 ###  1. Modul-Informationen
@@ -126,6 +139,14 @@ Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modu
 | JoTKPP | Device | Kostal     | PIKO IQ         | JoTKPP | {E64278F5-1942-5343-E226-8673886E2D05} |
 
 ### 2. Changelog
+Version 2.0 (Alpha)
+- Schreiben für Batterie-Management und AC-Control eingebaut (Details siehe [Batterie-Management](#4-batterie-management)).
+- Button 'Jetzt lesen' im Konfigurations-Form liest alle ausgewählten Idents einmalig aus.
+- LED für Lese-/Schreib-Aktivität im Konfigurations-Form hinzugefügt.
+- Optimierung der Daten-Übertragung.
+- FIX: Ident 'EMState' liefert nun korrekten Wert und wird als 'Battery Energy Manager State' bezeichnet.
+- FIX: Selten auftretende Fehlermeldung 'NaN/INF Werte werden nicht unterstützt' vermutlich behoben.
+
 Version 1.6
 - Restliche noch fehlende Geräte-Parmeter gemäss KOSTAL-Spezifikation 1.9 hinzugefügt (lesend).
 - Zugriffs-Art wird nun in Konfigurationsform angezeigt.

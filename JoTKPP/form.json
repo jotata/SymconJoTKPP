@@ -20,6 +20,13 @@
             "items": [
                 {
                     "type": "Label",
+                    "caption": "Read/Write"  
+                },{
+                    "type": "Image",
+                    "name": "StatusLED",
+                    "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUAQMAAAC3R49OAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAADUExURcPDw9YpAkQAAAAJcEhZcwAAFiQAABYkAZsVxhQAAAANSURBVBjTY6AqYGAAAABQAAGwhtz8AAAAAElFTkSuQmCC"
+                },{
+                    "type": "Label",
                     "name": "Device",
                     "caption": "$DeviceString"
                 },{
@@ -52,13 +59,6 @@
                             }
                         ]
                     }
-                },{
-                    "type": "Label",
-                    "caption": "Read/Write"  
-                },{
-                    "type": "Image",
-                    "name": "StatusLED",
-                    "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUAQMAAAC3R49OAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAADUExURcPDw9YpAkQAAAAJcEhZcwAAFiQAABYkAZsVxhQAAAANSURBVBjTY6AqYGAAAABQAAGwhtz8AAAAAElFTkSuQmCC"
                 }
             ]
         },{

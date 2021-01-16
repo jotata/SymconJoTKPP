@@ -141,7 +141,7 @@ Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modu
 | JoTKPP | Device | Kostal     | PIKO IQ         | JoTKPP | {E64278F5-1942-5343-E226-8673886E2D05} |
 
 ### 2. Changelog
-Version 2.0 (Alpha)
+Version 2.0 (BETA)
 - Schreiben für Batterie-Management und AC-Control eingebaut (Details siehe [Batterie-Management](#4-batterie-management)).
 - Button 'Jetzt lesen' im Konfigurations-Form liest alle ausgewählten Idents einmalig aus.
 - LED für Lese-/Schreib-Aktivität im Konfigurations-Form hinzugefügt.

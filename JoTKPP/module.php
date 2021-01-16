@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   15.01.2021 18:33:32
+ * @Last Modified:   16.01.2021 19:20:14
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -341,7 +341,6 @@ class JoTKPP extends JoTModBus {
         }
 
         //ModBus-Abfrage durchführen
-        $this->UpdateFormField('StatusLED', 'image', self::LED_Read);
         $values = [];
         foreach ($idents as $ident) {
             if (array_key_exists($ident, $mbConfig) === false) { //Unbekannter Ident
@@ -354,6 +353,7 @@ class JoTKPP extends JoTModBus {
                 $this->SendDebug('RequestRead', "Ident: $ident gets calculated...", 0);
                 $value = $this->CalculateValue($ident);
             } elseif (array_key_exists('RFunction', $config)) { //Wert via Cache / ModBus auslesen
+                $this->UpdateFormField('StatusLED', 'image', self::LED_Read);
                 $value = $this->GetFromCache($ident);
                 if (is_null($value)) { //Im Cache nicht vorhanden oder abgelaufen
                     $this->SendDebug('RequestRead', "Ident: $ident on Address: " . $config['Address'], 0);
@@ -366,6 +366,9 @@ class JoTKPP extends JoTModBus {
                         $factor = $config['Factor'] * pow(10, $this->RequestReadIdent($config['ScaleIdent']));
                     }
                     $value = $this->ReadModBus($config['RFunction'], $config['Address'], $config['Quantity'], $factor, $mbType, $config['VarType']);
+                    if (is_null($value)) { //Fehler beim Lesen
+                        continue;
+                    }
                     $this->SetToCache($ident, $value);
                 } else { //Wert aus Cache gelesen
                     $vID = false; //Wert nicht in Instanz-Variable zurückschreiben

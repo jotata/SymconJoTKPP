@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   17.01.2021 21:39:04
+ * @Last Modified:   17.01.2021 21:52:16
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -355,7 +355,7 @@ class JoTKPP extends JoTModBus {
         //ModBus-Abfrage durchführen
         $values = [];
         foreach ($idents as $ident) {
-            if (array_key_exists($ident, $mbConfig) === false) { //Unbekannter Ident
+            if ($this->IsIdentAvailable($ident) === false) { //Unbekannter Ident oder falsche FW-Version
                 $unknown[] = $ident;
                 continue;
             }
@@ -529,7 +529,7 @@ class JoTKPP extends JoTModBus {
         $ms = microtime(true);
         $mbConfig = $this->GetModBusConfig();
 
-        if (array_key_exists($Ident, $mbConfig) === false) { //Ident existiert nicht in ModBusConfig
+        if ($this->IsIdentAvailable($ident) === false) { //Ident existiert nicht oder falsche FW-Version
             $this->ThrowMessage('Unknown Ident(s): %s', $Ident);
             return false;
         }

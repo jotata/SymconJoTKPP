@@ -179,6 +179,7 @@
       "Ident": "PowerID",
       "Name": "Power-ID",
       "VarType": "$VT_UnsignedInteger",
+      "MBType": "$MB_BigEndian",
       "Quantity": 2,
       "RFunction": "$FC_Read_HoldingRegisters",
       "FWVersion": 1.42
@@ -1073,6 +1074,7 @@
       "Name": "Battery Gross Capacity",
       "Profile": "Battery.Capacity",
       "VarType": "$VT_UnsignedInteger",
+      "MBType": "$MB_BigEndian",
       "Quantity": 2,
       "RFunction": "$FC_Read_HoldingRegisters",
       "FWVersion": 1.42
@@ -1137,6 +1139,7 @@
       "Profile": "~Electricity",
       "VarType": "$VT_UnsignedInteger",
       "Factor": 0.001,
+      "MBType": "$MB_BigEndian",
       "Quantity": 2,
       "RFunction": "$FC_Read_HoldingRegisters",
       "FWVersion": 1.42
@@ -1229,6 +1232,7 @@
       "Profile": "~Electricity",
       "VarType": "$VT_UnsignedInteger",
       "Factor": 0.001,
+      "MBType": "$MB_BigEndian",
       "Quantity": 2,
       "RFunction": "$FC_Read_HoldingRegisters",
       "FWVersion": 1.42

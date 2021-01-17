@@ -146,8 +146,11 @@ Version 2.0 (BETA)
 - Button 'Jetzt lesen' im Konfigurations-Form liest alle ausgewählten Idents einmalig aus.
 - LED für Lese-/Schreib-Aktivität im Konfigurations-Form hinzugefügt.
 - Optimierung der Daten-Übertragung.
-- FIX: Ident 'EMState' liefert nun korrekten Wert und wird als 'Battery Energy Manager State' bezeichnet.
+- Profile auf DE übersetzt.
 - FIX: Selten auftretende Fehlermeldung 'NaN/INF Werte werden nicht unterstützt' vermutlich behoben.
+- FIX: Instanz-Variable für FW-Update wird nun bei ApplyChanges nicht mehr gelöscht, wenn FW-Check aktiviert ist. Falls FW-Check beim Update aktiviert ist, wird die Variable einmalig neu erstellt und Ereignisse müssen ev. manuell angepasst werden.
+- FIX: Änderungen am Gateway & ClientSocket werden nun erkannt und Gerät wird mit neuer Konfiguration neu ausgelesen.
+- FIX: Fehler-Korrektur der folgenden Idents (falsche Daten-Übermittlung (Endianess) durch Wechselrichter): EMState, BTWorkCapacity, BTGrossCapacity, ACGenEnergy
 
 Version 1.6
 - Restliche noch fehlende Geräte-Parmeter gemäss KOSTAL-Spezifikation 1.9 hinzugefügt (lesend).

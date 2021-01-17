@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   16.01.2021 19:20:14
+ * @Last Modified:   17.01.2021 15:45:20
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -116,6 +116,9 @@ class JoTKPP extends JoTModBus {
         }
         //Instanz-Variablen erstellen / löschen / aktualisieren
         foreach ($vars as $ident => $keep) {
+            if (substr($ident, 0, 1) === '_') { //Instanz-Variablen, welche nicht aus ModBusConfig kommen beginnen mit '_'
+                continue; //Diese werden anders gepflegt
+            }
             $name = '';
             $varType = 0;
             $profile = '';
@@ -127,7 +130,7 @@ class JoTKPP extends JoTModBus {
                 $position = array_search($mbConfig[$ident]['Group'], $groups) * 20 + 20; //*20, damit User innerhalb der Gruppen-Position auch sortieren kann - +20, damit Events zuoberst sind
             }
             $this->MaintainVariable($ident, $name, $varType, $profile, $position, $keep);
-            $this->MaintainAction($ident, array_key_exists('WFunction', $mbConfig[$ident])); //Gültigkeit der WFunction wird bereits mit ModulTests überprüft
+            @$this->MaintainAction($ident, array_key_exists('WFunction', $mbConfig[$ident])); //Gültigkeit der WFunction wird bereits mit ModulTests überprüft
         }
 
         //Poll-Idents definitiv speichern
@@ -143,8 +146,10 @@ class JoTKPP extends JoTModBus {
         //Timer für FW-Updates (de)aktivieren
         if ($this->ReadPropertyInteger('CheckFWTime') > 0) {
             $this->SetTimerInterval('CheckFW', $this->ReadPropertyInteger('CheckFWTime') * 60 * 60 * 1000);
+            $this->CheckFirmwareUpdate();
         } else {
             $this->SetTimerInterval('CheckFW', 0);
+            $this->UnregisterVariable('_CurrentFWOnline');
         }
     }
 
@@ -299,22 +304,27 @@ class JoTKPP extends JoTModBus {
      * @access public
      */
     public function MessageSink($TimeStamp, $SenderID, $MessageID, $Data) {
-        if ($MessageID == IM_CONNECT) {//Instanz verfügbar
+        $gwID = IPS_GetInstance($this->InstanceID)['ConnectionID'];
+        $ioID = IPS_GetInstance($gwID)['ConnectionID'];
+        $this->SetModBusType();
+        if ($MessageID === IM_CONNECT) { //Instanz verfügbar
             $this->SendDebug('Instance ready', '', 0);
-            $this->RegisterMessage($this->InstanceID, FM_CONNECT); //Gateway wurde geändert
-            $this->RegisterMessage(IPS_GetInstance($this->InstanceID)['ConnectionID'], IM_CHANGESETTINGS); //Gateway-Einstellungen wurden geändert
-            $this->SetModBusType();
-        } elseif ($MessageID == FM_CONNECT) {//Gateway wurde geändert
-            $this->SendDebug('Gateway changed', 'Gateway #' . IPS_GetInstance($this->InstanceID)['ConnectionID'], 0);
+        } elseif ($MessageID === FM_CONNECT) { //Gateway / ClientSocket wurde geändert
+            $this->SendDebug('Connection changed', "Gateway #$gwID - I/O #$ioID", 0);
             $this->RegisterOnceTimer('GetDeviceInfo', 'IPS_RequestAction($_IPS["TARGET"], "GetDeviceInfo", "");');
-            foreach ($this->GetMessageList() as $id => $msgs) {//Nachrichten von alten GWs deaktivieren
+        } elseif ($MessageID === IM_CHANGESETTINGS) { //Einstellungen im Gateway / ClientSocket wurden geändert
+            $this->SendDebug('Connection settings changed', "Connection-Instance #$SenderID", 0);
+            $this->RegisterOnceTimer('GetDeviceInfo', 'IPS_RequestAction($_IPS["TARGET"], "GetDeviceInfo", "");');
+        }
+        if ($MessageID === IM_CONNECT || $MessageID === FM_CONNECT) { //Nachrichten (neu) registrieren
+            foreach ($this->GetMessageList() as $id => $msgs) { //alte Nachrichten deaktivieren
+                $this->UnregisterMessage($id, FM_CONNECT);
                 $this->UnregisterMessage($id, IM_CHANGESETTINGS);
             }
-            $this->RegisterMessage(IPS_GetInstance($this->InstanceID)['ConnectionID'], IM_CHANGESETTINGS);
-        } elseif ($MessageID == IM_CHANGESETTINGS) {//Einstellungen im Gateway wurde geändert
-            $this->SendDebug('Gateway settings changed', 'Gateway #' . IPS_GetInstance($this->InstanceID)['ConnectionID'], 0);
-            $this->SetModBusType();
-            $this->RegisterOnceTimer('GetDeviceInfo', 'IPS_RequestAction($_IPS["TARGET"], "GetDeviceInfo", "");');
+            $this->RegisterMessage($this->InstanceID, FM_CONNECT); //Gateway wurde geändert
+            $this->RegisterMessage($gwID, FM_CONNECT); //ClientSocket wurden geändert
+            $this->RegisterMessage($gwID, IM_CHANGESETTINGS); //Gateway-Einstellungen wurden geändert
+            $this->RegisterMessage($ioID, IM_CHANGESETTINGS); //ClientSocket-Einstellungen wurden geändert
         }
     }
 
@@ -490,12 +500,11 @@ class JoTKPP extends JoTModBus {
         curl_close($curl);
 
         //Aktuelle FW-Datei von Location aus Header herauslesen und in Instanz-Variable schreiben
-        $ident = 'CurrentFWOnline';
-        $this->MaintainVariable($ident, $this->Translate('Current FW-Version online'), VARIABLETYPE_STRING, '', 999, true);
+        $this->MaintainVariable('_CurrentFWOnline', $this->Translate('Current FW-Version online'), VARIABLETYPE_STRING, '', 999, true);
         if (preg_match('/^Location: (.+)$/im', $headers, $matches)) {
             $fwFile = basename(trim($matches[1]));
-            if ($this->GetValue($ident) !== $fwFile) {
-                $this->SetValue($ident, $fwFile);
+            if ($this->GetValue('_CurrentFWOnline') !== $fwFile) {
+                $this->SetValue('_CurrentFWOnline', $fwFile);
                 $this->LogMessage(sprintf($this->Translate('New FW-Version available online (%s)'), $fwFile), KL_NOTIFY);
             }
             return $fwFile;

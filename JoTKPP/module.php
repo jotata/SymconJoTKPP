@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   17.01.2021 21:06:58
+ * @Last Modified:   17.01.2021 21:39:04
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -130,7 +130,9 @@ class JoTKPP extends JoTModBus {
                 $position = array_search($mbConfig[$ident]['Group'], $groups) * 20 + 20; //*20, damit User innerhalb der Gruppen-Position auch sortieren kann - +20, damit Events zuoberst sind
             }
             $this->MaintainVariable($ident, $name, $varType, $profile, $position, $keep);
-            @$this->MaintainAction($ident, array_key_exists('WFunction', $mbConfig[$ident])); //Gültigkeit der WFunction wird bereits mit ModulTests überprüft
+            if ($keep) { //Darf nicht aufgerufen werden, wenn Instanz-Variable gelöscht wurde, da $ident in $mbConfig ev. nicht mehr existiert
+                $this->MaintainAction($ident, array_key_exists('WFunction', $mbConfig[$ident])); //Gültigkeit der WFunction wird bereits mit ModulTests überprüft
+            }
         }
 
         //Poll-Idents definitiv speichern
@@ -501,7 +503,7 @@ class JoTKPP extends JoTModBus {
 
         //Aktuelle FW-Datei von Location aus Header herauslesen und in Instanz-Variable schreiben
         $this->MaintainVariable('_CurrentFWOnline', $this->Translate('Current FW-Version online'), VARIABLETYPE_STRING, '', 999, true);
-        if (preg_match('/^Location: (.+)$/im', $headers, $matches)) {
+        if ($headers !== false && preg_match('/^Location: (.+)$/im', $headers, $matches)) {
             $fwFile = basename(trim($matches[1]));
             if ($this->GetValue('_CurrentFWOnline') !== $fwFile) {
                 $this->SetValue('_CurrentFWOnline', $fwFile);

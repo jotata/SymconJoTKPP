@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   17.01.2021 21:05:00
+ * @Last Modified:   17.01.2021 21:06:58
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -280,7 +280,7 @@ class JoTKPP extends JoTModBus {
         $device['FWVersion'] = $this->RequestReadIdent('SoftwareVersionMC');
 
         //unbekannte Werte vom Gerät auslesen
-        $idents = ['ProductName', 'PowerClass', 'BTReadyFlag', 'SensorType', 'BTType', 'BTCrossCapacity', 'BTWorkCapacity', 'BTManufacturer', 'NumberPVStrings', 'HardwareVersion'];
+        $idents = ['ProductName', 'PowerClass', 'BTReadyFlag', 'SensorType', 'BTType', 'BTGrossCapacity', 'BTWorkCapacity', 'BTManufacturer', 'NumberPVStrings', 'HardwareVersion'];
         foreach ($idents as $ident) {
             if (!array_key_exists($ident, $device) || is_null($device[$ident])) {
                 if ($this->IsIdentAvailable($ident, $device['FWVersion'])) {

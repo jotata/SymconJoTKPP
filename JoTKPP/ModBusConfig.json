@@ -1070,7 +1070,7 @@
     {
       "Address": 512,
       "Group": "BTInfo",
-      "Ident": "BTCrossCapacity",
+      "Ident": "BTGrossCapacity",
       "Name": "Battery Gross Capacity",
       "Profile": "Battery.Capacity",
       "VarType": "$VT_UnsignedInteger",

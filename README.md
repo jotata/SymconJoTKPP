@@ -128,7 +128,7 @@ Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modu
   Details zum Batterie-Management sind unter [Schnittstellen Protokolle bei den Downloads für den Wechselrichter auf der Kostal-Webseite](https://www.kostal-solar-electric.com/de-de/download/download#accordionContent7) zu finden.
   Beim Schreiben ist zu berücksichtigen, dass die Werte gemäss den Einheiten der Instanz-Variablen von IPS (also in kW anstatt W) angegeben werden müssen. Das Modul rechnet die Werte selbständig in W um, bevor diese an den Wechselrichter gesendet werden.
 
-  **ACHTUNG: Der Autor lehnt jegliche Haftung für Schäden an den betroffenen Geräten (Wechselrichter, Batterie, PV-Anlage, usw.) ab, welche durch die Nutzung dieser Funktion entstehen!**
+  **ACHTUNG: Der Autor lehnt jegliche Haftung für Schäden an den betroffenen Geräten (Wechselrichter, Batterie, PV-Anlage, usw.) ab, welche durch unsachgemässe Nutzung dieser Funktion entstehen können!**
 
   ### 5. Fehlersuche
   Die Debug-Funktion der Instanz liefert detaillierte Informationen über die Konvertierung der Werte und vom ModBus zurückgegebenen Fehler.

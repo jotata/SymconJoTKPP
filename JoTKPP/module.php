@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   17.01.2021 21:52:16
+ * @Last Modified:   17.01.2021 22:53:57
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -108,7 +108,7 @@ class JoTKPP extends JoTModBus {
                 $ident = IPS_GetObject($cId)['ObjectIdent'];
                 if ($ident !== '') {//Nur Instanz-Variablen verarbeiten
                     $vars[$ident] = true;
-                    if (array_search($ident, $pollIdents) === false || array_key_exists($ident, $mbConfig) === false) {//Wenn in PollIdents ODER ModBusConfig nicht mehr vorhanden - löschen
+                    if (array_search($ident, $pollIdents) === false || $this->IsIdentAvailable($ident) === false) { //Wenn in PollIdents ODER ModBusConfig nicht mehr vorhanden - löschen
                         $vars[$ident] = false;
                     }
                 }
@@ -843,23 +843,23 @@ class JoTKPP extends JoTModBus {
 
     /**
      * Prüft ob $Ident in der ModBus-Config für $FWVersion vorhanden ist.
-     * @param $Ident der zu lesende ModBus-Parameter
-     * @param optional $FWVersion die geprüft werden soll
+     * @param string $Ident der zu lesende ModBus-Parameter
+     * @param string $FWVersion (optinal) die geprüft werden soll
      * @access private
      * @return boolean
      */
     private function IsIdentAvailable(string $Ident, string $FWVersion = '') {
-        if ($FWVersion == '') {
-            $FWVersion = json_decode($this->GetBuffer('DeviceInfo'), true);
-            if (!array_key_exists('FWVersion', $FWVersion)) {
-                $FWVersion = '??';
+        if ($FWVersion === '') {
+            $DeviceInfo = json_decode($this->GetBuffer('DeviceInfo'), true);
+            if (is_null($DeviceInfo) || !array_key_exists('FWVersion', $DeviceInfo)) { //Beim initialen Lesen der Geräte-Infos ist FW-Version noch nicht verfügbar
+                $FWVersion = 1000;
             } else {
-                $FWVersion = $FWVersion['FWVersion'];
+                $FWVersion = $DeviceInfo['FWVersion'];
             }
         }
         $mbConfig = $this->GetModBusConfig();
-        if (array_key_exists($Ident, $mbConfig)) {//Konfiguration ist vorhanden
-            if (floatval($FWVersion) >= floatval($mbConfig[$Ident]['FWVersion'])) {//FW-Version passt
+        if (array_key_exists($Ident, $mbConfig)) { //Konfiguration ist vorhanden
+            if (floatval($FWVersion) >= $mbConfig[$Ident]['FWVersion']) { //FW-Version passt
                 return true;
             }
         }

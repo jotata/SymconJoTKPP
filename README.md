@@ -152,6 +152,7 @@ Version 2.0 (BETA)
 - FIX: Änderungen am Gateway & ClientSocket werden nun erkannt und Gerät wird mit neuer Konfiguration neu ausgelesen.
 - FIX: Fehler-Korrektur der folgenden Idents (falsche Daten-Übermittlung (Endianess) durch Wechselrichter): EMState, BTWorkCapacity, BTGrossCapacity, ACGenEnergy
 - FIX: Fehler in FW-Update-Check behoben, wenn URL nicht erreichbar ist.
+- FIX: Profil-Icons für Batterie-Status waren vertauscht.
 
 Version 1.6
 - Restliche noch fehlende Geräte-Parmeter gemäss KOSTAL-Spezifikation 1.9 hinzugefügt (lesend).

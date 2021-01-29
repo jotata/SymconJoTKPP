@@ -287,7 +287,7 @@
             {
                 "Value": -1,
                 "Name": "charging",
-                "Icon": "Shuffle",
+                "Icon": "Download",
                 "Color": -1
             },{
                 "Value": 0,
@@ -297,7 +297,7 @@
             },{
                 "Value": 1,
                 "Name": "discharging",
-                "Icon": "Download",
+                "Icon": "Shuffle",
                 "Color": -1
             }
         ]

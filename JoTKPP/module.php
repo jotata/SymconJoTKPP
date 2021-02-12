@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   12.02.2021 15:54:55
+ * @Last Modified:   12.02.2021 16:10:18
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -84,7 +84,7 @@ class JoTKPP extends JoTModBus {
         }//Ende Migration
 
         //Geräte-Informationen initialisieren (beim Erstellen & Aktualisieren der Instanz)
-        if ($this->GetBuffer('DeviceInfo') == ''){
+        if ($this->GetBuffer('DeviceInfo') == '') {
             $this->GetDeviceInfo();
         }
 

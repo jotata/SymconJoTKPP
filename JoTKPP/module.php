@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   12.02.2021 15:24:24
+ * @Last Modified:   12.02.2021 15:54:55
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -228,7 +228,8 @@ class JoTKPP extends JoTModBus {
         //Variabeln in $form ersetzen
         $form = file_get_contents(__DIR__ . '/form.json');
         $form = str_replace('$DeviceString', $device['String'], $form);
-        $form = str_replace('"$DeviceInfoVisible"', $this->ConvertToBoolStr($device['Error'], true), $form); //Visible für 'DeviceInfo' setzen
+        //$form = str_replace('"$DeviceInfoVisible"', $this->ConvertToBoolStr($device['Error'], true), $form); //Visible für 'DeviceInfo' setzen
+        $form = str_replace('"$DeviceNoError"', $this->ConvertToBoolStr($device['Error'], true), $form); //Visible für 'DeviceInfo' setzen
         $diValues = [];
         foreach ($device as $ident => $value) { //DeviceInfo aufbereiten
             if ($ident != 'String' && $ident != 'Error') {
@@ -251,7 +252,8 @@ class JoTKPP extends JoTModBus {
      * @return array mit Geräte-Informationen oder Fehlermeldung
      */
     public function GetDeviceInfo() {
-        $this->UpdateFormField('DeviceInfo', 'visible', false);
+        $this->UpdateFormField('DeviceInfo', 'enabled', false);
+        $this->UpdateFormField('ReadNow', 'enabled', false);
         $device = json_decode($this->GetBuffer('DeviceInfo'), true); //Aktuell bekannte Geräte-Parameter aus Cache holen
 
         //Prüfen ob es sich um einen Kostal Wechselrichter handelt
@@ -295,7 +297,8 @@ class JoTKPP extends JoTModBus {
 
         $device['String'] = $device['Manufacturer'] . ' ' . $device['ProductName'] . ' ' . $device['PowerClass'] . " ($serialNr) - " . $device['NetworkName'];
         $this->UpdateFormField('Device', 'caption', $device['String']);
-        $this->UpdateFormField('DeviceInfo', 'visible', true);
+        $this->UpdateFormField('DeviceInfo', 'enabled', true);
+        $this->UpdateFormField('ReadNow', 'enabled', true);
 
         $this->SetBuffer('DeviceInfo', json_encode($device)); //Aktuell bekannte Geräte-Parameter im Cache zwischenspeichern
         return $device;

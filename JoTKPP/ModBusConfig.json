@@ -109,7 +109,7 @@
       "MBType": "$MB_BigEndian",
       "Quantity": 8,
       "RFunction": "$FC_Read_HoldingRegisters",
-      "FWVersion": 1.42
+      "FWVersion": 0
     },
     {
       "Address": 30,
@@ -149,7 +149,7 @@
       "VarType": "$VT_UnsignedInteger",
       "Quantity": 2,
       "RFunction": "$FC_Read_HoldingRegisters",
-      "FWVersion": 1.42
+      "FWVersion": 1.18
     },
     {
       "Address": 38,
@@ -160,7 +160,7 @@
       "MBType": "$MB_BigEndian",
       "Quantity": 8,
       "RFunction": "$FC_Read_HoldingRegisters",
-      "FWVersion": 1.42
+      "FWVersion": 0
     },
     {
       "Address": 46,
@@ -980,7 +980,7 @@
       "MBType": "$MB_BigEndian",
       "Quantity": 32,
       "RFunction": "$FC_Read_HoldingRegisters",
-      "FWVersion": 1.42
+      "FWVersion": 0
     },
     {
       "Address": 416,
@@ -1187,7 +1187,7 @@
       "MBType": "$MB_BigEndian",
       "Quantity": 16,
       "RFunction": "$FC_Read_HoldingRegisters",
-      "FWVersion": 1.42
+      "FWVersion": 0
     },
     {
       "Address": 559,
@@ -1310,7 +1310,7 @@
       "MBType": "$MB_BigEndian",
       "Quantity": 32,
       "RFunction": "$FC_Read_HoldingRegisters",
-      "FWVersion": 1.42
+      "FWVersion": 1.18
     },
     {
       "Address": 800,
@@ -1321,7 +1321,7 @@
       "MBType": "$MB_BigEndian",
       "Quantity": 32,
       "RFunction": "$FC_Read_HoldingRegisters",
-      "FWVersion": 1.42
+      "FWVersion": 1.18
     },
     {
       "Address": 832,

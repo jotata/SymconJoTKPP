@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            JoTKPP_Test.php
  * @Create Date:     28.11.2020 17:41:30
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   15.01.2021 14:18:10
+ * @Last Modified:   12.02.2021 11:07:31
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -54,6 +54,7 @@ class JoTKPP_Test extends TestCase {
         $MBType = ['$MB_BigEndian'];
         $RFunction = ['$FC_Read_HoldingRegisters'];
         $WFunction = ['$FC_Write_SingleHoldingRegister', '$FC_Write_MultipleHoldingRegisters'];
+        $FWVersion0 = ['Manufacturer', 'SerialNr', 'SoftwareVersionMC', 'NetworkName'];
 
         //Check JSON Syntax Errors
         $json = file_get_contents($file);
@@ -71,7 +72,11 @@ class JoTKPP_Test extends TestCase {
                     $this->assertIsString($c['Group'], $a . 'Wrong definition of \'Group\'.');
                     $this->assertIsString($c['Name'], $a . 'Wrong definition of \'Name\'.');
                     $this->assertContains($c['VarType'], $VarType, $a . 'Wrong definition of \'VarType\'. Allowed: ' . implode(', ', $VarType));
-                    $this->assertIsFloat($c['FWVersion'], $a . 'Wrong definition of \'FWVersion\'.');
+                    if (array_search($c['Ident'], $FWVersion0) !== false) { //FWVersion für diese Werte muss 0 sein, da diese immer gelesen werden müssen
+                        $this->assertEquals(0, $c['FWVersion'], $a . 'FWVersion must be 0 for Ident ' . $c['Ident']);
+                    } else { //für den Rest muss FWVersion float sein
+                        $this->assertIsFloat($c['FWVersion'], $a . 'Wrong definition of \'FWVersion\'.');
+                    }
                     if (array_key_exists('Profile', $c)) { //optional
                         $this->assertIsString($c['Profile'], $a . 'Wrong definition of \'Profile\'.');
                     }

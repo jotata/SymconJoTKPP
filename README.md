@@ -43,7 +43,6 @@ Das Modul wird grundsätzlich für einen Kostal PLENTICORE Plus 7.0 programmiert
 Da Kostal aber für alle Geräte der Serien ["PLENTICORE plus"](https://www.kostal-solar-electric.com/de-de/products/hybrid-inverters/plenticore-plus) & ["PIKO IQ"](https://www.kostal-solar-electric.com/de-de/products/string-inverter/piko-iq) dieselben ModBus-Spezifikationen herausgibt, sollten auch andere Geräte dieser Serien funktionieren.
 
 Hersteller: KOSTAL
-
 Modelle:
 - PLENTICORE plus 4.2
 - PLENTICORE plus 5.5
@@ -55,9 +54,6 @@ Modelle:
 - PIKO IQ 7.0
 - PIKO IQ 8.5
 - PIKO IQ 10
-
-Da Kostal auch die SunSpec-Definitionen für ModBus implementiert, könnte das Modul ev. sogar mit Wechselrichtern von anderen Herstellern funktionieren.
-Leider kann ich das nicht testen, da ich kein solches Gerät verfügbar habe. Für ein Feedback zur Funktion mit anderen Modellen / Herstellern bin ich euch daher sehr dankbar.
 
 ## 4. Modul-Installation / Update
 Die Installation erfolgt über den IPS Module-Store. In der Suche einfach "JoTKPP" eingeben und die Installation starten.

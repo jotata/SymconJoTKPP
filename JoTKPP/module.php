@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   12.02.2021 13:54:54
+ * @Last Modified:   12.02.2021 15:24:24
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -82,6 +82,11 @@ class JoTKPP extends JoTModBus {
             IPS_ApplyChanges($this->InstanceID);
             return;
         }//Ende Migration
+
+        //Geräte-Informationen initialisieren (beim Erstellen & Aktualisieren der Instanz)
+        if ($this->GetBuffer('DeviceInfo') == ''){
+            $this->GetDeviceInfo();
+        }
 
         //Variablen initialisieren
         $mbConfig = $this->GetModBusConfig();
@@ -258,7 +263,7 @@ class JoTKPP extends JoTModBus {
             $device['Error'] = true;
             $this->UpdateFormField('Device', 'caption', $device['String']);
             $this->LogMessage($device['String'] . " Manufacturer: '$mfc'", KL_ERROR);
-            if ($this->GetStatus() == self::STATUS_Ok_InstanceActive) {//ModBus-Verbindung OK, aber falsche Antwort
+            if ($this->GetStatus() == self::STATUS_Ok_InstanceActive) { //ModBus-Verbindung OK, aber falsche Antwort
                 $this->SetStatus(self::STATUS_Error_WrongDevice);
             }
             return $device;

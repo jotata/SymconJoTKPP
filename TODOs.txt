@@ -3,7 +3,7 @@
  * @File:            TODOs.txt
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   17.01.2021 21:09:21
+ * @Last Modified:   12.02.2021 13:37:31
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -44,7 +44,11 @@ x Optimierung RequestRead - Loop verlassen, sobald alle angefordeten Idents ausg
 x Fehler bei ApplyChanges mit Index 'CurrentFWOnline'
 x Fehler bei ApplyChanges wenn Ident entfernt wird
 x Kontrolle Reload wenn ClientSocket ändert
--> Prozess RequestRead bleibt bei Update wieder hängen
+x In ThrowMessage prüfen, ob Konfigurationsform geladen wird. Falls ja, kein echo ausgeben
+x Lesen von Manufacturer & FW-Version auch bei veralteter FW (FWVersion 0.00)
+x In ModulTests prüfen ob FWVersion für Manufacturer & FWVersion immer 0.00 ist
+x Optimierung IsIdentAvailable mit neuen FW-Versionen für Manufacturer & FWVersion
+- Prozess RequestRead bleibt bei Update wieder hängen
 
 FEATURES & FIXES V2.1
 - Umbau JoT_ModBus.php - WriteModBus, sobald Problem mit UTF-8 Konvertierung im IPS-Datenfluss behoben ist (ab IPS 5.6?) - https://www.symcon.de/forum/threads/41294-Modbus-TCP-BOOL-Wert-senden?p=447472#post447472

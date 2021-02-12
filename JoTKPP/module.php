@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   17.01.2021 22:53:57
+ * @Last Modified:   12.02.2021 12:17:55
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -164,10 +164,7 @@ class JoTKPP extends JoTModBus {
     public function GetConfigurationForm() {
         $values = [];
         $device = $this->GetDeviceInfo();
-        $fwVersion = 0;
-        if (array_key_exists('FWVersion', $device) && $device['FWVersion'] != '') {
-            $fwVersion = floatval($device['FWVersion']);
-        }
+        $fwVersion = @floatval($device['FWVersion']); //= 0.00 falls nicht definiert
         $pollIdents = $this->ReadAttributeString('PollIdents');
         $this->SetBuffer('TempPollIdents', $pollIdents);
         $mbConfig = $this->GetModBusConfig();
@@ -256,11 +253,11 @@ class JoTKPP extends JoTModBus {
         $read = $this->Translate('Reading device information...');
         $this->UpdateFormField('Device', 'caption', $read . '(Manufacturer)');
         $mfc = $this->RequestReadIdent('Manufacturer');
-        if ($mfc !== 'KOSTAL') {
+        if (is_null($mfc) || $mfc !== 'KOSTAL') {
             $device['String'] = $this->Translate('Device information could not be read. Gateway settings correct?');
             $device['Error'] = true;
             $this->UpdateFormField('Device', 'caption', $device['String']);
-            $this->LogMessage($device['String'], KL_ERROR);
+            $this->LogMessage($device['String'] . " Manufacturer: '$mfc'", KL_ERROR);
             if ($this->GetStatus() == self::STATUS_Ok_InstanceActive) {//ModBus-Verbindung OK, aber falsche Antwort
                 $this->SetStatus(self::STATUS_Error_WrongDevice);
             }
@@ -276,19 +273,18 @@ class JoTKPP extends JoTModBus {
         $device['SerialNr'] = $serialNr;
 
         //Folgende Werte könnten ändern, daher immer auslesen
-        $this->UpdateFormField('Device', 'caption', $read . '(NetworkName)');
-        $device['NetworkName'] = $this->RequestReadIdent('NetworkName');
         $this->UpdateFormField('Device', 'caption', $read . '(SoftwareVersionMC)');
         $device['FWVersion'] = $this->RequestReadIdent('SoftwareVersionMC');
+        $this->SetBuffer('DeviceInfo', json_encode($device)); //FW-Version sofort in Buffer schreiben, damit diese für die restlichen Werte zur Verfügung steht
+        $this->UpdateFormField('Device', 'caption', $read . '(NetworkName)');
+        $device['NetworkName'] = $this->RequestReadIdent('NetworkName');
 
         //unbekannte Werte vom Gerät auslesen
         $idents = ['ProductName', 'PowerClass', 'BTReadyFlag', 'SensorType', 'BTType', 'BTGrossCapacity', 'BTWorkCapacity', 'BTManufacturer', 'NumberPVStrings', 'HardwareVersion'];
         foreach ($idents as $ident) {
             if (!array_key_exists($ident, $device) || is_null($device[$ident])) {
-                if ($this->IsIdentAvailable($ident, $device['FWVersion'])) {
-                    $this->UpdateFormField('Device', 'caption', $read . "($ident)");
-                    $device[$ident] = $this->RequestReadIdent($ident);
-                }
+                $this->UpdateFormField('Device', 'caption', $read . "($ident)");
+                $device[$ident] = $this->RequestReadIdent($ident);
             }
         }
 
@@ -844,18 +840,14 @@ class JoTKPP extends JoTModBus {
     /**
      * Prüft ob $Ident in der ModBus-Config für $FWVersion vorhanden ist.
      * @param string $Ident der zu lesende ModBus-Parameter
-     * @param string $FWVersion (optinal) die geprüft werden soll
+     * @param string $FWVersion (optional) die geprüft werden soll
      * @access private
      * @return boolean
      */
     private function IsIdentAvailable(string $Ident, string $FWVersion = '') {
         if ($FWVersion === '') {
             $DeviceInfo = json_decode($this->GetBuffer('DeviceInfo'), true);
-            if (is_null($DeviceInfo) || !array_key_exists('FWVersion', $DeviceInfo)) { //Beim initialen Lesen der Geräte-Infos ist FW-Version noch nicht verfügbar
-                $FWVersion = 1000;
-            } else {
-                $FWVersion = $DeviceInfo['FWVersion'];
-            }
+            $FWVersion = @floatval($DeviceInfo['FWVersion']); //Falls noch nicht definiert, wird 0.00 verwendet
         }
         $mbConfig = $this->GetModBusConfig();
         if (array_key_exists($Ident, $mbConfig)) { //Konfiguration ist vorhanden

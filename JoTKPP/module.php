@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   12.02.2021 16:10:18
+ * @Last Modified:   16.02.2021 21:57:28
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -83,12 +83,8 @@ class JoTKPP extends JoTModBus {
             return;
         }//Ende Migration
 
-        //Geräte-Informationen initialisieren (beim Erstellen & Aktualisieren der Instanz)
-        if ($this->GetBuffer('DeviceInfo') == '') {
-            $this->GetDeviceInfo();
-        }
-
         //Variablen initialisieren
+        $fwVersion = @floatval(json_decode($this->GetBuffer('DeviceInfo'), true)['FWVersion']); //Falls noch nicht initialisiert wird 0 zurückgegeben
         $mbConfig = $this->GetModBusConfig();
         if (array_search('TempPollIdents', $this->GetBufferList()) === false) { //Buffer 'TempPollIdents' ist nicht initialisiert (GetConfigurationForm() wurde nie aufgerufen)
             $pollIdents = explode(' ', $this->ReadAttributeString('PollIdents'));
@@ -113,7 +109,10 @@ class JoTKPP extends JoTModBus {
                 $ident = IPS_GetObject($cId)['ObjectIdent'];
                 if ($ident !== '') {//Nur Instanz-Variablen verarbeiten
                     $vars[$ident] = true;
-                    if (array_search($ident, $pollIdents) === false || $this->IsIdentAvailable($ident) === false) { //Wenn in PollIdents ODER ModBusConfig nicht mehr vorhanden - löschen
+                    //Wenn in PollIdents ODER ModBusConfig nicht mehr vorhanden - löschen
+                    //Wenn in aktueller FW-Version nicht vorhanden - löschen
+                    //Wenn bei einem Restart von IPS ev. die GW-Instanz noch nicht verfügabr ist, ist $fwVersion noch 0 und Verfügbarkeit kann/darf nicht überprüft werden, sonst wird Variable immer gelöscht.
+                    if (array_search($ident, $pollIdents) === false || ($fwVersion > 0 && $this->IsIdentAvailable($ident) === false)) {
                         $vars[$ident] = false;
                     }
                 }
@@ -846,8 +845,7 @@ class JoTKPP extends JoTModBus {
      */
     private function IsIdentAvailable(string $Ident, string $FWVersion = '') {
         if ($FWVersion === '') {
-            $DeviceInfo = json_decode($this->GetBuffer('DeviceInfo'), true);
-            $FWVersion = @floatval($DeviceInfo['FWVersion']); //Falls noch nicht definiert, wird 0.00 verwendet
+            $FWVersion = @floatval(json_decode($this->GetBuffer('DeviceInfo'), true)['FWVersion']); //Falls noch nicht definiert, wird 0 verwendet
         }
         $mbConfig = $this->GetModBusConfig();
         if (array_key_exists($Ident, $mbConfig)) { //Konfiguration ist vorhanden

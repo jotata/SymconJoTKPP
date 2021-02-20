@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   16.02.2021 21:57:28
+ * @Last Modified:   20.02.2021 14:52:44
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -310,7 +310,7 @@ class JoTKPP extends JoTModBus {
      */
     public function MessageSink($TimeStamp, $SenderID, $MessageID, $Data) {
         $gwID = IPS_GetInstance($this->InstanceID)['ConnectionID'];
-        $ioID = IPS_GetInstance($gwID)['ConnectionID'];
+        $ioID = intval(@IPS_GetInstance($gwID)['ConnectionID']); //=0 wenn $gwID nicht mehr vorhanden ist - wird via FM_CONNECT der Instanz korrigiert, sobald User wieder einen gültigen GW einstellt
         $this->SetModBusType();
         if ($MessageID === IM_CONNECT) { //Instanz verfügbar
             $this->SendDebug('Instance ready', '', 0);
@@ -603,7 +603,8 @@ class JoTKPP extends JoTModBus {
      */
     private function SetModBusType() {
         $mbType = self::MB_LittleEndian_ByteSwap;
-        if (IPS_GetProperty(IPS_GetInstance($this->InstanceID)['ConnectionID'], 'SwapWords') === false) {
+        $gwID = IPS_GetInstance($this->InstanceID)['ConnectionID'];
+        if (IPS_ObjectExists($gwID) && IPS_GetProperty($gwID, 'SwapWords') === false) {
             $mbType = self::MB_BigEndian;
         }
         $this->WriteAttributeInteger('MBType', $mbType);

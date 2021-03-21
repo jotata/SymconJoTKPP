@@ -137,7 +137,11 @@ Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modu
 | JoTKPP | Device | Kostal     | PIKO IQ         | JoTKPP | {E64278F5-1942-5343-E226-8673886E2D05} |
 
 ### 2. Changelog
-Version 2.0 (BETA)
+Version 2.1
+- FIX: Bei aktivem Polling wird nach einem Neustart von IPS nun kein Fehler mehr im Log generiert.
+- Migrations-Funktionen für Update von Versionen < 1.4 entfernt
+
+Version 2.0
 - Schreiben für Batterie-Management und AC-Control eingebaut (Details siehe [Batterie-Management](#4-batterie-management)).
 - Button 'Jetzt lesen' im Konfigurations-Form liest alle ausgewählten Idents einmalig aus.
 - LED für Lese-/Schreib-Aktivität im Konfigurations-Form hinzugefügt.

@@ -3,54 +3,20 @@
  * @File:            TODOs.txt
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   12.02.2021 13:37:31
+ * @Last Modified:   21.03.2021 18:48:10
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
  *                   (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
  */
 
+FIXES V2.1
+x BUG: Forum https://community.symcon.de/t/modul-jotkpp-solar-wechselrichter-kostal-plenticore-plus-piko-iq/50857/56
+  - FW-Version wurde nach einem Neustart von IPS nicht ausgelesen => $this->GetDeviceInfo in MessageSink eingebaut
+x Migrations-Funktionen für Updates < V1.4 entfernen
 
-x BUG: Forum https://www.symcon.de/forum/threads/41720-Modul-JoTKPP-Solar-Wechselrichter-Kostal-PLENTICORE-plus-PIKO-IQ?p=445149#post445149 analysieren
-  - Funktion für Logging von fehlerhaften Werten eingebaut -> Warte auf weiteres Feedback
-x BUG: Ident 'EMState' liefert falschen Wert
-  - Wert wird vom WR als BigEndian zurück gegeben (RAW: 00 00 00 08 -> Swap: 00 08 00 00)
-  - InverterState (gleiche Config wie EMState) wird korrekt zurückgegeben (RAW: 00 06 00 00 -> Swap: 00 00 00 06)
-  - ist also ein FW-Bug vom WR -> MBType in Config eingebaut um 'EMState' und Strings per BigEndian auszulesen
-
-FEATURES & FIXES V2.0
-x Umstellung für Berechnete Werte mit Address = 0
-x Umstellung auf RFunction & WFunction
-x Zentrale Funktion für Ausgabe von Fehlermeldungen definieren
-x Anzeige Access (RFunction / WFunction) im Formular
-x Bestätigung für Nutzung von WFunction in Formular
-x Traits & ModBus als separate Libraries einbinden
-x Button "Jetzt lesen" in Konfigurations-Formular einbauen (inkl. RX/TX LED)
-x WriteModBus integrieren
-  x Swap-Funktionen anpassen
-  x RequestAction integrieren
-  x Funktion ConvertMBtoPHP überarbeiten
-  x Fehler betreffend TransactionID im EventLog beim Schreiben via ClientSocket entfernen
-x Integration neue ModBus-Spezifikationen Version 1.9
-  x Allgemeine Anpassungen
-  x Prüfung auf FW-Version und Aktivierung nur möglich wenn diese erfüllt ist
-  x ModBus WordSwap auf WR berücksichtigen
-  x Werte mit Scale-Factoren
-  x Kapitel 3.3 "Power-Management" lesend
-  x Kapitel 3.4 "Batterie-Management" lesend
-  x Kapitel 3.3 "Power-Management" schreibend
-  x Kapitel 3.4 "Batterie-Management" schreibend
-x Optimierung RequestRead - Loop verlassen, sobald alle angefordeten Idents ausgelesen sind
-x Fehler bei ApplyChanges mit Index 'CurrentFWOnline'
-x Fehler bei ApplyChanges wenn Ident entfernt wird
-x Kontrolle Reload wenn ClientSocket ändert
-x In ThrowMessage prüfen, ob Konfigurationsform geladen wird. Falls ja, kein echo ausgeben
-x Lesen von Manufacturer & FW-Version auch bei veralteter FW (FWVersion 0.00)
-x In ModulTests prüfen ob FWVersion für Manufacturer & FWVersion immer 0.00 ist
-x Optimierung IsIdentAvailable mit neuen FW-Versionen für Manufacturer & FWVersion
+FEATURES & FIXES V2.2
 - Prozess RequestRead bleibt bei Update wieder hängen
-
-FEATURES & FIXES V2.1
 - Umbau JoT_ModBus.php - WriteModBus, sobald Problem mit UTF-8 Konvertierung im IPS-Datenfluss behoben ist (ab IPS 5.6?) - https://www.symcon.de/forum/threads/41294-Modbus-TCP-BOOL-Wert-senden?p=447472#post447472
 
 FEATURES & FIXES V??

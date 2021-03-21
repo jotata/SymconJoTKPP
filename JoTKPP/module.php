@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   20.02.2021 14:52:44
+ * @Last Modified:   21.03.2021 18:33:39
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -314,6 +314,7 @@ class JoTKPP extends JoTModBus {
         $this->SetModBusType();
         if ($MessageID === IM_CONNECT) { //Instanz verfügbar
             $this->SendDebug('Instance ready', '', 0);
+            $this->GetDeviceInfo();
         } elseif ($MessageID === FM_CONNECT) { //Gateway / ClientSocket wurde geändert
             $this->SendDebug('Connection changed', "Gateway #$gwID - I/O #$ioID", 0);
             $this->RegisterOnceTimer('GetDeviceInfo', 'IPS_RequestAction($_IPS["TARGET"], "GetDeviceInfo", "");');

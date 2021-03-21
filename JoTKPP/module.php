@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   21.03.2021 18:33:39
+ * @Last Modified:   21.03.2021 18:51:10
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -40,8 +40,6 @@ class JoTKPP extends JoTModBus {
         $this->ConfigProfiles(__DIR__ . '/ProfileConfig.json', ['$VT_Float' => self::VT_Float, '$VT_Integer' => self::VT_Integer]);
         $this->RegisterAttributeString('PollIdents', '');
         $this->RegisterAttributeInteger('MBType', self::MB_LittleEndian_ByteSwap);
-        $this->RegisterPropertyString('PollIdents', ''); //wird seit V1.4RC2 nicht mehr benötigt, für Migration zu aber noch notwendig
-        $this->RegisterPropertyString('ModuleVariables', ''); //wird seit V1.4 nicht mehr benötigt, für Migration zu 'PollIdents' aber noch notwendig
         $this->RegisterPropertyInteger('PollTime', 0);
         $this->RegisterPropertyInteger('CheckFWTime', 0);
         $this->RegisterPropertyString('SPList', '');
@@ -58,30 +56,6 @@ class JoTKPP extends JoTModBus {
      */
     public function ApplyChanges() {
         parent::ApplyChanges();
-
-        //Migration Propertys < V1.4
-        $oldMV = $this->ReadPropertyString('ModuleVariables');
-        if ($oldMV !== '') {//Alte Property 'ModuleVariables' muss zu neuem Attribut 'PollIdents' konvertiert werden
-            $oldMV = array_column(json_decode($oldMV, true), 'Poll', 'Ident');
-            $pollIdents = $this->ReadAttributeString('PollIdents');
-            foreach ($oldMV as $ident => $poll) {
-                if ($poll) {
-                    $pollIdents = "$pollIdents $ident";
-                }
-            }
-            $this->WriteAttributeString('PollIdents', $pollIdents); //konvertierte Werte für neues Attribut (Anwendung / Speicherung erfolgt mittels ApplyChanges())
-            IPS_SetProperty($this->InstanceID, 'ModuleVariables', ''); //alte Property "ausser Betrieb nehmen"
-            IPS_ApplyChanges($this->InstanceID);
-            return;
-        }//Ende Migration
-        //Migration Propertys < V1.4RC2
-        $oldMV = $this->ReadPropertyString('PollIdents');
-        if ($oldMV !== '') {//Alte Property 'PollIdents' muss zu neuem Attribut 'PollIdents' konvertiert werden
-            $this->WriteAttributeString('PollIdents', $oldMV); //konvertierte Werte in neuem Attribut speichern
-            IPS_SetProperty($this->InstanceID, 'PollIdents', ''); //alte Property "ausser Betrieb nehmen"
-            IPS_ApplyChanges($this->InstanceID);
-            return;
-        }//Ende Migration
 
         //Variablen initialisieren
         $fwVersion = @floatval(json_decode($this->GetBuffer('DeviceInfo'), true)['FWVersion']); //Falls noch nicht initialisiert wird 0 zurückgegeben

@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   21.03.2021 18:51:10
+ * @Last Modified:   02.11.2021 10:13:39
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -499,7 +499,7 @@ class JoTKPP extends JoTModBus {
         $ms = microtime(true);
         $mbConfig = $this->GetModBusConfig();
 
-        if ($this->IsIdentAvailable($ident) === false) { //Ident existiert nicht oder falsche FW-Version
+        if ($this->IsIdentAvailable($Ident) === false) { //Ident existiert nicht oder falsche FW-Version
             $this->ThrowMessage('Unknown Ident(s): %s', $Ident);
             return false;
         }

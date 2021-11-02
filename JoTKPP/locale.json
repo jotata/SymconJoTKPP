@@ -84,7 +84,9 @@
             "idle": "Leerlauf",
             "feed in": "Einspeisung",
             "purchase": "Bezug",
-            "No powermeter": "Kein Stromzähler"
+            "No powermeter": "Kein Stromzähler",
+            "Error while reading data: %s": "Fehler beim Lesen der Daten: %s",
+            "Error while writing data: %s": "Fehler beim Schreiben der Daten: %s"
         }
     }
 }

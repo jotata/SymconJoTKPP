@@ -3,21 +3,20 @@
  * @File:            TODOs.txt
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   21.03.2021 18:48:10
+ * @Last Modified:   02.11.2021 17:35:56
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
  *                   (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
  */
 
-FIXES V2.1
-x BUG: Forum https://community.symcon.de/t/modul-jotkpp-solar-wechselrichter-kostal-plenticore-plus-piko-iq/50857/56
-  - FW-Version wurde nach einem Neustart von IPS nicht ausgelesen => $this->GetDeviceInfo in MessageSink eingebaut
-x Migrations-Funktionen für Updates < V1.4 entfernen
+FIXES V2.2
+x Umbau JoT_ModBus.php - WriteModBus, sobald Problem mit UTF-8 Konvertierung im IPS-Datenfluss behoben ist (ab IPS 5.6?) - https://www.symcon.de/forum/threads/41294-Modbus-TCP-BOOL-Wert-senden?p=447472#post447472
+x BUG: Fehler beim Schreiben von Werten: Undefined variable: ident in /var/lib/symcon/modules/.store/ch.tanner.jot.kpp/JoTKPP/module.php on line 502
 
-FEATURES & FIXES V2.2
+FEATURES & FIXES V2.3
 - Prozess RequestRead bleibt bei Update wieder hängen
-- Umbau JoT_ModBus.php - WriteModBus, sobald Problem mit UTF-8 Konvertierung im IPS-Datenfluss behoben ist (ab IPS 5.6?) - https://www.symcon.de/forum/threads/41294-Modbus-TCP-BOOL-Wert-senden?p=447472#post447472
+- Fehleranalyse SPFeedIn schaltet nich aus bei Strom-Bezug - vermutlich +/- (Bezug/Einspeisung) vertauscht Einspeisung muss negativ sein)
 
 FEATURES & FIXES V??
 - Integration Tests

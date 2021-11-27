@@ -6,14 +6,14 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   27.11.2021 18:49:01
+ * @Last Modified:   27.11.2021 19:46:06
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
  *                   (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
  */
-require_once __DIR__ . '/../libs/JoT_Traits.php';  //Bibliothek mit allgemeinen Definitionen & Traits
-require_once __DIR__ . '/../libs/JoT_ModBus.php';  //Bibliothek für ModBus-Integration
+require_once __DIR__ . '/../libs/JoT_Traits.php'; //Bibliothek mit allgemeinen Definitionen & Traits
+require_once __DIR__ . '/../libs/JoT_ModBus.php'; //Bibliothek für ModBus-Integration
 
 /**
  * JoTKPP ist die Unterklasse für die Integration eines Kostal Wechselrichters PLENTICORE plus.
@@ -294,7 +294,7 @@ class JoTKPP extends JoTModBus {
         } elseif ($MessageID === IM_CHANGESETTINGS) { //Einstellungen im Gateway / ClientSocket wurden geändert
             $this->SendDebug('Connection settings changed', "Connection-Instance #$SenderID", 0);
             $this->RegisterOnceTimer('GetDeviceInfo', 'IPS_RequestAction($_IPS["TARGET"], "GetDeviceInfo", "");');
-        } 
+        }
         if ($MessageID === IM_CONNECT || $MessageID === FM_CONNECT) { //Nachrichten (neu) registrieren
             foreach ($this->GetMessageList() as $id => $msgs) { //alte Nachrichten deaktivieren
                 $this->UnregisterMessage($id, FM_CONNECT);

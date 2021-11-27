@@ -35,7 +35,7 @@ Die Daten werden mittels ModBus abgefragt. Der Benutzer kann frei entscheiden, w
 Das Modul prüft zudem, ob online eine neue FW-Version für den Wechselrichter verfügbar ist.
 
 ## 2. Voraussetzungen
- - IPS 5.5 oder höher  
+ - IPS 6.0 oder höher  
  - Kostal Wechselrichter mit aktivierter ModBus-Schnittstelle
 
 ## 3. Unterstütze Geräte
@@ -43,21 +43,24 @@ Das Modul wird grundsätzlich für einen Kostal PLENTICORE Plus 7.0 programmiert
 Da Kostal aber für alle Geräte der Serien ["PLENTICORE plus"](https://www.kostal-solar-electric.com/de-de/products/hybrid-inverters/plenticore-plus) & ["PIKO IQ"](https://www.kostal-solar-electric.com/de-de/products/string-inverter/piko-iq) dieselben ModBus-Spezifikationen herausgibt, sollten auch andere Geräte dieser Serien funktionieren.
 
 Hersteller: KOSTAL
-Modelle:
-- PLENTICORE plus 4.2
-- PLENTICORE plus 5.5
-- PLENTICORE plus 7.0 (getestet)
-- PLENTICORE plus 8.5
-- PLENTICORE plus 10 
-- PIKO IQ 4.2
-- PIKO IQ 5.5
-- PIKO IQ 7.0
-- PIKO IQ 8.5
-- PIKO IQ 10
+| Modell              | MC-Version* | Status       |
+| :------------------ | :---------: | :----------: |
+| PLENTICORE plus 4.2 | ?           | bestätigt    |
+| PLENTICORE plus 5.5 | ?           | bestätigt    |
+| PLENTICORE plus 7.0 | 1.57        | getestet     |
+| PLENTICORE plus 8.5 | ?           | bestätigt    |
+| PLENTICORE plus 10  | ?           | bestätigt    | 
+| PIKO IQ 4.2         |             |              |
+| PIKO IQ 5.5         |             |              |
+| PIKO IQ 7.0         |             |              |
+| PIKO IQ 8.5         |             |              |
+| PIKO IQ 10          |             |              |
+
+*) Firmware MC-Version (neuere FW sollte funktionieren, hat aber ev. mehr/weniger Werte als im Modul verfügbar sind). Ansonste bitte eine Meldung im [Forum](https://www.symcon.de/forum/threads/41720-Modul-JoTKPP-Solar-Wechselrichter-Kostal-PLENTICORE-plus-PIKO-IQ) hinterlassen. Die ModBus-Spezifikationen vom 17.09.2020 (Rev. 1.9 ab FW-Version 1.44) sind integriert.
 
 ## 4. Modul-Installation / Update
-Die Installation erfolgt über den IPS Module-Store. In der Suche einfach "JoTKPP" eingeben und die Installation starten.
-Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modul auf "Aktualisieren" klicken.
+Die Installation erfolgt über den IPS Module-Store. In der Suche einfach **JoTKPP** oder ***Kostal** eingeben und die Installation starten.
+Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modul auf *Aktualisieren* klicken.
 
 **Das Modul wird für den privaten Gebrauch kostenlos zur Verfügung gestellt.**
 
@@ -68,57 +71,71 @@ Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modu
 ## 5. Einrichten der Instanz in IP-Symcon
   ### 1. Erstellen einer neuen Instanz
    1. Neue Instanz hinzufügen
-   2. Im Schnellfilter "Kostal" eingeben
-   3. Das Gerät "Kostal PLENTICORE plus" auswählen
+   2. Im Schnellfilter *Kostal* eingeben
+   3. Das Gerät *Kostal PLENTICORE plus* auswählen
    4. Name & Ort anpassen (optional)
    5. Falls noch keine ModBus Gateway Instanz vorhanden ist, wird eine solche erstellt. Diese entsprechend konfigurieren:
-      - Modus: Modbus TCP
-      - Geräte-ID: 71 (kann auf dem Wechselrichter in den Modbus-Einstellungen nachgeschaut werden)
-      - Swap LSW/MSW for 32Bit/64Bit values (kann auf dem Wechselrichter in den Modbus-Einstellungen nachgeschaut werden):
+      - **Modus:** Modbus TCP
+      - **Geräte-ID:** 71 (kann auf dem Wechselrichter in den Modbus-Einstellungen nachgeschaut werden)
+      - **Swap LSW/MSW for 32Bit/64Bit values** (kann auf dem Wechselrichter in den Modbus-Einstellungen nachgeschaut werden):
         - Off = big-endian (ABCD) Sunspec
         - On = little-endian (CDAB) Standard Modbus
  
   ### 2. Konfiguration der Instanz
-   - Abfrage-Intervall: Definiert die Zeit, in welcher die Werte via ModBus abgefragt werden sollen. Es werden nur die Werte abgefragt, bei welchen "Aktiv" angehakt ist.
-   - Jetzt lesen: Liest im Hintergrund alle aktiven Idents aus und schreibt die Werte in die Instanz-Variablen.
-   - Gruppe / Ident: Diese Bezeichnung kann zur Abfrage einer Gruppe von Werten oder einzelner Werte mit der entsprechenden [RequestRead-Methode](#3-modul-funktionen) verwendet werden.
-   - Name: Die Bezeichnung der Instanz-Variable gemäss Kostal Spezifikation.
-   - Eigener Name: Wenn euch die Bezeichnung der Instanz-Variabeln nicht gefällt, könnt ihr den Namen direkt in der Variable anpassen. Der neue Name wird dann in dieser Spalte angezeigt.
-   - Profil: Standard-Profil des Modules.
-   - Eigenes Profil: Ihr könnt der Instanz-Variable ein eigenes Profil zuweisen (z.B. für Batterie-Ladezustand). Dieses wird dann hier angezeigt.
-   - Aktiv: Wenn der Haken gesetzt ist, wird einen entsprechende Instanz-Variable erstellt. VORSICHT: Wird der Haken entfernt und die Konfiguration gespeichert, so wird die entsprechende Instanz-Variable gelöscht.
-   - Konfiguration PV-Überschuss (nur sichtbar, wenn min. eine Geräte-Eigenschaft aus der Gruppe 'Surplus' aktiviert ist):
-     - Für jeden der Surplus-Idents können beliebig viele Konfigurationen erstellt werden. Diese werden nach Ein-Wert absteigend (Höchster zuerst) für die Berechnung genutzt. Wenn also mehrere Bedingungen erfüllt sind, wird die Variable immer auf den Wert des höchsten aktiven Ein-Wertes geschaltet.
-     - Ein-Wert: Ist der Überschuss grösser/gleich dieser Wert, wird der Ein-Zähler um eins erhöht. Geht der Überschuss unter diesen Wert, wird der Ein-Zähler auf 0 zurück gesetzt.
-     - Aus-Differenz: Wenn der Überschuss für diese Konfiguration einmal aktiviert ist, wird der Aus-Zähler um eins erhöht, wenn der Überschuss auf diese Differenz unter den Ein-Wert oder tiefer sinkt.
-     - Ein/Aus-Zähler: Bei jeder Abfrage wird der interne Zähler um eins erhöht, wenn die Ein/Aus-Bedingung erfüllt ist. Ist der interne Zähler grösser/gleich dem hier angegebenen Wert, wird die Variable auf den Wert (bzw. beim Aus-Zähler auf 0) geschaltet.
-     - Wert: Der Ident wird auf diesen Wert geschaltet, wenn die Bedingungen dieser Konfiguration erfüllt sind und diese Konfiguration jene mit dem höchsten aktiven Ein-Wert ist.
-     - Aktiv: Nur aktivierte Konfigurationen werden für die Berechnung berücksichtigt.
-   - Zusätzliche Abfragen erstellen:
+   - **Abfrage-Intervall:** Definiert die Zeit, in welcher die Werte via ModBus abgefragt werden sollen. Es werden nur die Werte abgefragt, bei welchen *Aktiv* angehakt ist.
+   - **Jetzt lesen:** Liest im Hintergrund alle aktiven Idents aus und schreibt die Werte in die Instanz-Variablen.
+   - **Gruppe / Ident:** Diese Bezeichnung kann zur Abfrage einer Gruppe von Werten oder einzelner Werte mit der entsprechenden [RequestRead-Methode](#3-modul-funktionen) verwendet werden.
+   - **Name:** Die Bezeichnung der Instanz-Variable gemäss Kostal Spezifikation.
+   - **Eigener Name:** Wenn euch die Bezeichnung der Instanz-Variabeln nicht gefällt, könnt ihr den Namen direkt in der Variable anpassen. Der neue Name wird dann in dieser Spalte angezeigt.
+   - **Profil:** Standard-Profil des Modules.
+   - **Eigenes Profil:** Ihr könnt der Instanz-Variable ein eigenes Profil zuweisen (z.B. für Batterie-Ladezustand). Dieses wird dann hier angezeigt.
+   - **Aktiv:** Wenn der Haken gesetzt ist, wird einen entsprechende Instanz-Variable erstellt. **VORSICHT:** Wird der Haken entfernt und die Konfiguration gespeichert, so wird die entsprechende Instanz-Variable gelöscht.
+   - **Zusätzliche Abfragen erstellen:**
      - Gewünsche Gruppen ODER Idents anklicken -> diese werden unten aufgelistet und können von hier direkt kopiert werden um ein Ereignis anzupassen oder in einer Modulfunktion abzufragen.
      - Einen Namen für das Ereignis eingeben (optional)
      - Den Ereignis-Typ auswählen
-     - Das Ereignis mit dem Button "Ereignis erstellen" einrichten (das Ereignis wird nur erstellt, jedoch nicht aktiviert)
-     - Mit dem zusätzliche Button "Ereignis (xxxxx) prüfen" kann das neu erstelle Ereignis direkt geöffnet und angepasst / aktiviert werden
+     - Das Ereignis mit dem Button *Ereignis erstellen* einrichten (das Ereignis wird nur erstellt, jedoch nicht aktiviert)
+     - Mit dem zusätzliche Button *Ereignis (xxxxx) prüfen* kann das neu erstelle Ereignis direkt geöffnet und angepasst / aktiviert werden
      
      Mit den Bedingungen eines Ereignisses ist es möglich, sehr komplexe Abfrage-Muster zu erstellen (z.B. PV-Werte nur tagsüber abfragen, wenn da auch ein Strom fliesst).
-     Ereignisse schreiben die Werte nur in eine Status-Variable, wenn diese vorher unter Geräte-Eigenschaften "aktiviert" wurden. Dort kann der Abfrage-Intervall dann einfach auf "0" gestellt werden.
+     Ereignisse schreiben die Werte nur in eine Status-Variable, wenn diese vorher unter Geräte-Eigenschaften *aktiviert* wurden. Dort kann der Abfrage-Intervall dann einfach auf *0* gestellt werden.
 
   ### 3. Modul-Funktionen
   Die folgenden Funktionen stehen in IPS-Ereignissen/-Scripts zur Verfügung:
-  - JoTKPP_RequestRead(): Liest alle Werte, bei welchen der Haken "Aktiv" gesetzt ist. Aktualisiert die entsprechenden Instanz-Variablen und gibt die Werte als Array zurück.
-  - JoTKPP_RequestReadAll(): Liest alle Werte.*
-  - JoTKPP_RequestReadIdent(string $Ident): Liest alle Werte, deren Ident angegeben wird (mehrere Idents werden durch ein Leerzeichen getrennt).*
-  - JoTKPP_RequestReadGroup(string $Gruppe): Liest alle Werte, deren Gruppe angegeben wird (mehrere Gruppen werden durch ein Leerzeichen getrennt).*
-  - JoTKPP_CheckFirmwareUpdate(): Holt den Namen der aktuellsten FW-Datei bei Kostal, speichert diese in einer Instanz-Variable und gibt sie als String zurück.
-  - JoTKPP_GetDeviceInfo(): Gibt die wichtigsten Geräte-Informationen als Array zurück.*
-  - IPS_RequestAction(int $InstanzID, string $Ident, mixed $Value): Damit können die Idents, welche mit Zugriff RW oder W markiert sind geschrieben werden.
+  ```php
+  JoTKPP_RequestRead();
+  ```
+  Liest alle Werte, bei welchen der Haken *Aktiv* gesetzt ist. Aktualisiert die entsprechenden Instanz-Variablen und gibt die Werte als Array zurück.
+  ```php
+  JoTKPP_RequestReadAll();
+  ```
+  Liest alle Werte vom Wechselrichter.*
+  ```php
+  JoTKPP_RequestReadIdent(string $Ident);
+  ```
+  Liest alle Werte, deren *Ident* angegeben wird (mehrere Idents werden durch ein Leerzeichen getrennt).*
+  ```php
+  JoTKPP_RequestReadGroup(string $Gruppe);
+  ```
+  Liest alle Werte, deren *Gruppe* angegeben wird (mehrere Gruppen werden durch ein Leerzeichen getrennt).*
+  ```php
+  JoTKPP_CheckFirmwareUpdate();
+  ```
+  Holt den Namen der aktuellsten FW-Datei bei Kostal, speichert diese in einer Instanz-Variable und gibt sie als String zurück.
+  ```php
+  JoTKPP_GetDeviceInfo();
+  ```
+  Gibt die wichtigsten Geräte-Informationen als Array zurück.*
+  ```php
+  IPS_RequestAction(int $InstanzID, string $Ident, mixed $Value);
+  ```
+  Damit können die *Idents*, welche mit Zugriff *RW* oder *W* markiert sind geschrieben werden.
 
-  *) Die Werte werden auch gelesen, wenn der Haken "Aktiv" nicht gesetzt ist. Sie werden dann jedoch nur als Array zurückgegeben und nicht in eine Instanz-Variable geschrieben.
+  *) Die Werte werden auch gelesen, wenn der Haken *Aktiv* nicht gesetzt ist. Sie werden dann jedoch nur als Array zurückgegeben und nicht in eine Instanz-Variable geschrieben.
   
   ### 4. Batterie-Management
   Ab FW-Version 1.46 auf dem Wechselrichter und Modul-Version 2.0 ist es möglich, das Batterie-Management und die AC-Leistung des Wechselrichters via ModBus zu steuern.
-  Voraussetzung dafür ist, dass der Installateur auf dem Wechselrichter das externe Batterie-Management unter 'Servicemenu -> Batterieeinstellungen -> Batteriesteuerung' aktiviert.
+  Voraussetzung dafür ist, dass der Installateur auf dem Wechselrichter das externe Batterie-Management unter *Servicemenu -> Batterieeinstellungen -> Batteriesteuerung* aktiviert.
   Dieser Modus kann nicht mit dem normalen Anlagen-Benutzer aktiviert werden.
 
   Details zum Batterie-Management sind unter [Schnittstellen Protokolle bei den Downloads für den Wechselrichter auf der Kostal-Webseite](https://www.kostal-solar-electric.com/de-de/download/download#accordionContent7) zu finden.
@@ -137,9 +154,10 @@ Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modu
 | JoTKPP | Device | Kostal     | PIKO IQ         | JoTKPP | {E64278F5-1942-5343-E226-8673886E2D05} |
 
 ### 2. Changelog
-Version 2.2 (BETA)
+Version 2.2
 - FIX: RW-Variablen können nun mit IPS_RequestAction geschrieben werden.
-- Schreiben für Batterie-Management und AC-Control funktioniert nun über den IPS-internen DatenFlow. Allfällig vorhandene I/O-Instanzen "JoTKPP_WriteSocket for #\[InstanzID\]" können manuell gelöscht werden.
+- Schreiben für Batterie-Management und AC-Control funktioniert nun über den IPS-internen DatenFlow. Allfällig vorhandene I/O-Instanzen *JoTKPP_WriteSocket for #\[InstanzID\]* können manuell gelöscht werden.
+- Alle Werte der Gruppe *Surplus* wurden entfernt. Seit IPS 6.0 sind Verzögerungen in Ablaufplänen möglich und eine Programmierung für den PV-Überschuss ist damit viel komfortabler realisierbar. Als Auslöser entweder *PMActivePowerTot* mit Grenzunterschreitung eines gewünschten Wertes oder *GridState = -1* benutzen und danach im Ablaufplan *Warten*, den Wert nochmals mit *Wenn..., dann* prüfen und wenn immer noch genügend Überschuss vorhanden die gewünschten Befehle ausführen. *Tipp:* Überschuss ist immer ein negativer Wert (Einspeisung).  
 
 Version 2.1
 - FIX: Bei aktivem Polling wird nach einem Neustart von IPS nun kein Fehler mehr im Log generiert.

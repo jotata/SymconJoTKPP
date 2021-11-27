@@ -8,7 +8,7 @@
 Erweiterung zur Abfrage der Werte eines Kostal Wechselrichters via ModBus in IP-Symcon.
 
 ## Dokumentation
-<p align="right"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9M6W4KM34HWMA&source=url" target="_blank"><img src="https://www.paypalobjects.com/de_DE/CH/i/btn/btn_donateCC_LG.gif" border="0" /></a></p>
+<p align="right"><a href="https://www.paypal.com/donate/?hosted_button_id=9M6W4KM34HWMA" target="_blank"><img src="https://www.paypalobjects.com/de_DE/CH/i/btn/btn_donateCC_LG.gif" border="0" /></a></p>
 
 **Inhaltsverzeichnis**
 1. [Funktionsumfang](#1-funktionsumfang)  
@@ -137,8 +137,8 @@ Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modu
 | JoTKPP | Device | Kostal     | PIKO IQ         | JoTKPP | {E64278F5-1942-5343-E226-8673886E2D05} |
 
 ### 2. Changelog
-Version 2.2
-- FIX: RW-Variablen können nun mir IPS_RequestAction geschrieben werden.
+Version 2.2 (BETA)
+- FIX: RW-Variablen können nun mit IPS_RequestAction geschrieben werden.
 - Schreiben für Batterie-Management und AC-Control funktioniert nun über den IPS-internen DatenFlow. Allfällig vorhandene I/O-Instanzen "JoTKPP_WriteSocket for #\[InstanzID\]" können manuell gelöscht werden.
 
 Version 2.1
@@ -217,7 +217,7 @@ Version 0.8:
 
 ### 3. Spenden    
 Das Modul ist für die nicht kommzerielle Nutzung kostenlos. Spenden als Unterstützung für den Autor sind aber willkommen:  
-<p align="center"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9M6W4KM34HWMA&source=url" target="_blank"><img src="https://www.paypalobjects.com/de_DE/CH/i/btn/btn_donateCC_LG.gif" border="0" /></a></p>
+<p align="center"><a href="https://www.paypal.com/donate/?hosted_button_id=9M6W4KM34HWMA" target="_blank"><img src="https://www.paypalobjects.com/de_DE/CH/i/btn/btn_donateCC_LG.gif" border="0" /></a></p>
 
 ## 7. Support
 Fragen, Anregungen, Kritik und Fehler zu diesem Modul können im entsprechenden [Thread des IPS-Forums](https://www.symcon.de/forum/threads/41720-Modul-JoTKPP-Solar-Wechselrichter-Kostal-PLENTICORE-plus-PIKO-IQ) deponiert werden.

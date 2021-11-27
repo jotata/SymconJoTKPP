@@ -59,7 +59,7 @@ Hersteller: KOSTAL
 *) Firmware MC-Version (neuere FW sollte funktionieren, hat aber ev. mehr/weniger Werte als im Modul verfügbar sind). Ansonste bitte eine Meldung im [Forum](https://www.symcon.de/forum/threads/41720-Modul-JoTKPP-Solar-Wechselrichter-Kostal-PLENTICORE-plus-PIKO-IQ) hinterlassen. Die ModBus-Spezifikationen vom 17.09.2020 (Rev. 1.9 ab FW-Version 1.44) sind integriert.
 
 ## 4. Modul-Installation / Update
-Die Installation erfolgt über den IPS Module-Store. In der Suche einfach **JoTKPP** oder ***Kostal** eingeben und die Installation starten.
+Die Installation erfolgt über den IPS Module-Store. In der Suche einfach **JoTKPP** oder **Kostal** eingeben (offizieller Name ist **Kostal PLENTICORE (JoTKPP)**) und die Installation starten.
 Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modul auf *Aktualisieren* klicken.
 
 **Das Modul wird für den privaten Gebrauch kostenlos zur Verfügung gestellt.**

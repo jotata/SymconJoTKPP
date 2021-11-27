@@ -36,30 +36,6 @@
       "FWVersion": 1.42
     },
     {
-      "Address": 0,
-      "Group": "Surplus",
-      "Ident": "SPCharge",
-      "Name": "PV surplus battery charging",
-      "VarType": "$VT_UnsignedInteger",
-      "FWVersion": 1.42
-    },
-    {
-      "Address": 0,
-      "Group": "Surplus",
-      "Ident": "SPFeedin",
-      "Name": "PV surplus feed in",
-      "VarType": "$VT_UnsignedInteger",
-      "FWVersion": 1.42
-    },
-    {
-      "Address": 0,
-      "Group": "Surplus",
-      "Ident": "SPReduction",
-      "Name": "PV surplus reduction",
-      "VarType": "$VT_UnsignedInteger",
-      "FWVersion": 1.42
-    },
-    {
       "Address": 2,
       "Group": "DeviceInfo",
       "Ident": "MBEnable",

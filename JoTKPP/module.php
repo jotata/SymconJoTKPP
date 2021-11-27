@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   27.11.2021 12:51:00
+ * @Last Modified:   27.11.2021 18:49:01
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -43,7 +43,6 @@ class JoTKPP extends JoTModBus {
         $this->RegisterAttributeInteger('MBType', self::MB_LittleEndian_ByteSwap);
         $this->RegisterPropertyInteger('PollTime', 0);
         $this->RegisterPropertyInteger('CheckFWTime', 0);
-        $this->RegisterPropertyString('SPList', '');
         $this->RegisterTimer('RequestRead', 0, static::PREFIX . '_RequestRead($_IPS["TARGET"]);');
         $this->RegisterTimer('CheckFW', 0, static::PREFIX . '_CheckFirmwareUpdate($_IPS["TARGET"]);');
         $this->RegisterMessage($this->InstanceID, IM_CONNECT); //Instanz verfügbar
@@ -203,7 +202,6 @@ class JoTKPP extends JoTModBus {
         $form = file_get_contents(__DIR__ . '/form.json');
         $form = $this->AddModuleInfoAsElement($form);
         $form = str_replace('$DeviceString', $device['String'], $form);
-        //$form = str_replace('"$DeviceInfoVisible"', $this->ConvertToBoolStr($device['Error'], true), $form); //Visible für 'DeviceInfo' setzen
         $form = str_replace('"$DeviceNoError"', $this->ConvertToBoolStr($device['Error'], true), $form); //Visible für 'DeviceInfo' setzen
         $diValues = [];
         foreach ($device as $ident => $value) { //DeviceInfo aufbereiten
@@ -214,7 +212,6 @@ class JoTKPP extends JoTModBus {
         $form = str_replace('"$DeviceInfoValues"', json_encode($diValues), $form); //Values für 'DeviceInfos' setzen
         $form = str_replace('$ColumnNameCaption', $this->Translate('Name') . ' (* = ' . $this->Translate('calculated value') . ')', $form); //Caption für Spalte Name in 'IdentList' setzen
         $form = str_replace('"$IdentListValues"', json_encode(array_values($values)), $form); //Values für 'IdentList' setzen
-        $form = str_replace('"$SPListVisible"', $this->ConvertToBoolStr(strpos("  $pollIdents", ' SP')), $form); //Visible für 'SPList' setzen (strpos mit 2 Leerzeichen, damit SP auch als erster Ident erkannt wird)
         $form = str_replace('$RequestReadCaption', static::PREFIX . '_RequestRead' . $this->GetBuffer('RequestReadType'), $form); //Caption für 'RequestRead' setzen
         $form = str_replace('$RequestReadValue', $this->GetBuffer('RequestReadValue'), $form); //Value für 'RequestRead' setzen
         $form = str_replace('$EventCreated', $this->Translate('Event was created. Please check/change settings.'), $form); //Übersetzungen einfügen
@@ -329,7 +326,12 @@ class JoTKPP extends JoTModBus {
         } elseif (strlen(trim($idents)) > 0) {
             $idents = explode(' ', trim($idents));
         } else { //keine Idents angegeben
-            $idents = explode(' ', $this->ReadAttributeString('PollIdents'));
+            $idents = $this->ReadAttributeString('PollIdents');
+            if (strlen($idents) > 0) {
+                $idents = explode(' ', $idents);
+            } else { //Keine aktiven Idents konfiguriert
+                $idents = [];
+            }
         }
 
         //ModBus-Abfrage durchführen
@@ -623,71 +625,8 @@ class JoTKPP extends JoTModBus {
             $value = $this->RequestReadIdent('PMActivePowerTot') <=> 0; //gibt -1 (FeedIn), 0 (Idle) oder 1 (Purchase) zurück
         }
 
-        //PV-Überschuss
-        if (substr($Ident, 0, 2) === 'SP') {
-            //Werte einlesen...
-            $val = 0;
-            if ($Ident === 'SPFeedin') {
-                $val = $this->RequestReadIdent('ACActivePowerTot') * 1000; //Vergleich erfolgt in W
-            } elseif ($Ident === 'SPReduction') {
-                $val = $this->RequestReadIdent('PowerClass ACActivePowerTot InverterState');
-                if ($val['InverterState'] === 7) { //=Throttled - Wechselrichter drosselt Leistung
-                    //Berechnung ist theoretisch, da unbekannt ist, wie viel Energie die PV-Seite im Moment liefern könnte.
-                    //Daher wird die max. möglich Leistung des WR herangezogen.
-                    //Falls PV-Seite kleiner dimensioniert oder nicht genügend Sonnen-Einstrahlung vorhanden ist, kann ev. nicht so viel mehr verbraucht werden
-                    $val = ($val['PowerClass'] * 1000) - ($val['ACActivePowerTot'] * 1000); //max. mögliche WR-Leistung - aktuell produzierte WR-Leistung in W
-                } else { //Wechselrichter kann alle Energie einspeisen oder befindet sich in einem anderen Zustand
-                    $val = 0;
-                }
-            } elseif ($Ident === 'SPCharge') {
-                $val = $this->RequestReadIdent('BTPower') * -1 * 1000; //Umdrehen und in W umrechnen, da Vergleich immer mit positivem Wert in W gemacht wird und Charging negativ in kW wäre
-            }
-            //mit Konfiguration vergleichen
-            $config = json_decode($this->ReadPropertyString('SPList'), true);
-            $buf = json_decode($this->GetBuffer($Ident), true);
-            $temp = [];
-            foreach ($config as $conf) { //Alle States ermitteln
-                if ($conf['Ident'] === $Ident && $conf['Active'] === true) {
-                    $offValue = $conf['OnValue'] - abs($conf['OffDiff']);
-                    $index = $conf['OnValue'] . ":$offValue:" . $conf['OnCount'] . ':' . $conf['OffCount'] . ':' . $conf['Value']; //Eindeutigen Index generieren
-                    $temp[$index] = ['State' => 0, 'OnCount' => 0, 'OffCount' => 0];
-                    if (is_array($buf) && array_key_exists($index, $buf)) { //Durch diese Zuweisung werden geänderte / deaktivierte Konfigurationen im Buffer automatisch bereinigt
-                        $temp[$index] = ['State' => $buf[$index]['State'], 'OnCount' => $buf[$index]['OnCount'], 'OffCount' => $buf[$index]['OffCount']];
-                    }
-                    if ($val >= $conf['OnValue']) {
-                        $temp[$index]['OffCount'] = 0;
-                        if (++$temp[$index]['OnCount'] >= $conf['OnCount']) {
-                            $temp[$index]['State'] = $conf['Value'];
-                        }
-                    } elseif ($val < $conf['OnValue'] && $val > $offValue) {
-                        $temp[$index]['OnCount'] = 0;
-                        $temp[$index]['OffCount'] = 0;
-                    } elseif ($val <= $offValue) {
-                        $temp[$index]['OnCount'] = 0;
-                        if (++$temp[$index]['OffCount'] >= $conf['OffCount']) {
-                            $temp[$index]['State'] = 0;
-                        }
-                    }
-                }
-            }
-            $this->SetBuffer($Ident, json_encode($temp));
-            krsort($temp, SORT_STRING); //Sortierung analog OnValue DESC basierend auf generiertem Index
-            $this->SendDebug('CalculateValue', "Ident: $Ident Buffer: " . json_encode($temp), 0);
-            //und $value auf ersten aktiven State setzen
-            if (count($temp) > 0) { //Falls keine Konfiguration aktiv ist, wird $value auch nicht gesetzt
-                $value = 0;
-                foreach ($temp as $tmp) {
-                    if ($tmp['State'] > 0) { //$value erhält den ersten aktiven State
-                        $value = $tmp['State'];
-                        break;
-                    }
-                }
-            }
-        }
-
         if (is_null($value)) {
-            //Tritt insbesondere dann auf, wenn keine Konfigurationen in der SPList vorhanden sind.
-            //Kann aber auch sein, wenn in der ModBusConfig eine Berechnung definiert, aber hier keine Formel dazu vorhanden ist.
+            //Tritt auf, wenn in der ModBusConfig eine Berechnung definiert, aber hier keine Formel dazu vorhanden ist.
             $this->ThrowMessage('Calculation not possible for Ident \'%s\'!', $Ident);
         }
         $this->SendDebug('CalculateValue', "Ident: $Ident Result: $value", 0);

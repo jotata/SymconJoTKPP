@@ -27,6 +27,7 @@
                             "type": "List",
                             "name": "DeviceInfoValues",
                             "visible": "$DeviceNoError",
+                            "rowCount": 14,
                             "sort": {
                                 "column": "Name",
                                 "direction": "ascending"
@@ -142,103 +143,6 @@
                 }
             ],
             "values": "$IdentListValues"
-        },{
-            "type": "List",
-            "name": "SPList",
-            "caption": "Configuration PV surplus",
-            "visible": "$SPListVisible",
-            "add": true,
-            "delete": true,
-            "rowCount": 6,
-            "sort": {
-                "column": "OnValue",
-                "direction": "descending"
-            },
-            "columns": [
-                {
-                    "caption": "Ident",
-                    "name": "Ident",
-                    "width": "150px",
-                    "add": "SPFeedin",
-                    "edit": {
-                        "type": "Select",
-                        "options": [
-                            { "caption": "SPFeedin", "value": "SPFeedin" },
-                            { "caption": "SPReduction", "value": "SPReduction" },
-                            { "caption": "SPCharge", "value": "SPCharge" }
-                        ]
-                    }
-                },{
-                    "caption": "On Value",
-                    "name": "OnValue",
-                    "width": "200px",
-                    "add": 0,
-                    "edit": {
-                        "type": "NumberSpinner",
-                        "minimum": 1,
-                        "suffix": "W"
-                    }
-                },{
-                    "caption": "Off Difference",
-                    "name": "OffDiff",
-                    "width": "200px",
-                    "add": -100,
-                    "edit": {
-                        "type": "NumberSpinner",
-                        "maximum": 0,
-                        "suffix": "W"
-                    }
-                },{
-                    "caption": "On Counter",
-                    "name": "OnCount",
-                    "width": "200px",
-                    "add": 5,
-                    "edit": {
-                        "type": "NumberSpinner",
-                        "minimum": 1,
-                        "suffix": "x"
-                    }
-                },{
-                    "caption": "Off Counter",
-                    "name": "OffCount",
-                    "width": "200px",
-                    "add": 1,
-                    "edit": {
-                        "type": "NumberSpinner",
-                        "minimum": 1,
-                        "suffix": "x"
-                    }
-                },{
-                    "caption": "Value",
-                    "name": "Value",
-                    "width": "auto",
-                    "add": 0,
-                    "edit": {
-                        "type": "NumberSpinner",
-                        "minimum": 1
-                    }
-                },{
-                    "caption": "Active",
-                    "name": "Active",
-                    "width": "50px",
-                    "align": "center",
-                    "add": true,
-                    "edit": {
-                        "type": "CheckBox"
-                    }
-                }
-            ],
-            "values": [
-                {
-                    "Type": "SPFeedin", 
-                    "OnValue": 1000, 
-                    "OffDiff": -100, 
-                    "OnCounter": 5,
-                    "OffCounter": 1, 
-                    "Value": 1,
-                    "deletable": false
-                }
-            ]
         }
     ],
     "actions":[

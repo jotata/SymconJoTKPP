@@ -20,7 +20,7 @@
             "items": [
                 {
                     "type": "ExpansionPanel",
-                    "name": "Device",
+                    "name": "DeviceInfo",
                     "caption": "$DeviceString",
                     "items": [
                         {

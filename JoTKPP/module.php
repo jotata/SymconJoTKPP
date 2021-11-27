@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   27.11.2021 11:51:34
+ * @Last Modified:   27.11.2021 12:51:00
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -227,18 +227,18 @@ class JoTKPP extends JoTModBus {
      * @return array mit Geräte-Informationen oder Fehlermeldung
      */
     public function GetDeviceInfo() {
-        $this->UpdateFormField('DeviceInfo', 'enabled', false);
+        $this->UpdateFormField('DeviceInfoValues', 'visible', false);
         $this->UpdateFormField('ReadNow', 'enabled', false);
         $device = json_decode($this->GetBuffer('DeviceInfo'), true); //Aktuell bekannte Geräte-Parameter aus Cache holen
 
         //Prüfen ob es sich um einen Kostal Wechselrichter handelt
         $read = $this->Translate('Reading device information...');
-        $this->UpdateFormField('Device', 'caption', $read . '(Manufacturer)');
+        $this->UpdateFormField('DeviceInfo', 'caption', $read . '(Manufacturer)');
         $mfc = $this->RequestReadIdent('Manufacturer');
         if (is_null($mfc) || $mfc !== 'KOSTAL') {
             $device['String'] = $this->Translate('Device information could not be read. Gateway settings correct?');
             $device['Error'] = true;
-            $this->UpdateFormField('Device', 'caption', $device['String']);
+            $this->UpdateFormField('DeviceInfo', 'caption', $device['String']);
             $this->LogMessage($device['String'] . " Manufacturer: '$mfc'", KL_ERROR);
             if ($this->GetStatus() == self::STATUS_Ok_InstanceActive) { //ModBus-Verbindung OK, aber falsche Antwort
                 $this->SetStatus(self::STATUS_Error_WrongDevice);
@@ -247,7 +247,7 @@ class JoTKPP extends JoTModBus {
         }
 
         //SerienNr lesen
-        $this->UpdateFormField('Device', 'caption', $read . '(SerialNr)');
+        $this->UpdateFormField('DeviceInfo', 'caption', $read . '(SerialNr)');
         $serialNr = $this->RequestReadIdent('SerialNr');
         if (is_null($device) || $device['SerialNr'] !== $serialNr) {//Neue SerienNr/Gerät - Werte neu einlesen
             $device = ['Manufacturer' => $mfc, 'Error' => false];
@@ -255,24 +255,24 @@ class JoTKPP extends JoTModBus {
         $device['SerialNr'] = $serialNr;
 
         //Folgende Werte könnten ändern, daher immer auslesen
-        $this->UpdateFormField('Device', 'caption', $read . '(SoftwareVersionMC)');
+        $this->UpdateFormField('DeviceInfo', 'caption', $read . '(SoftwareVersionMC)');
         $device['FWVersion'] = $this->RequestReadIdent('SoftwareVersionMC');
         $this->SetBuffer('DeviceInfo', json_encode($device)); //FW-Version sofort in Buffer schreiben, damit diese für die restlichen Werte zur Verfügung steht
-        $this->UpdateFormField('Device', 'caption', $read . '(NetworkName)');
+        $this->UpdateFormField('DeviceInfo', 'caption', $read . '(NetworkName)');
         $device['NetworkName'] = $this->RequestReadIdent('NetworkName');
 
         //unbekannte Werte vom Gerät auslesen
         $idents = ['ProductName', 'PowerClass', 'BTReadyFlag', 'SensorType', 'BTType', 'BTGrossCapacity', 'BTWorkCapacity', 'BTManufacturer', 'NumberPVStrings', 'HardwareVersion'];
         foreach ($idents as $ident) {
             if (!array_key_exists($ident, $device) || is_null($device[$ident])) {
-                $this->UpdateFormField('Device', 'caption', $read . "($ident)");
+                $this->UpdateFormField('DeviceInfo', 'caption', $read . "($ident)");
                 $device[$ident] = $this->RequestReadIdent($ident);
             }
         }
 
         $device['String'] = $device['Manufacturer'] . ' ' . $device['ProductName'] . ' ' . $device['PowerClass'] . " ($serialNr) - " . $device['NetworkName'];
-        $this->UpdateFormField('Device', 'caption', $device['String']);
-        $this->UpdateFormField('DeviceInfo', 'enabled', true);
+        $this->UpdateFormField('DeviceInfo', 'caption', $device['String']);
+        $this->UpdateFormField('DeviceInfoValues', 'visible', true);
         $this->UpdateFormField('ReadNow', 'enabled', true);
 
         $this->SetBuffer('DeviceInfo', json_encode($device)); //Aktuell bekannte Geräte-Parameter im Cache zwischenspeichern
@@ -297,7 +297,7 @@ class JoTKPP extends JoTModBus {
         } elseif ($MessageID === IM_CHANGESETTINGS) { //Einstellungen im Gateway / ClientSocket wurden geändert
             $this->SendDebug('Connection settings changed', "Connection-Instance #$SenderID", 0);
             $this->RegisterOnceTimer('GetDeviceInfo', 'IPS_RequestAction($_IPS["TARGET"], "GetDeviceInfo", "");');
-        }
+        } 
         if ($MessageID === IM_CONNECT || $MessageID === FM_CONNECT) { //Nachrichten (neu) registrieren
             foreach ($this->GetMessageList() as $id => $msgs) { //alte Nachrichten deaktivieren
                 $this->UnregisterMessage($id, FM_CONNECT);

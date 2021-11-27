@@ -2,12 +2,12 @@
     "id": "{89441F1C-532D-3F34-FF79-07A3B38FDD86}",
     "author": "JoT Tanner",
     "name": "JoTKPP",
-    "url": "https://github.com/jotata/SymconJoTKPP#symconjotkpp",
+    "url": "https://community.symcon.de/t/modul-jotkpp-solar-wechselrichter-kostal-plenticore-plus-piko-iq/50857/110",
     "compatibility": {
         "version": "6.0",
         "date": 0
     },
-    "version": "2.2 BETA",
+    "version": "2.2",
     "build": 0,
     "date": 0
 }

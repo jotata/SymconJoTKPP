@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @File:            module.php
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   02.11.2021 10:13:39
+ * @Last Modified:   27.11.2021 11:51:34
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -23,6 +23,7 @@ class JoTKPP extends JoTModBus {
     use VariableProfile;
     use Translation;
     use RequestAction;
+    use ModuleInfo;
     protected const PREFIX = 'JoTKPP';
     protected const MODULEID = '{E64278F5-1942-5343-E226-8673886E2D05}';
     protected const STATUS_Error_WrongDevice = 416;
@@ -200,6 +201,7 @@ class JoTKPP extends JoTModBus {
 
         //Variabeln in $form ersetzen
         $form = file_get_contents(__DIR__ . '/form.json');
+        $form = $this->AddModuleInfoAsElement($form);
         $form = str_replace('$DeviceString', $device['String'], $form);
         //$form = str_replace('"$DeviceInfoVisible"', $this->ConvertToBoolStr($device['Error'], true), $form); //Visible für 'DeviceInfo' setzen
         $form = str_replace('"$DeviceNoError"', $this->ConvertToBoolStr($device['Error'], true), $form); //Visible für 'DeviceInfo' setzen

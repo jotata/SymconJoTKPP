@@ -19,46 +19,39 @@
             "type": "RowLayout",
             "items": [
                 {
+                    "type": "ExpansionPanel",
+                    "name": "Device",
+                    "caption": "$DeviceString",
+                    "items": [
+                        {
+                            "type": "List",
+                            "name": "DeviceInfoValues",
+                            "visible": "$DeviceNoError",
+                            "sort": {
+                                "column": "Name",
+                                "direction": "ascending"
+                            },
+                            "columns": [
+                                {
+                                    "caption": "Name",
+                                    "name": "Name",
+                                    "width": "150px"
+                                },{
+                                    "caption": "Value",
+                                    "name": "Value",
+                                    "width": "auto"
+                                }
+                            ],
+                            "values": "$DeviceInfoValues"
+                        }
+                    ]
+                },{
                     "type": "Label",
                     "caption": "Read/Write"  
                 },{
                     "type": "Image",
                     "name": "StatusLED",
                     "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUAQMAAAC3R49OAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAADUExURcPDw9YpAkQAAAAJcEhZcwAAFiQAABYkAZsVxhQAAAANSURBVBjTY6AqYGAAAABQAAGwhtz8AAAAAElFTkSuQmCC"
-                },{
-                    "type": "PopupButton",
-                    "name": "DeviceInfo",
-                    "caption": "Device Info",
-                    "enabled": "$DeviceNoError",
-                    "popup": {
-                        "caption": "Device Info",
-                        "items": [
-                            {
-                                "type": "List",
-                                "name": "DeviceInfoValues",
-                                "sort": {
-                                    "column": "Name",
-                                    "direction": "ascending"
-                                },
-                                "columns": [
-                                    {
-                                        "caption": "Name",
-                                        "name": "Name",
-                                        "width": "150px"
-                                    },{
-                                        "caption": "Value",
-                                        "name": "Value",
-                                        "width": "auto"
-                                    }
-                                ],
-                                "values": "$DeviceInfoValues"
-                            }
-                        ]
-                    }
-                },{
-                    "type": "Label",
-                    "name": "Device",
-                    "caption": "$DeviceString"
                 }
             ]
         },{

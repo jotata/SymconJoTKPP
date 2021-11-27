@@ -1,18 +1,4 @@
 <?php
-
-declare(strict_types=1);
-/**
- * @Package:         .style
- * @File:            .php-cs-fixer.php
- * @Create Date:     02.11.2021 19:58:49
- * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   02.11.2021 20:05:28
- * @Modified By:     Jonathan Tanner
- * @Copyright:       Copyright(c) 2021 by JoT Tanner
- * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
- *                   (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
- */
-
 $finder = PhpCsFixer\Finder::create()
     ->exclude('libs/vendor')
     ->in(__DIR__);

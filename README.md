@@ -154,6 +154,9 @@ Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modu
 | JoTKPP | Device | Kostal     | PIKO IQ         | JoTKPP | {E64278F5-1942-5343-E226-8673886E2D05} |
 
 ### 2. Changelog
+Version 2.3 BETA
+- FIX: Profil Battery.Capacity (Ah) wieder hinzugefügt
+
 Version 2.2
 - FIX: RW-Variablen können nun mit IPS_RequestAction geschrieben werden.
 - Schreiben für Batterie-Management und AC-Control funktioniert nun über den IPS-internen DatenFlow. Allfällig vorhandene I/O-Instanzen *JoTKPP_WriteSocket for #\[InstanzID\]* können manuell gelöscht werden.

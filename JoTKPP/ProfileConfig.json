@@ -302,6 +302,17 @@
             }
         ]
     },{
+        "ProfileName": "Battery.Capacity",
+        "ProfileType": "$VT_Integer",
+        "Icon": "Battery",
+        "Prefix": "",
+        "Suffix": " Ah",
+        "MinValue": 0,
+        "MaxValue": 0,
+        "StepSize": 0,
+        "Digits": 0,
+        "Associations": []
+    },{
         "ProfileName": "Grid.State",
         "ProfileType": "$VT_Integer",
         "Icon": "Plug",

@@ -3,23 +3,21 @@
  * @File:            TODOs.txt
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   27.11.2021 20:01:46
+ * @Last Modified:   01.08.2022 15:14:14
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
  *                   (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
  */
 
-FIXES V2.2
-x Umbau JoT_ModBus.php - WriteModBus, sobald Problem mit UTF-8 Konvertierung im IPS-Datenfluss behoben ist (ab IPS 5.6?) - https://www.symcon.de/forum/threads/41294-Modbus-TCP-BOOL-Wert-senden?p=447472#post447472
-x BUG: Fehler beim Schreiben von Werten: Undefined variable: ident in /var/lib/symcon/modules/.store/ch.tanner.jot.kpp/JoTKPP/module.php on line 502
-x Fehleranalyse SPFeedIn schaltet nicht aus bei Strom-Bezug => Gruppe Surplus entfernt, da dies ab IPS 6.0 mit Ablaufplänen deutlich flexibler realisierbar ist
-x ModulInformationen in Konfigurationsform integrieren
-x Voraussetzungen in ReadMe / Forum aktualisieren (IPS 6.0)
-x Titel im Modul-Store anpassen (Kostal Plenticore/Piko (JoTKPP))
-x Englische Übersetzung im Modul-Store hinzufügen
+FIXES V2.3
+x Profil Battery.Capacity (Ah) hinzufügen (https://community.symcon.de/t/modul-jotkpp-solar-wechselrichter-kostal-plenticore-plus-piko-iq/50857/132?u=jotata)
+- CheckProfileName in Traits verbessern, so dass Konflikte in Profilnamen von anderen Modulen erkannt werden (https://community.symcon.de/t/modul-jotkpp-solar-wechselrichter-kostal-plenticore-plus-piko-iq/50857/146?u=jotata)
 
 FEATURES & FIXES V??
+- Instanz-Variablen in Gruppen (Kategorie oder Prefix im Name) darstellen (https://community.symcon.de/t/modul-jotkpp-solar-wechselrichter-kostal-plenticore-plus-piko-iq/50857/127?u=jotata)
+- Umstellung auf ModBus-Instanz von IPS (diese kann nun auch Strings lesen)
+- Integration Kostal ModBus-Spezifikationen Version 2.0
 - Prozess RequestRead bleibt bei Update wieder hängen
 - Integration Tests
   x Kontrolle der Definitionen in ModBusConfig.json

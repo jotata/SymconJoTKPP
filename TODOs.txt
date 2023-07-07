@@ -3,7 +3,7 @@
  * @File:            TODOs.txt
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   20.03.2023 19:32:14
+ * @Last Modified:   07.07.2023 12:57:36
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
@@ -12,12 +12,15 @@
 
 FIXES V2.3
 x Profil Battery.Capacity (Ah) hinzufügen (https://community.symcon.de/t/modul-jotkpp-solar-wechselrichter-kostal-plenticore-plus-piko-iq/50857/132?u=jotata)
-- CheckProfileName in Traits verbessern, so dass Konflikte in Profilnamen von anderen Modulen erkannt werden (https://community.symcon.de/t/modul-jotkpp-solar-wechselrichter-kostal-plenticore-plus-piko-iq/50857/146?u=jotata)
-- Werte, welche nicht negativ sein können, mittels ABS berechnen (https://community.symcon.de/t/modul-jotkpp-solar-wechselrichter-kostal-plenticore-plus-piko-iq/50857/161?u=jotata)
+x Fehler in IPS 7.0 TESTING mit str_replace in JoT_Traits.php beheben (https://community.symcon.de/t/modul-jotkpp-solar-wechselrichter-kostal-plenticore-plus-piko-iq/50857/167?u=jotata)
+x CheckProfileName in Traits verbessern, so dass Konflikte in Profilnamen von anderen Modulen erkannt werden (https://community.symcon.de/t/modul-jotkpp-solar-wechselrichter-kostal-plenticore-plus-piko-iq/50857/146?u=jotata)
+x Werte, welche nicht negativ sein können, mittels ABS berechnen (https://community.symcon.de/t/modul-jotkpp-solar-wechselrichter-kostal-plenticore-plus-piko-iq/50857/161?u=jotata)
 
 FEATURES & FIXES V??
-- Instanz-Variablen in Gruppen (Kategorie oder Prefix im Name) darstellen (https://community.symcon.de/t/modul-jotkpp-solar-wechselrichter-kostal-plenticore-plus-piko-iq/50857/127?u=jotata)
 - Umstellung auf ModBus-Instanz von IPS (diese kann nun auch Strings lesen)
+- Anpassungen/Optimierungen für IPS 7.0 (insbesondere Datenfluss)
+- Beim De-/Aktivieren von Geräte-Werten wird keine Änderung der Instanz (Speichern) angezeigt
+- Instanz-Variablen in Gruppen (Kategorie oder Prefix im Name) darstellen (https://community.symcon.de/t/modul-jotkpp-solar-wechselrichter-kostal-plenticore-plus-piko-iq/50857/127?u=jotata)
 - Kontrolle/Integration Kostal ModBus-Spezifikationen Version 2.0 (vom 15.12.22)
 - Prozess RequestRead bleibt bei Update wieder hängen
 - Integration Tests

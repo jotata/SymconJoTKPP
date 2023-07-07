@@ -155,8 +155,10 @@ Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modu
 
 ### 2. Changelog
 Version 2.3 BETA
+- FIX: Funktioniert nun auch mit IPS 7.0 TESTING ab 44dd2e95e8c4 (04.07.23) funktionieren
 - FIX: Profil Battery.Capacity (Ah) wieder hinzugefügt
-- FIX: sollte nun auch mit IPS 7.0 TESTING ab 44dd2e95e8c4 (04.07.23) funktionieren
+- FIX: Überprüfung von Profil-Namen verbessert
+- FIX: Negative 0-Werte vom Wechselrichter werden nun als 0-Wert ohne Vorzeichen (positiver Wert) angezeigt
 
 Version 2.2
 - FIX: RW-Variablen können nun mit IPS_RequestAction geschrieben werden.

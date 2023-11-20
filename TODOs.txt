@@ -3,12 +3,15 @@
  * @File:            TODOs.txt
  * @Create Date:     09.07.2020 16:54:15
  * @Author:          Jonathan Tanner - admin@tanner-info.ch
- * @Last Modified:   07.07.2023 12:57:36
+ * @Last Modified:   20.11.2023 19:07:22
  * @Modified By:     Jonathan Tanner
  * @Copyright:       Copyright(c) 2020 by JoT Tanner
  * @License:         Creative Commons Attribution Non Commercial Share Alike 4.0
  *                   (http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode)
  */
+
+Fixes V2.4
+- Fehleranalyse Unbekannte Identns nach Neustart von IPS (https://community.symcon.de/t/modul-jotkpp-solar-wechselrichter-kostal-plenticore-plus-piko-iq/50857/185?u=jotata)
 
 FIXES V2.3
 x Profil Battery.Capacity (Ah) hinzufügen (https://community.symcon.de/t/modul-jotkpp-solar-wechselrichter-kostal-plenticore-plus-piko-iq/50857/132?u=jotata)

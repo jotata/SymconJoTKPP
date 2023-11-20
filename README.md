@@ -154,7 +154,7 @@ Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modu
 | JoTKPP | Device | Kostal     | PIKO IQ         | JoTKPP | {E64278F5-1942-5343-E226-8673886E2D05} |
 
 ### 2. Changelog
-Version 2.3 BETA
+Version 2.3
 - FIX: Funktioniert nun auch mit IPS 7.0 TESTING ab 44dd2e95e8c4 (04.07.23) funktionieren
 - FIX: Profil Battery.Capacity (Ah) wieder hinzugefügt
 - FIX: Überprüfung von Profil-Namen verbessert

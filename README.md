@@ -155,7 +155,7 @@ Update erfolgt ebenfalls über den Module-Store. Einfach beim installierten Modu
 
 ### 2. Changelog
 Version 2.4 BETA
-- 
+- FIX: Update libs für Symcon 9.1
 
 Version 2.3
 - FIX: Funktioniert nun auch mit IPS 7.0 TESTING ab 44dd2e95e8c4 (04.07.23) funktionieren
